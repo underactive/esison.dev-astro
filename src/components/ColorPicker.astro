@@ -1,0 +1,460 @@
+---
+// Color theme configuration
+const colorThemes = [
+	{ name: 'Purple', primary: 'purple', colors: { 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6' } },
+	{ name: 'Blue', primary: 'blue', colors: { 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af' } },
+	{ name: 'Green', primary: 'green', colors: { 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46' } },
+	{ name: 'Pink', primary: 'pink', colors: { 500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d' } },
+	{ name: 'Orange', primary: 'orange', colors: { 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412' } },
+	{ name: 'Red', primary: 'red', colors: { 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b' } },
+	{ name: 'Indigo', primary: 'indigo', colors: { 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3' } },
+	{ name: 'Teal', primary: 'teal', colors: { 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' } }
+];
+
+// Background theme configuration
+const lightBackgrounds = [
+	{ name: 'Default', id: 'default-light', gradient: 'linear-gradient(to bottom right, #f8fafc, #e2e8f0)' },
+	{ name: 'Warm', id: 'warm-light', gradient: 'linear-gradient(to bottom right, #fef7ed, #fed7aa)' },
+	{ name: 'Cool', id: 'cool-light', gradient: 'linear-gradient(to bottom right, #f0f9ff, #bae6fd)' },
+	{ name: 'Nature', id: 'nature-light', gradient: 'linear-gradient(to bottom right, #f0fdf4, #bbf7d0)' },
+	{ name: 'Sunset', id: 'sunset-light', gradient: 'linear-gradient(to bottom right, #fef3c7, #fde68a)' },
+	{ name: 'Lavender', id: 'lavender-light', gradient: 'linear-gradient(to bottom right, #faf5ff, #e9d5ff)' },
+	{ name: 'Rose', id: 'rose-light', gradient: 'linear-gradient(to bottom right, #fff1f2, #fce7f3)' },
+	{ name: 'Clean', id: 'clean-light', gradient: 'linear-gradient(to bottom right, #ffffff, #f8fafc)' }
+];
+
+const darkBackgrounds = [
+	{ name: 'Default', id: 'default-dark', gradient: 'linear-gradient(to bottom right, #111827, #374151)' },
+	{ name: 'Midnight', id: 'midnight-dark', gradient: 'linear-gradient(to bottom right, #0f172a, #1e293b)' },
+	{ name: 'Deep Ocean', id: 'ocean-dark', gradient: 'linear-gradient(to bottom right, #164e63, #0f766e)' },
+	{ name: 'Forest', id: 'forest-dark', gradient: 'linear-gradient(to bottom right, #14532d, #166534)' },
+	{ name: 'Royal', id: 'royal-dark', gradient: 'linear-gradient(to bottom right, #3730a3, #581c87)' },
+	{ name: 'Ember', id: 'ember-dark', gradient: 'linear-gradient(to bottom right, #7c2d12, #991b1b)' },
+	{ name: 'Charcoal', id: 'charcoal-dark', gradient: 'linear-gradient(to bottom right, #1f2937, #111827)' },
+	{ name: 'Space', id: 'space-dark', gradient: 'linear-gradient(to bottom right, #000000, #1a202c)' }
+];
+---
+
+<div class="relative">
+	<button 
+		id="color-picker-button"
+		class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 group"
+		aria-label="Choose theme color"
+		title="Choose theme color"
+	>
+		<svg class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
+			<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+		</svg>
+	</button>
+
+	<!-- Color Picker Dropdown -->
+	<div 
+		id="color-picker-dropdown"
+		class="absolute right-0 top-full mt-2 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 hidden z-50 min-w-[320px]"
+	>
+		<!-- Color Section -->
+		<div class="mb-6">
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Theme Colors</h3>
+			<div class="grid grid-cols-4 gap-3">
+				{colorThemes.map((theme) => (
+					<button
+						class="color-option flex flex-col items-center p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 group"
+						data-theme={theme.primary}
+						data-colors={JSON.stringify(theme.colors)}
+					>
+						<div 
+							class="w-8 h-8 rounded-full mb-2 ring-2 ring-transparent group-hover:ring-gray-300 dark:group-hover:ring-gray-600 transition-all duration-200"
+							style={`background: linear-gradient(135deg, ${theme.colors[500]}, ${theme.colors[700]})`}
+						></div>
+						<span class="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+							{theme.name}
+						</span>
+					</button>
+				))}
+			</div>
+		</div>
+
+		<!-- Divider -->
+		<div class="border-t border-gray-200 dark:border-gray-600 my-4"></div>
+
+		<!-- Background Section -->
+		<div>
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Backgrounds</h3>
+			
+			<!-- Light Mode Backgrounds -->
+			<div class="light-backgrounds block dark:hidden">
+				<h4 class="text-xs text-gray-600 mb-2 font-medium">Light Mode</h4>
+				<div class="grid grid-cols-4 gap-3 mb-4">
+					{lightBackgrounds.map((bg) => (
+						<button
+							class="background-option flex flex-col items-center p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 group"
+							data-background-id={bg.id}
+							data-gradient={bg.gradient}
+							data-mode="light"
+						>
+							<div 
+								class="w-12 h-6 rounded mb-2 ring-2 ring-transparent group-hover:ring-gray-300 transition-all duration-200 shadow-sm"
+								style={`background: ${bg.gradient}`}
+							></div>
+							<span class="text-xs text-gray-600 group-hover:text-gray-900 transition-colors duration-200 text-center">
+								{bg.name}
+							</span>
+						</button>
+					))}
+				</div>
+			</div>
+
+			<!-- Dark Mode Backgrounds -->
+			<div class="dark-backgrounds hidden dark:block">
+				<h4 class="text-xs text-gray-400 mb-2 font-medium">Dark Mode</h4>
+				<div class="grid grid-cols-4 gap-3 mb-4">
+					{darkBackgrounds.map((bg) => (
+						<button
+							class="background-option flex flex-col items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 group"
+							data-background-id={bg.id}
+							data-gradient={bg.gradient}
+							data-mode="dark"
+						>
+							<div 
+								class="w-12 h-6 rounded mb-2 ring-2 ring-transparent group-hover:ring-gray-600 transition-all duration-200 shadow-sm"
+								style={`background: ${bg.gradient}`}
+							></div>
+							<span class="text-xs text-gray-400 group-hover:text-white transition-colors duration-200 text-center">
+								{bg.name}
+							</span>
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div class="text-xs text-gray-500 dark:text-gray-400 mt-3">
+				Background changes with light/dark mode
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.color-option.active, .background-option.active {
+		background-color: rgb(243 244 246);
+	}
+	.dark .color-option.active, .dark .background-option.active {
+		background-color: rgb(55 65 81);
+	}
+	.color-option.active .ring-2, .background-option.active .ring-2 {
+		ring-width: 2px;
+		ring-color: currentColor;
+	}
+</style>
+
+<script>
+	// Color picker functionality
+	function initColorPicker() {
+		const button = document.getElementById('color-picker-button');
+		const dropdown = document.getElementById('color-picker-dropdown');
+		const colorOptions = document.querySelectorAll('.color-option');
+		const backgroundOptions = document.querySelectorAll('.background-option');
+		
+		if (!button || !dropdown) return;
+
+		// Get current theme from localStorage or default to purple
+		const currentTheme = localStorage.getItem('theme-color') || 'purple';
+		const currentLightBg = localStorage.getItem('background-light') || 'default-light';
+		const currentDarkBg = localStorage.getItem('background-dark') || 'default-dark';
+		
+		// Set active options
+		updateActiveStates();
+
+		// Toggle dropdown
+		button.addEventListener('click', (e) => {
+			e.stopPropagation();
+			dropdown.classList.toggle('hidden');
+		});
+
+		// Close dropdown when clicking outside
+		document.addEventListener('click', (e) => {
+			if (!dropdown.contains(e.target as Node) && !button.contains(e.target as Node)) {
+				dropdown.classList.add('hidden');
+			}
+		});
+
+		// Handle color selection
+		colorOptions.forEach(option => {
+			option.addEventListener('click', (e) => {
+				e.stopPropagation();
+				
+				const theme = option.getAttribute('data-theme');
+				const colors = JSON.parse(option.getAttribute('data-colors') || '{}');
+				
+				if (theme && colors) {
+					// Update active state
+					colorOptions.forEach(opt => opt.classList.remove('active'));
+					option.classList.add('active');
+					
+					// Apply theme colors
+					applyThemeColors(theme, colors);
+					
+					// Save to localStorage
+					localStorage.setItem('theme-color', theme);
+				}
+			});
+		});
+
+		// Handle background selection
+		backgroundOptions.forEach(option => {
+			option.addEventListener('click', (e) => {
+				e.stopPropagation();
+				
+				const backgroundId = option.getAttribute('data-background-id');
+				const gradient = option.getAttribute('data-gradient');
+				const mode = option.getAttribute('data-mode');
+				
+				if (backgroundId && gradient && mode) {
+					// Apply background
+					applyBackground(gradient);
+					
+					// Save to localStorage
+					localStorage.setItem(`background-${mode}`, backgroundId);
+					localStorage.setItem(`background-${mode}-gradient`, gradient);
+					
+					// Update active states
+					updateActiveStates();
+				}
+			});
+		});
+
+		// Apply saved theme and background on load
+		const savedColors = getThemeColors(currentTheme);
+		if (savedColors) {
+			applyThemeColors(currentTheme, savedColors);
+		}
+		applySavedBackground();
+
+		// Listen for theme changes to switch backgrounds
+		const observer = new MutationObserver(() => {
+			applySavedBackground();
+			updateActiveStates();
+		});
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+		function updateActiveStates() {
+			const currentLightBg = localStorage.getItem('background-light') || 'default-light';
+			const currentDarkBg = localStorage.getItem('background-dark') || 'default-dark';
+			const currentTheme = localStorage.getItem('theme-color') || 'purple';
+			
+			// Update color options
+			colorOptions.forEach(option => {
+				const theme = option.getAttribute('data-theme');
+				if (theme === currentTheme) {
+					option.classList.add('active');
+				} else {
+					option.classList.remove('active');
+				}
+			});
+
+			// Update background options
+			backgroundOptions.forEach(option => {
+				const backgroundId = option.getAttribute('data-background-id');
+				const mode = option.getAttribute('data-mode');
+				
+				if (mode === 'light' && backgroundId === currentLightBg) {
+					option.classList.add('active');
+				} else if (mode === 'dark' && backgroundId === currentDarkBg) {
+					option.classList.add('active');
+				} else {
+					option.classList.remove('active');
+				}
+			});
+		}
+
+		function applySavedBackground() {
+			const isDark = document.documentElement.classList.contains('dark');
+			const mode = isDark ? 'dark' : 'light';
+			const savedGradient = localStorage.getItem(`background-${mode}-gradient`);
+			
+			if (savedGradient) {
+				applyBackground(savedGradient);
+			} else {
+				// Apply default gradient
+				const defaultGradient = isDark 
+					? 'linear-gradient(to bottom right, #111827, #374151)'
+					: 'linear-gradient(to bottom right, #f8fafc, #e2e8f0)';
+				applyBackground(defaultGradient);
+			}
+		}
+	}
+
+	function getThemeColors(theme: string) {
+		const themes: Record<string, any> = {
+			purple: { 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6' },
+			blue: { 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af' },
+			green: { 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46' },
+			pink: { 500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d' },
+			orange: { 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412' },
+			red: { 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b' },
+			indigo: { 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3' },
+			teal: { 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59' }
+		};
+		return themes[theme];
+	}
+
+	function applyThemeColors(theme: string, colors: Record<string, string>) {
+		const root = document.documentElement;
+		
+		// Apply CSS custom properties
+		root.style.setProperty('--theme-500', colors[500]);
+		root.style.setProperty('--theme-600', colors[600]);
+		root.style.setProperty('--theme-700', colors[700]);
+		root.style.setProperty('--theme-800', colors[800]);
+
+		// Update all theme-colored elements
+		updateThemeElements(colors);
+	}
+
+	function updateThemeElements(colors: Record<string, string>) {
+		// Update gradients and theme colors throughout the site
+		const style = document.createElement('style');
+		style.id = 'dynamic-theme-colors';
+		
+		// Remove existing dynamic styles
+		const existing = document.getElementById('dynamic-theme-colors');
+		if (existing) existing.remove();
+		
+		// Create light and dark variants of the theme colors
+		const lightColor = `color-mix(in srgb, ${colors[500]} 8%, white)`;
+		const lightColorStrong = `color-mix(in srgb, ${colors[600]} 12%, white)`;
+		const darkColor = `color-mix(in srgb, ${colors[800]} 25%, #111827)`;
+		const darkColorTransparent = `color-mix(in srgb, ${colors[700]} 15%, transparent)`;
+		
+		style.textContent = `
+			:root {
+				--theme-500: ${colors[500]};
+				--theme-600: ${colors[600]};
+				--theme-700: ${colors[700]};
+				--theme-800: ${colors[800]};
+				--theme-light: ${lightColor};
+				--theme-light-strong: ${lightColorStrong};
+				--theme-dark: ${darkColor};
+				--theme-dark-transparent: ${darkColorTransparent};
+			}
+			
+			/* Update all purple text colors */
+			.text-purple-600, .dark .text-purple-400 { color: var(--theme-600) !important; }
+			.text-purple-400, .dark .text-purple-600 { color: var(--theme-500) !important; }
+			.text-purple-500 { color: var(--theme-500) !important; }
+			
+			/* Update solid background colors */
+			.bg-purple-600 { background-color: var(--theme-600) !important; }
+			.bg-purple-700 { background-color: var(--theme-700) !important; }
+			.bg-purple-800 { background-color: var(--theme-800) !important; }
+			
+			/* Update border colors */
+			.border-purple-600, .dark .border-purple-400 { border-color: var(--theme-600) !important; }
+			.border-purple-400, .dark .border-purple-600 { border-color: var(--theme-500) !important; }
+			.border-purple-500 { border-color: var(--theme-500) !important; }
+			
+			/* Update hover states */
+			.hover\\:bg-purple-600:hover { background-color: var(--theme-600) !important; }
+			.hover\\:bg-purple-700:hover { background-color: var(--theme-700) !important; }
+			.hover\\:text-purple-600:hover { color: var(--theme-600) !important; }
+			.dark .hover\\:bg-purple-400:hover { background-color: var(--theme-500) !important; }
+			.dark .hover\\:text-purple-400:hover { color: var(--theme-500) !important; }
+			
+			/* Update ring/focus colors */
+			.ring-purple-500 { --tw-ring-color: var(--theme-500) !important; }
+			.focus\\:ring-purple-500:focus { --tw-ring-color: var(--theme-500) !important; }
+			
+			/* Only update specific section gradients - NOT main backgrounds */
+			section.bg-gradient-to-r.from-purple-50 { 
+				background-image: linear-gradient(to right, var(--theme-light), var(--theme-light-strong)) !important; 
+			}
+			section.bg-gradient-to-r.from-purple-100 { 
+				background-image: linear-gradient(to right, var(--theme-light-strong), white) !important; 
+			}
+			
+			/* Button and interactive element gradients */
+			.bg-gradient-to-r.from-purple-600 { 
+				background-image: linear-gradient(to right, var(--theme-600), var(--theme-700)) !important; 
+			}
+			.bg-gradient-to-br.from-purple-500 { 
+				background-image: linear-gradient(to bottom right, var(--theme-500), var(--theme-700)) !important; 
+			}
+			.bg-gradient-to-br.from-purple-400 { 
+				background-image: linear-gradient(to bottom right, var(--theme-500), var(--theme-600)) !important; 
+			}
+			
+						/* Text gradients */
+			.bg-clip-text.from-purple-600 {
+				background-image: linear-gradient(to right, var(--theme-600), var(--theme-800)) !important;
+			}
+			.bg-clip-text.from-purple-400 {
+				background-image: linear-gradient(to right, var(--theme-500), var(--theme-600)) !important;
+			}
+			.bg-clip-text.via-purple-800 {
+				background-image: linear-gradient(to right, var(--theme-600), var(--theme-800), #000000) !important;
+			}
+			.bg-clip-text.via-purple-600 {
+				background-image: linear-gradient(to right, var(--theme-500), var(--theme-600), #ffffff) !important;
+			}
+			
+			/* Floating background elements with theme colors */
+			.from-purple-400\\/20 { 
+				background-image: linear-gradient(to bottom right, var(--theme-dark-transparent), var(--theme-dark-transparent)) !important; 
+			}
+			.to-purple-600\\/20 { 
+				background-image: linear-gradient(to top left, var(--theme-dark-transparent), var(--theme-dark-transparent)) !important; 
+			}
+			.from-purple-500\\/10 { 
+				background-image: linear-gradient(to bottom right, var(--theme-dark-transparent), transparent) !important; 
+			}
+			.to-purple-700\\/10 { 
+				background-image: linear-gradient(to top left, var(--theme-dark-transparent), transparent) !important; 
+			}
+			
+			/* Tag/badge colors */
+			.bg-purple-100 { 
+				background-color: var(--theme-light-strong) !important; 
+			}
+			.text-purple-800 { 
+				color: var(--theme-800) !important; 
+			}
+			.text-purple-200 { 
+				color: var(--theme-light-strong) !important; 
+			}
+			.bg-purple-900 { 
+				background-color: var(--theme-800) !important; 
+			}
+			.dark .bg-purple-900 { 
+				background-color: var(--theme-700) !important; 
+			}
+		`;
+		
+		document.head.appendChild(style);
+	}
+
+	function applyBackground(gradient: string) {
+		// Remove existing background styles
+		const existing = document.getElementById('dynamic-background');
+		if (existing) existing.remove();
+		
+		// Create new background style
+		const style = document.createElement('style');
+		style.id = 'dynamic-background';
+		
+		style.textContent = `
+			body {
+				background: ${gradient} !important;
+				background-attachment: fixed !important;
+			}
+		`;
+		
+		document.head.appendChild(style);
+	}
+
+	// Initialize when DOM is loaded
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initColorPicker);
+	} else {
+		initColorPicker();
+	}
+</script>

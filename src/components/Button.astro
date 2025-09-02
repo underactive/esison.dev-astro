@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'button'> {
+	variant?: 'primary' | 'secondary' | 'outline';
+	size?: 'sm' | 'md' | 'lg';
+}
+
+const { 
+	variant = 'primary', 
+	size = 'md', 
+	class: className, 
+	...props 
+} = Astro.props;
+
+const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 active:scale-95';
+
+const variantClasses = {
+	primary: 'bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 shadow-lg hover:shadow-xl',
+	secondary: 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-lg',
+	outline: 'border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 hover:bg-purple-600 hover:text-white dark:hover:bg-purple-400 dark:hover:text-black'
+};
+
+const sizeClasses = {
+	sm: 'px-3 py-2 text-sm',
+	md: 'px-6 py-3 text-base',
+	lg: 'px-8 py-4 text-lg'
+};
+---
+
+<button 
+	class:list={[
+		baseClasses,
+		variantClasses[variant],
+		sizeClasses[size],
+		className
+	]}
+	{...props}
+>
+	<slot />
+</button>

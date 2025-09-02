@@ -1,86 +1,80 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
+import MainLayout from './MainLayout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
-
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
+<MainLayout title={title} description={description}>
+	<article class="pt-20">
+		<!-- Hero Image -->
+		{heroImage && (
+			<div class="w-full h-64 md:h-96 relative overflow-hidden">
+				<Image 
+					width={1200} 
+					height={600} 
+					src={heroImage} 
+					alt="" 
+					class="w-full h-full object-cover"
+				/>
+				<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+			</div>
+		)}
+		
+		<!-- Article Header -->
+		<header class="container mx-auto px-6 py-12">
+			<div class="max-w-4xl mx-auto text-center">
+				<div class="mb-6">
+					<time class="text-purple-600 dark:text-purple-400 font-medium">
+						<FormattedDate date={pubDate} />
+					</time>
+					{updatedDate && (
+						<div class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+							Last updated on <FormattedDate date={updatedDate} />
 						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
+					)}
+				</div>
+				<h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+					{title}
+				</h1>
+				<div class="w-24 h-1 bg-gradient-to-r from-purple-600 to-purple-800 mx-auto"></div>
+			</div>
+		</header>
+
+		<!-- Article Content -->
+		<main class="container mx-auto px-6 pb-20">
+			<div class="max-w-4xl mx-auto">
+				<div class="prose prose-lg prose-purple dark:prose-invert max-w-none
+					prose-headings:text-gray-900 dark:prose-headings:text-white
+					prose-p:text-gray-700 dark:prose-p:text-gray-300
+					prose-a:text-purple-600 dark:prose-a:text-purple-400
+					prose-strong:text-gray-900 dark:prose-strong:text-white
+					prose-code:text-purple-600 dark:prose-code:text-purple-400
+					prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800
+					prose-blockquote:border-purple-500 dark:prose-blockquote:border-purple-400
+					prose-img:rounded-xl prose-img:shadow-lg">
 					<slot />
 				</div>
-			</article>
+			</div>
 		</main>
-		<Footer />
-	</body>
-</html>
+
+		<!-- Back to Blog Button -->
+		<footer class="container mx-auto px-6 pb-20">
+			<div class="max-w-4xl mx-auto text-center">
+				<a 
+					href="/blog" 
+					class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 group"
+				>
+					<svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+					</svg>
+					Back to Blog
+				</a>
+			</div>
+		</footer>
+	</article>
+</MainLayout>

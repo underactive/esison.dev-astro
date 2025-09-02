@@ -1,49 +1,249 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<!-- Hero Section -->
+	<section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+		<div class="container mx-auto px-6 text-center relative z-10">
+			<div class="max-w-4xl mx-auto">
+				<h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 via-purple-800 to-black dark:from-purple-400 dark:via-purple-600 dark:to-white bg-clip-text text-transparent mb-6 animate-fade-in">
+					Full-Stack Developer
+				</h1>
+				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed animate-fade-in-delay">
+					Crafting exceptional digital experiences with modern web technologies. 
+					Passionate about clean code, innovative solutions, and user-centric design.
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-delay-2">
+					<a href="#about" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full hover:from-purple-700 hover:to-purple-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+						Learn More About Me
+					</a>
+					<a href="#portfolio" class="px-8 py-4 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-full hover:bg-purple-600 hover:text-white dark:hover:bg-purple-400 dark:hover:text-black transition-all duration-300 transform hover:scale-105">
+						View My Work
+					</a>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Floating Code Blocks -->
+		<div class="absolute inset-0 pointer-events-none">
+			<div class="floating-code absolute top-1/4 left-10 opacity-30 text-purple-500 font-mono text-sm animate-float">
+				const developer = &#123; skills: ['React', 'Node.js', 'TypeScript'] &#125;;
+			</div>
+			<div class="floating-code absolute top-1/3 right-10 opacity-30 text-purple-600 font-mono text-sm animate-float-delay">
+				function createAwesomeStuff() &#123; return magic; &#125;
+			</div>
+			<div class="floating-code absolute bottom-1/3 left-1/4 opacity-30 text-purple-400 font-mono text-sm animate-float-delay-2">
+				&lt;Component isAwesome=&#123;true&#125; /&gt;
+			</div>
+		</div>
+	</section>
+
+	<!-- About Section -->
+	<section id="about" class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+		<div class="container mx-auto px-6">
+			<div class="max-w-4xl mx-auto text-center">
+				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
+					About Me
+				</h2>
+				<p class="text-lg text-gray-600 dark:text-gray-300 mb-12 leading-relaxed">
+					I'm a passionate full-stack developer with expertise in modern web technologies. 
+					I love building scalable applications that solve real-world problems and provide 
+					exceptional user experiences.
+				</p>
+			</div>
+			
+			<!-- Skills Grid -->
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+				<div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+					<div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
+						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+							<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+						</svg>
+					</div>
+					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Frontend Development</h3>
+					<p class="text-gray-600 dark:text-gray-300 mb-4">React, Vue, TypeScript, Tailwind CSS</p>
+					<div class="flex flex-wrap gap-2">
+						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">React</span>
+						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">Vue.js</span>
+						<span class="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm">TypeScript</span>
+					</div>
+				</div>
+
+				<div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+					<div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
+						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h3.5a3.5 3.5 0 100-7H11V3.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 3.414V6H5.5A3.5 3.5 0 002 9.5z" clip-rule="evenodd"></path>
+						</svg>
+					</div>
+					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Backend Development</h3>
+					<p class="text-gray-600 dark:text-gray-300 mb-4">Node.js, Python, PostgreSQL, MongoDB</p>
+					<div class="flex flex-wrap gap-2">
+						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">Node.js</span>
+						<span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm">Python</span>
+						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">PostgreSQL</span>
+					</div>
+				</div>
+
+				<div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+					<div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+							<path d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+						</svg>
+					</div>
+					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">DevOps & Tools</h3>
+					<p class="text-gray-600 dark:text-gray-300 mb-4">Docker, AWS, Git, CI/CD</p>
+					<div class="flex flex-wrap gap-2">
+						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Docker</span>
+						<span class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm">AWS</span>
+						<span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-sm">Git</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Portfolio Section -->
+	<section id="portfolio" class="py-20">
+		<div class="container mx-auto px-6">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
+					Featured Projects
+				</h2>
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+					Here are some of my recent projects that showcase my skills and passion for creating amazing digital experiences.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+				<!-- Project 1 -->
+				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+					<div class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
+						<span class="text-white text-6xl">🚀</span>
+					</div>
+					<div class="p-6">
+						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">E-Commerce Platform</h3>
+						<p class="text-gray-600 dark:text-gray-300 mb-4">Full-stack e-commerce solution with React, Node.js, and Stripe integration.</p>
+						<div class="flex flex-wrap gap-2 mb-4">
+							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">React</span>
+							<span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded text-sm">Node.js</span>
+							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">MongoDB</span>
+						</div>
+						<div class="flex space-x-4">
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">Live Demo</a>
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">GitHub</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Project 2 -->
+				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+					<div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+						<span class="text-white text-6xl">📱</span>
+					</div>
+					<div class="p-6">
+						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Task Management App</h3>
+						<p class="text-gray-600 dark:text-gray-300 mb-4">Collaborative task management app with real-time updates and team collaboration features.</p>
+						<div class="flex flex-wrap gap-2 mb-4">
+							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Vue.js</span>
+							<span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-sm">Firebase</span>
+							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">TypeScript</span>
+						</div>
+						<div class="flex space-x-4">
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">Live Demo</a>
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">GitHub</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Project 3 -->
+				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+					<div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+						<span class="text-white text-6xl">📊</span>
+					</div>
+					<div class="p-6">
+						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Analytics Dashboard</h3>
+						<p class="text-gray-600 dark:text-gray-300 mb-4">Real-time analytics dashboard with interactive charts and data visualization.</p>
+						<div class="flex flex-wrap gap-2 mb-4">
+							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">React</span>
+							<span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-sm">D3.js</span>
+							<span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded text-sm">Express</span>
+						</div>
+						<div class="flex space-x-4">
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">Live Demo</a>
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">GitHub</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Blog Preview Section -->
+	<section class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+		<div class="container mx-auto px-6">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
+					Latest Blog Posts
+				</h2>
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+					I write about web development, technology trends, and share insights from my coding journey.
+				</p>
+				<a href="/blog" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
+					View All Posts
+					<svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<style>
+		@keyframes fade-in {
+			from { opacity: 0; transform: translateY(30px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+		
+		@keyframes float {
+			0%, 100% { transform: translateY(0px); }
+			50% { transform: translateY(-10px); }
+		}
+		
+		.animate-fade-in {
+			animation: fade-in 1s ease-out;
+		}
+		
+		.animate-fade-in-delay {
+			animation: fade-in 1s ease-out 0.3s both;
+		}
+		
+		.animate-fade-in-delay-2 {
+			animation: fade-in 1s ease-out 0.6s both;
+		}
+		
+		.animate-float {
+			animation: float 3s ease-in-out infinite;
+		}
+		
+		.animate-float-delay {
+			animation: float 3s ease-in-out 1s infinite;
+		}
+		
+		.animate-float-delay-2 {
+			animation: float 3s ease-in-out 2s infinite;
+		}
+		
+		.floating-code {
+			max-width: 200px;
+			word-wrap: break-word;
+		}
+		
+		@media (max-width: 768px) {
+			.floating-code {
+				display: none;
+			}
+		}
+	</style>
+</MainLayout>

@@ -1,63 +1,147 @@
 ---
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 ---
 
-<Layout
+<MainLayout
 	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
+	description="Learn more about my journey as a full-stack developer, my passion for web technologies, and the experiences that shape my approach to creating exceptional digital solutions."
 >
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
 
-	<p>
-		Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non
-		tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non
-		blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna
-		porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis
-		massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-		Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis
-		bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra
-		massa massa ultricies mi.
-	</p>
+		<!-- Hero Section -->
+		<section class="relative h-96 overflow-hidden">
+			<img 
+				src={AboutHeroImage.src} 
+				alt="About Me Hero" 
+				class="w-full h-full object-cover"
+			/>
+			<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+			<div class="absolute inset-0 flex items-center justify-center">
+				<div class="text-center text-white">
+					<h1 class="text-5xl md:text-6xl font-bold mb-4">About Me</h1>
+					<p class="text-xl md:text-2xl">Developer, Problem Solver, Tech Enthusiast</p>
+				</div>
+			</div>
+		</section>
 
-	<p>
-		Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl
-		suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet
-		nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae
-		turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem
-		dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat
-		semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-		vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum
-		facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam
-		vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla
-		urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
-	</p>
+		<!-- Content Section -->
+		<section class="container mx-auto px-6 py-20">
+			<div class="max-w-4xl mx-auto">
+				<!-- Introduction -->
+				<div class="text-center mb-16">
+					<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+						My Journey in Web Development
+					</h2>
+					<div class="w-24 h-1 bg-gradient-to-r from-purple-600 to-purple-800 mx-auto mb-8"></div>
+				</div>
 
-	<p>
-		Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper
-		viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc
-		scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur
-		gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus
-		pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-		blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id
-		cursus metus aliquam eleifend mi.
-	</p>
+				<!-- Personal Story -->
+				<div class="prose prose-lg prose-purple dark:prose-invert max-w-none mb-16">
+					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
+						Hi there! I'm a passionate full-stack developer with a love for creating digital experiences that make a difference. 
+						My journey into web development started with curiosity about how websites work, and it has evolved into a career 
+						dedicated to building scalable, user-friendly applications that solve real-world problems.
+					</p>
 
-	<p>
-		Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta
-		nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam
-		tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci
-		ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar
-		proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
-	</p>
-</Layout>
+					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
+						Over the years, I've had the privilege of working with diverse technologies and frameworks, from frontend libraries 
+						like React and Vue.js to backend technologies like Node.js and Python. I believe in writing clean, maintainable code 
+						and following best practices that ensure long-term project success.
+					</p>
+
+					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
+						What drives me most is the intersection of technology and human experience. I'm fascinated by how thoughtful design 
+						and robust engineering can come together to create solutions that not only function well but also delight users. 
+						Whether it's optimizing performance, improving accessibility, or implementing complex features, I approach each 
+						challenge with enthusiasm and attention to detail.
+					</p>
+				</div>
+
+				<!-- Skills & Values -->
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+					<!-- Technical Philosophy -->
+					<div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+						<div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+							<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+								<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+							</svg>
+						</div>
+						<h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Technical Philosophy</h3>
+						<p class="text-gray-600 dark:text-gray-300">
+							I believe in writing code that is not just functional, but also readable, maintainable, and scalable. 
+							Every line of code should serve a purpose and contribute to the overall quality of the application.
+						</p>
+					</div>
+
+					<!-- Continuous Learning -->
+					<div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+						<div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
+							<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+								<path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+							</svg>
+						</div>
+						<h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Continuous Learning</h3>
+						<p class="text-gray-600 dark:text-gray-300">
+							The tech industry evolves rapidly, and I'm committed to staying current with new technologies, frameworks, 
+							and best practices. Learning is a lifelong journey that keeps me excited about what I do.
+						</p>
+					</div>
+				</div>
+
+				<!-- Current Focus -->
+				<div class="text-center mb-16">
+					<h3 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8">
+						Currently Exploring
+					</h3>
+					<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+						<div class="text-center">
+							<div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+								<span class="text-white text-2xl">⚡</span>
+							</div>
+							<h4 class="font-semibold text-gray-900 dark:text-white">Performance</h4>
+							<p class="text-sm text-gray-600 dark:text-gray-400">Web Vitals & Optimization</p>
+						</div>
+						<div class="text-center">
+							<div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+								<span class="text-white text-2xl">🔒</span>
+							</div>
+							<h4 class="font-semibold text-gray-900 dark:text-white">Security</h4>
+							<p class="text-sm text-gray-600 dark:text-gray-400">Auth & Data Protection</p>
+						</div>
+						<div class="text-center">
+							<div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+								<span class="text-white text-2xl">🎨</span>
+							</div>
+							<h4 class="font-semibold text-gray-900 dark:text-white">Design Systems</h4>
+							<p class="text-sm text-gray-600 dark:text-gray-400">Component Libraries</p>
+						</div>
+						<div class="text-center">
+							<div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+								<span class="text-white text-2xl">🤖</span>
+							</div>
+							<h4 class="font-semibold text-gray-900 dark:text-white">AI Integration</h4>
+							<p class="text-sm text-gray-600 dark:text-gray-400">Machine Learning APIs</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Call to Action -->
+				<div class="text-center bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-8 rounded-xl">
+					<h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+						Let's Work Together
+					</h3>
+					<p class="text-gray-600 dark:text-gray-300 mb-6">
+						I'm always interested in discussing new projects, creative ideas, or opportunities to be part of your vision.
+					</p>
+					<div class="flex flex-col sm:flex-row gap-4 justify-center">
+						<a href="/blog" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
+							Read My Blog
+						</a>
+						<a href="#portfolio" class="px-6 py-3 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg hover:bg-purple-600 hover:text-white dark:hover:bg-purple-400 dark:hover:text-black transition-all duration-200">
+							View My Work
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+</MainLayout>
