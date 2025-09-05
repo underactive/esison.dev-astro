@@ -113,7 +113,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 					Featured Projects
 				</h2>
 				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-					Here are some of my recent projects that showcase my skills and passion for creating amazing digital experiences.
+					Here are some of my recent projects that demonstrate my skills and dedication for building standout digital experiences.
 				</p>
 			</div>
 
@@ -121,11 +121,12 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				<!-- Project 1 -->
 				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
 					<div class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-						<span class="text-white text-6xl">🚀</span>
+						<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://underactive.net/content/images/size/w2000/2024/04/15771985113_98687dda36.jpg')"></div>
 					</div>
 					<div class="p-6">
 						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">underactive.net</h3>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">My personal weblog that I've had since 1999.</p>
+						<p class="text-gray-600 dark:text-gray-300 mb-4">My personal weblog that I've had since 1999<sup>*</sup></p>
+						<p class="text-gray-600 dark:text-gray-500 mb-4">* <sub>The content has been lost to the sands of time, except for a SQL dump from b2 blog (precursor to Wordpress) from the early 2000s. I might restore it with some kind of cringe disclaimer. But then there's also the time when I used Livejournal and I know that stuff is gone. And then there's the time when microblogging was big and I suppose I can post my old Twitter posts but it's pretty noisy. We'll see.</sub></p>
 						<div class="flex flex-wrap gap-2 mb-4">
 							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Ghost</span>
 						</div>
@@ -138,11 +139,13 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				<!-- Project 2 -->
 				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
 					<div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-						<span class="text-white text-6xl">📱</span>
+						<video class="w-full h-full object-cover" autoplay loop muted playsinline>
+							<source src="/videos/onlyfjs_out.mp4" type="video/mp4">
+						</video>
 					</div>
 					<div class="p-6">
 						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">OnlyFJs</h3>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">I made a TikTok clone for a work project. This is a proof-of-concept utilizing the important bits of the project. I wrote all of this manually without any AI assistance..</p>
+						<p class="text-gray-600 dark:text-gray-300 mb-4">I made a TikTok clone for a work project. This is a proof-of-concept utilizing the important bits of the project (intersection observers, web audio API, lazy loading, etc). I wrote all of this manually without any AI assistance..</p>
 						<div class="flex flex-wrap gap-2 mb-4">
 							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Vue.js</span>
 							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">TypeScript</span>
@@ -157,19 +160,22 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				<!-- Project 3 -->
 				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
 					<div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-						<span class="text-white text-6xl">📊</span>
+						<video class="w-full h-full object-cover" autoplay loop muted playsinline>
+							<source src="/videos/flowstack_out.mp4" type="video/mp4">
+						</video>
 					</div>
 					<div class="p-6">
-						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Unnamed Project</h3>
+						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">AMFM.video</h3>
 						<p class="text-gray-600 dark:text-gray-300 mb-4">I didn't want to fall behind the AI bandwagon, so I started this app from the ground up using Cursor. Inspired by PoolSuite, this app uses music and visuals to set the vibe and help me code.</p>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">Note: As this was just a code-experiment, it's only been tested on a Chromium-based browser on macOS.</p>
+						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Note: As this was just a code-experiment, it's only been tested on macOS Safari and Chromium-based browsers.</sub></p>
+						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Also: As this app uses embeded YouTube videos, and Google is clamping down on downloaders, you might see a "Sign in to confirm you're not a bot" prompt in place of the video. I don't know exactly why this happens, but whenever I see it, disconnecting from VPN usually fixes it.</sub></p>
 						<div class="flex flex-wrap gap-2 mb-4">
-							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Vue.js</span>
+							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Nuxt</span>
 							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">TypeScript</span>
 						</div>
 						<div class="flex space-x-4">
 							<a href="https://steady-otter-495b6a.netlify.app/" target="_blank" rel="noopener" class="text-purple-600 dark:text-purple-400 hover:underline">Demo</a>
-							<!-- <a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">GitHub</a> -->
+							<a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">GitHub</a>
 						</div>
 					</div>
 				</div>
