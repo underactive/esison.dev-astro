@@ -157,10 +157,10 @@ const darkBackgrounds = [
 		
 		if (!button || !dropdown) return;
 
-		// Get current theme from localStorage or default to purple
-		const currentTheme = localStorage.getItem('theme-color') || 'purple';
+		// Get current theme from localStorage or default to pink
+		const currentTheme = localStorage.getItem('theme-color') || 'pink';
 		const currentLightBg = localStorage.getItem('background-light') || 'default-light';
-		const currentDarkBg = localStorage.getItem('background-dark') || 'default-dark';
+		const currentDarkBg = localStorage.getItem('background-dark') || 'midnight-dark';
 		
 		// Set active options
 		updateActiveStates();
@@ -239,8 +239,8 @@ const darkBackgrounds = [
 
 		function updateActiveStates() {
 			const currentLightBg = localStorage.getItem('background-light') || 'default-light';
-			const currentDarkBg = localStorage.getItem('background-dark') || 'default-dark';
-			const currentTheme = localStorage.getItem('theme-color') || 'purple';
+			const currentDarkBg = localStorage.getItem('background-dark') || 'midnight-dark';
+			const currentTheme = localStorage.getItem('theme-color') || 'pink';
 			
 			// Update color options
 			colorOptions.forEach(option => {
@@ -277,7 +277,7 @@ const darkBackgrounds = [
 			} else {
 				// Apply default gradient
 				const defaultGradient = isDark 
-					? 'linear-gradient(to bottom right, #111827, #374151)'
+					? 'linear-gradient(to bottom right, #0f172a, #1e293b)'
 					: 'linear-gradient(to bottom right, #f8fafc, #e2e8f0)';
 				applyBackground(defaultGradient);
 			}

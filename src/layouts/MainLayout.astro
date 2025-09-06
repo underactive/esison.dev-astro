@@ -21,7 +21,7 @@ const { title, description } = Astro.props;
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
 					return localStorage.getItem('theme');
 				}
-				return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+				return 'dark'; // Default to dark mode for first-time visitors
 			};
 			
 			const isDark = getThemePreference() === 'dark';
