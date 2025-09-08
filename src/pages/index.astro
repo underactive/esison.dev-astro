@@ -47,7 +47,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 					About Me
 				</h2>
 				<p class="text-lg text-gray-600 dark:text-gray-300 mb-12 leading-relaxed">
-					I’m a seasoned interactive webdev veteran. For SEO purposes, I'm a full-stack dev (even though new tech gets added to the stack every day). I get a kick out of building scalable apps that are fun to use and provide exceptional user experiences.
+					I'm a seasoned interactive webdev veteran. For SEO purposes, I'm a <span class="terminal-code"><span class="tag">&lt;</span><span class="tag">sarcastic-quote</span><span class="tag">&gt;</span><span class="glow-text">full-stack dev</span><span class="tag">&lt;/</span><span class="tag">sarcastic-quote</span><span class="tag">&gt;</span></span> <span class="text-xs">(even though new tech gets added to the stack daily)</span>.
 				</p>
 			</div>
 			
@@ -77,11 +77,12 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 						</svg>
 					</div>
 					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Backend Development</h3>
-					<p class="text-gray-600 dark:text-gray-300 mb-4">Node.js, Python, Perl,ostgreSQL</p>
+					<p class="text-gray-600 dark:text-gray-300 mb-4">Supabase (Posgres, Auth, Edge Functions, Realtime APIs), Node.js, Python, Perl</p>
 					<div class="flex flex-wrap gap-2">
+						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Supabase</span>
 						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">Node.js</span>
-						<span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm">Python</span>
 						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Perl</span>
+						<span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm">Python</span>
 						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">PostgreSQL</span>
 					</div>
 				</div>
@@ -190,24 +191,41 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	</section>
 
 	<!-- Blog Preview Section -->
-	<!-- <section class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+	<section class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
 		<div class="container mx-auto px-6">
 			<div class="text-center mb-16">
 				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
-					Latest Blog Posts
+					History | briefly
 				</h2>
 				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-					I write about web development, technology trends, and share insights from my coding journey.
+					Hypermedia Systems
+					<span class="text-xs text-gray-600 dark:text-gray-300">2005-Present</span>
 				</p>
-				<a href="/blog" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+					Sony Online Entertainment
+					<span class="text-xs text-gray-600 dark:text-gray-300">2002-2005</span>
+				</p>
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+					Onair Streaming Networks
+					<span class="text-xs text-gray-600 dark:text-gray-300">2000-2001</span>
+				</p>
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+					Digital Entertainment Network
+					<span class="text-xs text-gray-600 dark:text-gray-300">1999-2000</span>
+				</p>
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+					Learning Tree International
+					<span class="text-xs text-gray-600 dark:text-gray-300">1997-1999</span>
+				</p>
+				<!-- <a href="/blog" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
 					View All Posts
 					<svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
 					</svg>
-				</a>
+				</a> -->
 			</div>
 		</div>
-	</section> -->
+	</section>
 
 	<style>
 		@keyframes fade-in {
@@ -247,6 +265,31 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		.floating-code {
 			max-width: 200px;
 			word-wrap: break-word;
+		}
+		
+		.terminal-code {
+			display: inline-block;
+			font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'DejaVu Sans Mono', monospace;
+			background-color: #0f0f0f;
+			color: #e0e0e0;
+			padding: 2px 6px;
+			border-radius: 4px;
+			font-size: 0.8em;
+			border: 1px solid #333;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		}
+		
+		.terminal-code .tag {
+			color: #569cd6;
+		}
+		
+		.terminal-code .glow-text {
+			color: #fff;
+			text-shadow: 
+				0 0 5px #00c803,
+				0 0 10px #00c803,
+				0 0 15px #00c803,
+				0 0 20px #00c803;
 		}
 		
 		@media (max-width: 768px) {
