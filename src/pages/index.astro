@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import MatrixRain from '../components/MatrixRain.vue';
 ---
 
 <MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -24,19 +25,8 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				</div>
 			</div>
 		</div>
-		
-		<!-- Floating Code Blocks -->
-		<!-- <div class="absolute inset-0 pointer-events-none">
-			<div class="floating-code absolute top-1/4 left-10 opacity-30 text-purple-500 font-mono text-sm animate-float">
-				const developer = &#123; skills: ['React', 'Node.js', 'TypeScript'] &#125;;
-			</div>
-			<div class="floating-code absolute top-1/3 right-10 opacity-30 text-purple-600 font-mono text-sm animate-float-delay">
-				function createAwesomeStuff() &#123; return magic; &#125;
-			</div>
-			<div class="floating-code absolute bottom-1/3 left-1/4 opacity-30 text-purple-400 font-mono text-sm animate-float-delay-2">
-				&lt;Component isAwesome=&#123;true&#125; /&gt;
-			</div>
-		</div> -->
+		<!-- Matrix Rain Effect -->
+		<MatrixRain client:load />
 	</section>
 
 	<!-- About Section -->
