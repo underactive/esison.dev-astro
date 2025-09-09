@@ -2,6 +2,7 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import MatrixRain from '../components/MatrixRain.vue';
+import TypewriterText from '../components/TypewriterText.vue';
 ---
 
 <MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -12,15 +13,23 @@ import MatrixRain from '../components/MatrixRain.vue';
 				<h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 via-purple-800 to-black dark:from-purple-400 dark:via-purple-600 dark:to-white bg-clip-text text-transparent mb-6 animate-fade-in">
 					Eric Sison
 				</h1>
-				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed animate-fade-in-delay">
-					Full-Stack Developer
-				</p>
+				<TypewriterText
+					text="// web developer"
+					fontSize="text-base"
+					color="text-gray-600 dark:text-gray-300"
+					cursorType="breathing-alt"
+					crt={true}
+					startDelay={2.5}
+					client:load />
 				<div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-delay-2">
-					<a href="#about" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full hover:from-purple-700 hover:to-purple-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-						Learn More About Me
+					<a href="#about" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+						About Me
 					</a>
-					<a href="#portfolio" class="px-8 py-4 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-full hover:bg-purple-600 hover:text-white dark:hover:bg-purple-400 dark:hover:text-black transition-all duration-300 transform hover:scale-105">
+					<a href="#portfolio" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 						View My Work
+					</a>
+					<a href="#history" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+						My History
 					</a>
 				</div>
 			</div>
@@ -50,7 +59,6 @@ import MatrixRain from '../components/MatrixRain.vue';
 						</svg>
 					</div>
 					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Frontend Development</h3>
-					<p class="text-gray-600 dark:text-gray-300 mb-4">Vue, TypeScript, Angular.js, Tailwind CSS</p>
 					<div class="flex flex-wrap gap-2">
 						<!-- <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">React</span> -->
 						<span class="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-full text-sm">Vue.js</span>
@@ -67,7 +75,6 @@ import MatrixRain from '../components/MatrixRain.vue';
 						</svg>
 					</div>
 					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Backend Development</h3>
-					<p class="text-gray-600 dark:text-gray-300 mb-4">Supabase (Posgres, Auth, Edge Functions, Realtime APIs), Node.js, Python, Perl</p>
 					<div class="flex flex-wrap gap-2">
 						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Supabase</span>
 						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">Node.js</span>
@@ -83,13 +90,13 @@ import MatrixRain from '../components/MatrixRain.vue';
 							<path d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
 						</svg>
 					</div>
-					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">DevOps & Tools</h3>
-					<p class="text-gray-600 dark:text-gray-300 mb-4">Docker, AWS, GCP, Git, CI/CD</p>
+					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Cloud / Serverless / Ops</h3>
 					<div class="flex flex-wrap gap-2">
-						<span class="px-3 py-1 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-full text-sm">Docker</span>
-						<span class="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-full text-sm">AWS</span>
-						<span class="px-3 py-1 bg-[#4285f4] dark:bg-[#4285f4] text-white dark:text-white rounded-full text-sm">GCP</span>
-						<span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm">Git</span>
+						<span class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm">AWS</span>
+						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">GCP</span>
+						<span class="px-3 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full text-sm">Netlify</span>
+						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Docker</span>
+						<span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-full text-sm">CI/CD</span>
 					</div>
 				</div>
 			</div>
@@ -180,8 +187,8 @@ import MatrixRain from '../components/MatrixRain.vue';
 		</div>
 	</section>
 
-	<!-- Blog Preview Section -->
-	<section class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+	<!-- History Section -->
+	<section id="history" class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
 		<div class="container mx-auto px-6">
 			<div class="text-center mb-16">
 				<h2 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
@@ -196,7 +203,11 @@ import MatrixRain from '../components/MatrixRain.vue';
 					<span class="text-xs text-gray-600 dark:text-gray-300">2002-2005</span>
 				</p>
 				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-					Onair Streaming Networks
+					Sony Computer Entertainment America
+					<span class="text-xs text-gray-600 dark:text-gray-300">2002</span>
+				</p>
+				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+					OnAir Streaming Networks
 					<span class="text-xs text-gray-600 dark:text-gray-300">2000-2001</span>
 				</p>
 				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
@@ -252,11 +263,6 @@ import MatrixRain from '../components/MatrixRain.vue';
 			animation: float 3s ease-in-out 2s infinite;
 		}
 		
-		.floating-code {
-			max-width: 200px;
-			word-wrap: break-word;
-		}
-		
 		.terminal-code {
 			display: inline-block;
 			font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'DejaVu Sans Mono', monospace;
@@ -280,12 +286,6 @@ import MatrixRain from '../components/MatrixRain.vue';
 				0 0 10px #00c803,
 				0 0 15px #00c803,
 				0 0 20px #00c803;
-		}
-		
-		@media (max-width: 768px) {
-			.floating-code {
-				display: none;
-			}
 		}
 	</style>
 </MainLayout>
