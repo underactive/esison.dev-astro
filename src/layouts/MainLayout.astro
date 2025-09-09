@@ -1,6 +1,6 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import AnimatedHeader from '../components/AnimatedHeader.astro';
+import Header from '../components/HeaderCustom.astro';
 import Footer from '../components/Footer.astro';
 
 export interface Props {
@@ -37,7 +37,7 @@ const { title, description } = Astro.props;
 		</script>
 	</head>
 	<body class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 dark:from-gray-900 dark:via-purple-900 dark:to-black text-gray-800 dark:text-gray-100 transition-colors duration-300">
-		<AnimatedHeader />
+		<Header />
 		<main class="relative">
 			<slot />
 		</main>

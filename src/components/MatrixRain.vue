@@ -39,8 +39,8 @@ onMounted(() => {
   // Get theme color based on dark mode
   const getThemeColor = () => {
     return document.documentElement.classList.contains('dark') ? 
-      'rgba(168, 85, 247, 0.7)' : // Purple in dark mode
-      'rgba(147, 51, 234, 0.7)'   // Darker purple in light mode
+      'rgba(168, 85, 247, 0.8)' : // Purple in dark mode
+      'rgba(147, 51, 234, 0.9)'   // Darker purple in light mode
   }
 
   // Drawing animation
