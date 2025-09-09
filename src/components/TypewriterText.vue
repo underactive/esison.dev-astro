@@ -7,8 +7,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
+interface TextItem {
+  text: string
+  duration?: number // duration in seconds, defaults to 3 if not specified
+}
+
 interface Props {
-  text?: string
+  texts?: TextItem[] | string // array of text objects or single string for backwards compatibility
   speed?: number
   delay?: number
   fontSize?: string
@@ -16,22 +21,49 @@ interface Props {
   cursorType?: 'blinking' | 'breathing' | 'breathing-alt'
   crt?: boolean
   startDelay?: number
+  backspaceSpeed?: number // speed for backspacing animation
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  text: 'TYPEWRITER TEXT',
+  texts: 'TYPEWRITER TEXT',
   speed: 100,
   delay: 800,
   fontSize: 'text-xl md:text-2xl',
   color: 'text-gray-600 dark:text-gray-300',
   cursorType: 'blinking',
   crt: false,
-  startDelay: 0
+  startDelay: 0,
+  backspaceSpeed: 50
 })
 
 const textElement = ref<HTMLSpanElement>()
 const cursorElement = ref<HTMLSpanElement>()
 const isLightMode = ref(false)
+
+// State management for cycling through texts
+const currentTextIndex = ref(0)
+const currentCharIndex = ref(0)
+const isTyping = ref(false)
+const isBackspacing = ref(false)
+const timeoutId = ref<number | null>(null)
+
+// Convert texts prop to consistent format
+const textItems = ref<TextItem[]>([])
+
+// Initialize textItems based on props
+const initializeTexts = () => {
+  if (Array.isArray(props.texts)) {
+    textItems.value = props.texts.map(item => ({
+      text: item.text,
+      duration: item.duration || 3 // default 3 seconds
+    }))
+  } else {
+    textItems.value = [{
+      text: props.texts || 'TYPEWRITER TEXT',
+      duration: 3
+    }]
+  }
+}
 
 // Function to check theme
 const checkTheme = () => {
@@ -56,9 +88,22 @@ onMounted(() => {
   
   if (!textElement.value || !cursorElement.value) return
   
-  let i = 0
+  // Initialize texts array
+  initializeTexts()
   
   // Initially show cursor in finished state (blinking)
+  setCursorToFinished()
+  
+  // Start the typing cycle after delays
+  const totalDelay = props.delay + (props.startDelay * 1000)
+  setTimeout(startTypingCycle, totalDelay)
+})
+
+// Set cursor to finished state
+const setCursorToFinished = () => {
+  if (!cursorElement.value) return
+  
+  cursorElement.value.classList.remove('typing', 'breathing', 'breathing-alt')
   if (props.cursorType === 'breathing') {
     cursorElement.value.classList.add('finished-breathing')
   } else if (props.cursorType === 'breathing-alt') {
@@ -66,49 +111,97 @@ onMounted(() => {
   } else {
     cursorElement.value.classList.add('finished')
   }
+}
+
+// Set cursor to typing state
+const setCursorToTyping = () => {
+  if (!cursorElement.value) return
   
-  function startTyping() {
-    if (!cursorElement.value) return
-    
-    // Switch to typing animation
-    cursorElement.value.classList.remove('finished', 'finished-breathing', 'finished-breathing-alt')
-    cursorElement.value.classList.add('typing')
-    if (props.cursorType === 'breathing') {
-      cursorElement.value.classList.add('breathing')
-    } else if (props.cursorType === 'breathing-alt') {
-      cursorElement.value.classList.add('breathing-alt')
-    }
-    
-    // Start typing
-    typeWriter()
+  cursorElement.value.classList.remove('finished', 'finished-breathing', 'finished-breathing-alt')
+  cursorElement.value.classList.add('typing')
+  if (props.cursorType === 'breathing') {
+    cursorElement.value.classList.add('breathing')
+  } else if (props.cursorType === 'breathing-alt') {
+    cursorElement.value.classList.add('breathing-alt')
   }
+}
+
+// Start the main typing cycle
+const startTypingCycle = () => {
+  if (textItems.value.length === 0) return
+  typeCurrentText()
+}
+
+// Type the current text
+const typeCurrentText = () => {
+  if (!textElement.value || isBackspacing.value) return
   
-  function typeWriter() {
-    if (!textElement.value || !cursorElement.value) return
+  isTyping.value = true
+  setCursorToTyping()
+  currentCharIndex.value = 0
+  textElement.value.textContent = ''
+  
+  typeNextCharacter()
+}
+
+// Type next character
+const typeNextCharacter = () => {
+  if (!textElement.value || !isTyping.value) return
+  
+  const currentText = textItems.value[currentTextIndex.value]?.text || ''
+  
+  if (currentCharIndex.value < currentText.length) {
+    textElement.value.textContent += currentText.charAt(currentCharIndex.value)
+    currentCharIndex.value++
+    timeoutId.value = setTimeout(typeNextCharacter, props.speed) as unknown as number
+  } else {
+    // Finished typing current text
+    isTyping.value = false
+    setCursorToFinished()
     
-    if (i < props.text.length) {
-      textElement.value.textContent += props.text.charAt(i)
-      i++
-      setTimeout(typeWriter, props.speed)
-    } else {
-      // Finished typing, switch cursor animation
-      cursorElement.value.classList.remove('typing', 'breathing', 'breathing-alt')
-      if (props.cursorType === 'breathing') {
-        cursorElement.value.classList.add('finished-breathing')
-      } else if (props.cursorType === 'breathing-alt') {
-        cursorElement.value.classList.add('finished-breathing-alt')
-      } else {
-        cursorElement.value.classList.add('finished')
-      }
-    }
+    // Wait for duration before starting backspace
+    const duration = textItems.value[currentTextIndex.value]?.duration || 3
+    timeoutId.value = setTimeout(startBackspace, duration * 1000) as unknown as number
   }
+}
+
+// Start backspace animation
+const startBackspace = () => {
+  if (!textElement.value || isTyping.value) return
   
-  // Start typing after delays (fade-in + startDelay)
-  const totalDelay = props.delay + (props.startDelay * 1000)
-  setTimeout(startTyping, totalDelay)
-})
+  isBackspacing.value = true
+  setCursorToTyping()
+  
+  backspaceNextCharacter()
+}
+
+// Backspace next character
+const backspaceNextCharacter = () => {
+  if (!textElement.value || !isBackspacing.value) return
+  
+  const currentText = textElement.value.textContent || ''
+  
+  if (currentText.length > 0) {
+    textElement.value.textContent = currentText.slice(0, -1)
+    timeoutId.value = setTimeout(backspaceNextCharacter, props.backspaceSpeed) as unknown as number
+  } else {
+    // Finished backspacing
+    isBackspacing.value = false
+    
+    // Move to next text (cycle back to beginning if at end)
+    currentTextIndex.value = (currentTextIndex.value + 1) % textItems.value.length
+    
+    // Start typing next text after a brief pause
+    timeoutId.value = setTimeout(typeCurrentText, 200) as unknown as number
+  }
+}
 
 onUnmounted(() => {
+  // Cleanup timeouts
+  if (timeoutId.value) {
+    clearTimeout(timeoutId.value)
+  }
+  
   // Cleanup theme observer
   if (typeof window !== 'undefined' && (window as any).__themeObserver) {
     ;(window as any).__themeObserver.disconnect()

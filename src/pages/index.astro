@@ -14,7 +14,11 @@ import TypewriterText from '../components/TypewriterText.vue';
 					Eric Sison
 				</h1>
 				<TypewriterText
-					text="// web developer"
+					texts={[
+						{ text: "// web developer", duration: 10 },
+						{ text: "// making computers do cool things since 1986", duration: 3 },
+						{ text: "// 改善 mindset", duration: 3 },
+					]}
 					fontSize="text-base"
 					color="text-gray-600 dark:text-gray-300"
 					cursorType="breathing-alt"
@@ -170,9 +174,9 @@ import TypewriterText from '../components/TypewriterText.vue';
 					</div>
 					<div class="p-6">
 						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">AMFM.video</h3>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">I didn't want to fall behind the AI bandwagon, so I started this app from the ground up using Cursor. Inspired by PoolSuite, this app uses music and visuals to set the vibe and help me code.</p>
+						<p class="text-gray-600 dark:text-gray-300 mb-4">I didn't want to fall behind the AI bandwagon, so I created this app from the ground up using Cursor. Inspired by PoolSuite, this app uses music and visuals to set the vibe and help me code.</p>
 						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Note: As this was just a code-experiment, it's only been tested on macOS Safari and Chromium-based browsers.</sub></p>
-						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Also: As this app uses embeded YouTube videos, and Google is clamping down on downloaders, you might see a "Sign in to confirm you're not a bot" prompt in place of the video. I don't know exactly why this happens, but whenever I see it, disconnecting from VPN usually fixes it.</sub></p>
+						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Also: This app uses embeded YouTube videos, and Google is clamping down on downloader apps, you might see a "Sign in to confirm you're not a bot" prompt in place of the video. Disconnecting from your VPN usually fixes this.</sub></p>
 						<div class="flex flex-wrap gap-2 mb-4">
 							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Nuxt</span>
 							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">TypeScript</span>
