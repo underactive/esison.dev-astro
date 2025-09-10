@@ -2,6 +2,8 @@
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
 import MainLayout from '../layouts/MainLayout.astro';
 import ContactModal from '../components/ContactModal.vue';
+import CVModal from '../components/CVModal.vue';
+import ImageModal from '../components/ImageModal.vue';
 ---
 
 <MainLayout
@@ -20,16 +22,14 @@ import ContactModal from '../components/ContactModal.vue';
 					<div class="w-24 h-1 bg-gradient-to-r from-purple-600 to-purple-800 mx-auto mb-8"></div>
 				</div>
 
-				<!-- Personal Story -->
+				<!-- Work Story -->
 				<div class="prose prose-lg prose-purple dark:prose-invert max-w-none mb-16">
 					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
-						From a young age, I have always tinkered with computers -- starting with learning BASIC on my Atari 400 and crafting "Mad Libs" programs and creating mini "Choose Your Own Adventure" stories.
-						Over my lifetime I've held the firm belief that computers should be easy to use and fun. These two principles are deeply interwoven and continue to guide my approach to crafting experiences for people on the web.
+						From a young age, I have always tinkered with computers—starting with learning BASIC on my Atari 400 and crafting "Mad Libs" programs as well as creating mini "Choose Your Own Adventure" stories. Over my lifetime, I've held the firm belief that computers should be easy to use and fun. These two principles are deeply interwoven and continue to guide my approach to crafting experiences for people on the web.
 					</p>
 
 					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
-						I am comfortable operating across various contexts, from startups to corporate organizations. I've had the pleasure of riding the dot-com bubble and the equal displeasure of experiencing the bubble burst and crashing down to earth.
-						I’ve pursued roles I never expected, spanning technical support, software testing, and development. Drawing on these experiences, I've acquired the institutional knowledge to design systems that simplify and enhance work for those in each stage of the software development lifecycle.
+						I am comfortable operating across various contexts, from startups to corporate organizations. I've had the pleasure of riding the dot-com bubble and the equal displeasure of experiencing the bubble burst and crashing down to earth. I’ve pursued roles I never expected, spanning technical support, software testing, and development. Drawing on these experiences, I've acquired the institutional knowledge to design systems that simplify and enhance work for those in each stage of the software development lifecycle.
 					</p>
 
 					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
@@ -38,7 +38,7 @@ import ContactModal from '../components/ContactModal.vue';
 				</div>
 
 				<!-- Call to Action -->
-				<div class="text-center bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-8 rounded-xl">
+				<div class="text-center bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-8 rounded-xl mb-16">
 					<h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
 						Let's Work Together
 					</h3>
@@ -46,16 +46,62 @@ import ContactModal from '../components/ContactModal.vue';
 						I'm always interested in discussing new opportunities where I can help your product or brand shine.
 					</p>
 					<div class="flex flex-col sm:flex-row gap-4 justify-center">
-						<a href="#" target="_blank" rel="noopener" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
-							Read My CV
-						</a>
-						<button onclick="showContactModal()" class="px-6 py-3 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg hover:bg-purple-600 hover:text-white dark:hover:bg-purple-400 dark:hover:text-black transition-all duration-200">
+						<button onclick="showCVModal()" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+							View My CV
+						</button>
+						<button onclick="showContactModal()" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 							Contact Me
 						</button>
 					</div>
 				</div>
+
+				<!-- Personal Story -->
+				<div class="prose prose-lg prose-purple dark:prose-invert max-w-none mb-16">
+					<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
+						Outside of work, I'm a dog dad to the sweetest Frenchie, Jojo. In my free time, I like to work on my FJ Cruiser, whether it's wrenching or modifying it for overland adventures. I enjoy driving the less-traveled roads, exploring the backcountry, popping up the tent, and doing some late-night stargazing. It helps balance my work/life by providing some much-needed solitude and a chance for reflection.
+					</p>
+				</div>
+
+				<!-- Photo Gallery -->
+				<div class="mb-16">
+					<div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+						<!-- Jojo -->
+						<div class="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+							<img 
+								src="/images/jojo.jpg" 
+								alt="Jojo the French Bulldog" 
+								class="w-48 h-64 object-cover rounded-lg shadow-lg"
+								onclick="showImageModal({
+									src: '/images/jojo.jpg',
+									alt: 'Jojo the French Bulldog',
+									caption: 'Jojo, my sweet French Bulldog'
+								})"
+							/>
+						</div>
+						
+						<!-- FJ Cruiser under stars -->
+						<div class="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+							<img 
+								src="/images/fj_stars.jpg" 
+								alt="FJ Cruiser under starry night sky" 
+								class="w-48 h-64 object-cover rounded-lg shadow-lg"
+								onclick="showImageModal({
+									src: '/images/fj_stars.jpg',
+									alt: 'FJ Cruiser under starry night sky',
+									caption: 'Late night stargazing with the FJ Cruiser'
+								})"
+							/>
+						</div>
+					</div>
+				</div>
 			</div>
 		</section>
+
+		<!-- Image Modal -->
+		<ImageModal client:load />
+
+		<!-- CV Modal -->
+		<CVModal client:load />
 
 		<!-- Contact Modal -->
 		<ContactModal client:load />
