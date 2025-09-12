@@ -13,7 +13,7 @@ import ColorPicker from './ColorPicker.astro';
 					<img src="https://secure.gravatar.com/avatar/bd76701a5b015803844801dafec0401c?s=80&d=identicon" alt="Eric Sison's gravatar" class="w-8 h-8 rounded-sm" />
 				</div>
 				<h2 class="text-xl font-bold">
-					<a href="/" class="bg-gradient-to-r from-purple-600 to-purple-800 dark:from-purple-400 dark:to-purple-600 bg-clip-text text-transparent">{SITE_TITLE}</a>
+					<a href="/" class="righteous-regular bg-gradient-to-r from-purple-600 to-purple-800 dark:from-purple-400 dark:to-purple-600 bg-clip-text text-transparent">{SITE_TITLE}</a>
 				</h2>
 			</div>
 
@@ -50,6 +50,11 @@ import ColorPicker from './ColorPicker.astro';
 </header>
 
 <style>
+	.righteous-regular {
+		font-family: "Righteous", sans-serif;
+		font-style: normal;
+	}
+
 	.nav-link {
 		@apply text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors duration-200 relative;
 	}
@@ -68,8 +73,6 @@ import ColorPicker from './ColorPicker.astro';
 	.nav-link:hover::after {
 		width: 100%;
 	}
-
-
 </style>
 
 <script>
