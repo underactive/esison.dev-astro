@@ -1,0 +1,27 @@
+name: Refresh GitHub Projects
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+concurrency:
+  group: refresh-github-projects
+  cancel-in-progress: true
+
+jobs:
+  trigger-netlify-build:
+    runs-on: ubuntu-latest
+    permissions: {}
+    timeout-minutes: 2
+    steps:
+      - name: Trigger Netlify build hook
+        env:
+          NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        run: |
+          if [ -z "$NETLIFY_BUILD_HOOK_URL" ]; then
+            echo "NETLIFY_BUILD_HOOK_URL secret is required."
+            exit 1
+          fi
+
+          curl --fail --silent --show-error --max-time 30 --request POST "$NETLIFY_BUILD_HOOK_URL"

@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   readonly CONTACT_EMAIL: string;
   readonly CONTACT_PHONE?: string;
   readonly NODE_ENV: 'development' | 'production';
+  readonly ENABLE_GITHUB_PROJECTS?: 'true' | 'false';
+  readonly GITHUB_TOKEN?: string;
   
   // Public environment variables (accessible in browser)
   readonly PUBLIC_TURNSTILE_SITE_KEY: string;

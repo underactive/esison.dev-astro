@@ -3,6 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import MatrixRain from '../components/MatrixRain.vue';
 import TypewriterText from '../components/TypewriterText.vue';
+import GitHubProjectsSection from '../components/GitHubProjectsSection.astro';
 ---
 
 <MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -204,6 +205,8 @@ import TypewriterText from '../components/TypewriterText.vue';
 					</div>
 				</div>
 			</div>
+
+			<GitHubProjectsSection />
 		</div>
 	</section>
 
