@@ -1,6 +1,6 @@
 # esison.dev
 
-Personal portfolio and blog for Eric Sison, built with [Astro 6](https://astro.build/) and [Vue 3](https://vuejs.org/) interactive islands. Deployed on [Netlify](https://www.netlify.com/).
+Personal portfolio and blog for Eric Sison, built with [Astro 6](https://astro.build/) static pages and [Vue 3](https://vuejs.org/) islands (`client:load` in `.vue` components under `src/components/`). Deployed on [Netlify](https://www.netlify.com/).
 
 ## Prerequisites
 
@@ -37,12 +37,15 @@ Create a `.env` file in the project root with the following variables:
 | `PUBLIC_SITE_NAME` | Site display name (defaults to `esison.dev`) |
 | `PUBLIC_SITE_URL` | Canonical site URL |
 
+Typed names and public vs server-only split: [`src/env.d.ts`](src/env.d.ts). Full tables and integration notes: [AGENTS.md](AGENTS.md).
+
 ## Development
 
 ```bash
 npm run dev             # Dev server at localhost:4321
 npm run build           # Production build to ./dist/
 npm run preview         # Preview production build locally
+npm run test            # Vitest (unit tests)
 ```
 
 The contact modal relies on the `reveal_contact` Netlify serverless function in `netlify/functions/`. To test it locally, use `netlify dev` instead of `npm run dev`.
@@ -51,7 +54,7 @@ The contact modal relies on the `reveal_contact` Netlify serverless function in 
 
 - **Blog** -- Markdown/MDX content collections in `src/content/blog/`, with RSS and sitemap generation
 - **Contact reveal** -- Two-stage Cloudflare Turnstile CAPTCHA protecting contact info, served via a Netlify serverless function with anti-bot measures
-- **GitHub projects sync** -- Public repos tagged with the `portfolio` topic appear on the homepage at build time. A [scheduled GitHub Action](.github/workflows/refresh-github-projects.yml) triggers Netlify rebuilds every 6 hours to keep them current
+- **GitHub projects sync** -- Build-time fetch in `src/lib/github-projects.ts`; public repos tagged with the `portfolio` topic appear on the homepage. A [scheduled GitHub Action](.github/workflows/refresh-github-projects.yml) triggers Netlify rebuilds every 6 hours to keep them current
 - **Dark mode** -- Class-based theme toggle, defaults to dark, persisted in localStorage
 
 ## Deployment
@@ -62,6 +65,16 @@ For the GitHub projects scheduled refresh to work, add a `NETLIFY_BUILD_HOOK_URL
 
 All server-side secrets (`TURNSTILE_SECRET`, `CONTACT_EMAIL`, `CONTACT_PHONE`) must be configured in the Netlify dashboard under site environment variables.
 
+## Troubleshooting
+
+- **Git LFS** -- If large files under `public/images/` or `public/videos/` are missing after clone, run `git lfs pull`.
+- **Sharp** -- After switching OS or architecture, run `npm rebuild sharp` if image optimization fails.
+- **GitHub projects missing at build** -- Set `GITHUB_TOKEN` for higher API limits and ensure outbound network access; rebuild after connectivity is restored.
+
 ## Architecture
 
-See [CLAUDE.md](CLAUDE.md) for detailed architecture documentation, development rules, and file inventory.
+See [CLAUDE.md](CLAUDE.md) and [AGENTS.md](AGENTS.md) for architecture, environment variables, development rules, and file inventory.
+
+## License
+
+[MIT](LICENSE) (see `package.json`).
