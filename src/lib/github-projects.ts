@@ -78,6 +78,15 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 		// Fetch first page
 		const response = await fetchWithRetry(buildGitHubReposUrl(page), buildGitHubHeaders());
 
+		let lastPage = 1;
+		const linkHeader = response.headers.get('link');
+		if (linkHeader) {
+			const match = linkHeader.match(/[?&]page=(\d+)[^>]*>;\s*rel="last"/);
+			if (match) {
+				lastPage = parseInt(match[1], 10);
+			}
+		}
+
 		if (!response.ok) {
 			console.warn(
 				`[github-projects] ${JSON.stringify({
@@ -121,7 +130,8 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 
 		if (projects.length < GITHUB_PROJECTS_MAX_COUNT && hasMoreProjects) {
 			const promises = [];
-			for (let p = page; p <= GITHUB_PROJECTS_MAX_COUNT; p++) {
+			const maxPage = Math.min(GITHUB_PROJECTS_MAX_COUNT, lastPage);
+			for (let p = page; p <= maxPage; p++) {
 				promises.push(fetchWithRetry(buildGitHubReposUrl(p), buildGitHubHeaders()));
 			}
 
