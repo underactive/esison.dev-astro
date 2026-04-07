@@ -34,8 +34,16 @@ onMounted(() => {
     drops.length = newColumns
   }
   resizeCanvas()
-  window.addEventListener('resize', resizeCanvas)
-  resizeCleanup = () => window.removeEventListener('resize', resizeCanvas)
+  let resizeTimer: ReturnType<typeof setTimeout>
+  const debouncedResize = () => {
+    clearTimeout(resizeTimer)
+    resizeTimer = setTimeout(resizeCanvas, 150)
+  }
+  window.addEventListener('resize', debouncedResize)
+  resizeCleanup = () => {
+    clearTimeout(resizeTimer)
+    window.removeEventListener('resize', debouncedResize)
+  }
 
   // Get theme color based on dark mode
   const getThemeColor = () => {
