@@ -18,6 +18,12 @@ declare global {
 
 export function getTurnstileSiteKey(): string {
 	const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+	if (import.meta.env.PROD) {
+		if (typeof siteKey !== 'string' || !siteKey.trim()) {
+			throw new Error('Security verification is unavailable.')
+		}
+		return siteKey
+	}
 	return siteKey || '1x00000000000000000000AA'
 }
 
