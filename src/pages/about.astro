@@ -49,7 +49,7 @@ import ImageModal from '../components/ImageModal.vue';
 						<button onclick="showCVModal()" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 							View My CV
 						</button>
-						<button onclick="showContactModal()" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+						<button id="btn-show-contact-modal" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 							Contact Me
 						</button>
 					</div>
@@ -105,5 +105,16 @@ import ImageModal from '../components/ImageModal.vue';
 
 		<!-- Contact Modal -->
 		<ContactModal client:load />
+
+		<script>
+			import { globalEventBus } from '../lib/eventBus';
+			
+			const contactBtn = document.getElementById('btn-show-contact-modal');
+			if (contactBtn) {
+				contactBtn.addEventListener('click', () => {
+					globalEventBus.dispatchEvent(new Event('show-contact-modal'));
+				});
+			}
+		</script>
 
 </MainLayout>

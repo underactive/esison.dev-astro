@@ -105,6 +105,7 @@ import {
   createTurnstileWidget,
   resetTurnstileWidget
 } from '../lib/contactModalHelpers'
+import { globalEventBus } from '../lib/eventBus'
 
 interface ContactData {
   email: string
@@ -288,8 +289,7 @@ const handleShowContactModal = () => showModal()
 // Lifecycle
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
-  window.addEventListener('show-contact-modal', handleShowContactModal)
-  ;(window as any).showContactModal = showModal
+  globalEventBus.addEventListener('show-contact-modal', handleShowContactModal)
 })
 
 onUnmounted(() => {
@@ -297,13 +297,9 @@ onUnmounted(() => {
     document.body.style.overflow = ''
   }
   document.removeEventListener('keydown', handleKeydown)
-  window.removeEventListener('show-contact-modal', handleShowContactModal)
+  globalEventBus.removeEventListener('show-contact-modal', handleShowContactModal)
   resetTurnstileWidget(turnstileWidgetId.value)
   resetTurnstileWidget(phoneTurnstileWidgetId.value)
-
-  if ((window as any).showContactModal) {
-    delete (window as any).showContactModal
-  }
 })
 
 // Expose API

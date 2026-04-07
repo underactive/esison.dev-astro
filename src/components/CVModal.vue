@@ -63,6 +63,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
+import { globalEventBus } from '../lib/eventBus'
+
 // Reactive state
 const isVisible = ref(false)
 
@@ -80,7 +82,7 @@ const hideModal = () => {
 // Open contact modal
 const openContactModal = () => {
   hideModal()
-  window.dispatchEvent(new CustomEvent('show-contact-modal'))
+  globalEventBus.dispatchEvent(new Event('show-contact-modal'))
 }
 
 // Event handlers
