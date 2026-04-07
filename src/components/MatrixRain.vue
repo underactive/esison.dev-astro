@@ -8,14 +8,16 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const matrixCanvas = ref<HTMLCanvasElement>()
-let animationId: number
+let animationId: number | undefined
+let observer: MutationObserver | undefined
+let resizeCleanup: (() => void) | undefined
 
 onMounted(() => {
   const canvas = matrixCanvas.value
-  if (!canvas) throw new Error('Canvas element not found')
-  
+  if (!canvas) return
+
   const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('2D context not supported')
+  if (!ctx) return
 
   // Set canvas size to match viewport
   const resizeCanvas = () => {
@@ -24,6 +26,7 @@ onMounted(() => {
   }
   resizeCanvas()
   window.addEventListener('resize', resizeCanvas)
+  resizeCleanup = () => window.removeEventListener('resize', resizeCanvas)
 
   // Matrix characters
   const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789"
@@ -43,14 +46,16 @@ onMounted(() => {
       'rgba(147, 51, 234, 0.9)'   // Darker purple in light mode
   }
 
+  let themeColor = getThemeColor()
+
   // Drawing animation
   function draw() {
     if (!ctx || !canvas) return
-    
+
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    
-    ctx.fillStyle = getThemeColor()
+
+    ctx.fillStyle = themeColor
     ctx.font = fontSize + 'px monospace'
 
     for (let i = 0; i < drops.length; i++) {
@@ -71,10 +76,8 @@ onMounted(() => {
   draw()
 
   // Update color when theme changes
-  const observer = new MutationObserver(() => {
-    if (ctx) {
-      ctx.fillStyle = getThemeColor()
-    }
+  observer = new MutationObserver(() => {
+    themeColor = getThemeColor()
   })
 
   observer.observe(document.documentElement, {
@@ -82,13 +85,11 @@ onMounted(() => {
     attributeFilter: ['class']
   })
 
-  // Cleanup function
-  onUnmounted(() => {
-    window.removeEventListener('resize', resizeCanvas)
-    observer.disconnect()
-    if (animationId) {
-      cancelAnimationFrame(animationId)
-    }
-  })
+})
+
+onUnmounted(() => {
+  if (resizeCleanup) resizeCleanup()
+  if (observer) observer.disconnect()
+  if (animationId) cancelAnimationFrame(animationId)
 })
 </script>
