@@ -253,7 +253,7 @@ const handlePhoneSuccess = async (phoneToken: string) => {
   try {
     const data = await getPhoneInfo(phoneToken)
     if (contactInfo.value) {
-      contactInfo.value = { ...contactInfo.value, ...data }
+      if (data?.phone) { contactInfo.value = { ...contactInfo.value, phone: data.phone } }
     }
     phoneStep.status = 'success'
   } catch (err) {
