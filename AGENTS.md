@@ -49,13 +49,13 @@ Modular Astro static site with Vue 3 islands for interactivity.
 - Dynamic routes generated in `src/pages/blog/[...slug].astro`
 
 #### 2. Component Model (Astro + Vue Islands)
-- **Astro components** (`src/components/*.astro`) — static/SSR rendering: `BaseHead`, `HeaderCustom`, `Footer`, `FormattedDate`, `Header`, `HeaderLink`, `Button`, `ColorPicker`
+- **Astro components** (`src/components/*.astro`) — static/SSR rendering: `BaseHead`, `HeaderCustom`, `Footer`, `FormattedDate`, `HeaderLink`, `Button`, `ColorPicker`
 - **Vue components** (`src/components/*.vue`) — client-side interactivity: `TypewriterText`, `MatrixRain`, `ContactModal`, `CVModal`, `ImageModal`
 - All Vue components use `client:load` directive for immediate hydration
 - Do not mix — Astro components handle structure/SEO, Vue handles interactive behavior
 
 #### 3. Layout System
-- `MainLayout.astro` — Top-level wrapper used by all pages. Includes `BaseHead`, `HeaderCustom`, `Footer`, fixed parallax background elements, and theme toggle script. Default dark mode for first-time visitors, persisted in localStorage via MutationObserver on `<html>` class changes.
+- `MainLayout.astro` — Top-level wrapper used by all pages. Includes `BaseHead`, `Header` (`Header.astro` renders `HeaderCustom`), `Footer`, fixed parallax background elements, and theme toggle script. Default dark mode for first-time visitors, persisted in localStorage via MutationObserver on `<html>` class changes.
 - `BlogPost.astro` — Extends MainLayout for blog posts. Adds hero image with gradient overlay, formatted publication/update dates, prose-purple typography, and back-to-blog navigation.
 
 #### 4. Dark Mode / Theme Toggle
