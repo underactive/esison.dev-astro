@@ -290,6 +290,9 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (isVisible.value) {
+    document.body.style.overflow = ''
+  }
   document.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('show-contact-modal', handleShowContactModal)
   resetTurnstileWidget(turnstileWidgetId.value)
