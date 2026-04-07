@@ -11,6 +11,7 @@ const matrixCanvas = ref<HTMLCanvasElement>()
 let animationId: number | undefined
 let observer: MutationObserver | undefined
 let resizeCleanup: (() => void) | undefined
+let visibilityCleanup: (() => void) | undefined
 
 onMounted(() => {
   const canvas = matrixCanvas.value
@@ -75,6 +76,17 @@ onMounted(() => {
   // Start animation
   draw()
 
+  const onVisibilityChange = () => {
+    if (document.hidden) {
+      if (animationId) cancelAnimationFrame(animationId)
+      animationId = undefined
+    } else {
+      draw()
+    }
+  }
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  visibilityCleanup = () => document.removeEventListener('visibilitychange', onVisibilityChange)
+
   // Update color when theme changes
   observer = new MutationObserver(() => {
     themeColor = getThemeColor()
@@ -89,6 +101,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (resizeCleanup) resizeCleanup()
+  if (visibilityCleanup) visibilityCleanup()
   if (observer) observer.disconnect()
   if (animationId) cancelAnimationFrame(animationId)
 })
