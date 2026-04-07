@@ -57,6 +57,7 @@ onMounted(() => {
       const text = chars[Math.floor(Math.random() * chars.length)]
       ctx.fillText(text, i * fontSize, drops[i] * fontSize)
       
+      // ~2.5% chance per frame to reset the drop, producing staggered column resets
       if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
         drops[i] = 0
       
