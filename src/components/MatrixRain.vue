@@ -20,25 +20,22 @@ onMounted(() => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  // Set canvas size to match viewport
-  const resizeCanvas = () => {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-  }
-  resizeCanvas()
-  window.addEventListener('resize', resizeCanvas)
-  resizeCleanup = () => window.removeEventListener('resize', resizeCanvas)
-
   // Matrix characters
   const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789"
   const drops: number[] = []
   const fontSize = 16
-  const columns = canvas.width / fontSize
 
-  // Initialize drops
-  for (let i = 0; i < columns; i++) {
-    drops[i] = 1
+  // Set canvas size to match viewport and recompute columns
+  const resizeCanvas = () => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    const newColumns = Math.floor(canvas.width / fontSize)
+    for (let i = drops.length; i < newColumns; i++) drops[i] = 1
+    drops.length = newColumns
   }
+  resizeCanvas()
+  window.addEventListener('resize', resizeCanvas)
+  resizeCleanup = () => window.removeEventListener('resize', resizeCanvas)
 
   // Get theme color based on dark mode
   const getThemeColor = () => {
@@ -49,9 +46,18 @@ onMounted(() => {
 
   let themeColor = getThemeColor()
 
-  // Drawing animation
-  function draw() {
+  // Drawing animation throttled to ~24fps
+  const frameInterval = 1000 / 24
+  let lastFrameTime = 0
+
+  function draw(timestamp: number = 0) {
     if (!ctx || !canvas) return
+
+    animationId = requestAnimationFrame(draw)
+
+    const elapsed = timestamp - lastFrameTime
+    if (elapsed < frameInterval) return
+    lastFrameTime = timestamp - (elapsed % frameInterval)
 
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -62,15 +68,13 @@ onMounted(() => {
     for (let i = 0; i < drops.length; i++) {
       const text = chars[Math.floor(Math.random() * chars.length)]
       ctx.fillText(text, i * fontSize, drops[i] * fontSize)
-      
+
       // ~2.5% chance per frame to reset the drop, producing staggered column resets
       if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
         drops[i] = 0
-      
+
       drops[i]++
     }
-
-    animationId = requestAnimationFrame(draw)
   }
 
   // Start animation
