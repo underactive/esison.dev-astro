@@ -24,10 +24,12 @@ function parseAndValidate(event) {
   const { token, honeypot, tNow, includePhone, phoneToken } = body;
 
   if (honeypot && honeypot.trim() !== "") {
+    console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "bot-detected", ts: Date.now() }));
     return { error: { statusCode: 400, body: JSON.stringify({ error: "bot-detected" }) } };
   }
   // Reject submissions faster than 1200ms — humans cannot realistically complete the form this quickly
   if (typeof tNow === "number" && tNow < 1200) {
+    console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "too-fast", ts: Date.now() }));
     return { error: { statusCode: 400, body: JSON.stringify({ error: "too-fast" }) } };
   }
 
@@ -64,27 +66,32 @@ export async function handler(event) {
     if (includePhone && phoneToken && (!token || token === "")) {
       const secondary = await verifyTurnstileToken(phoneToken, ip);
       if (!secondary.ok) {
+        console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "captcha-invalid", stage: "secondary", ts: Date.now() }));
         return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "secondary" }) };
       }
 
       const email = process.env.CONTACT_EMAIL;
       const phone = process.env.CONTACT_PHONE || null;
       if (!email || !phone) {
+        console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
         return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
       }
 
+      console.log(JSON.stringify({ event: "contact_revealed", includesPhone: true, ts: Date.now() }));
       return { statusCode: 200, body: JSON.stringify({ email, phone }) };
     }
 
     // Primary CAPTCHA verification (required for initial email reveal)
     const primary = await verifyTurnstileToken(token, ip);
     if (!primary.ok) {
+      console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "captcha-invalid", stage: "primary", ts: Date.now() }));
       return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "primary" }) };
     }
 
     const email = process.env.CONTACT_EMAIL;
     const phone = process.env.CONTACT_PHONE || null;
     if (!email) {
+      console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
       return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
     }
 
@@ -99,9 +106,10 @@ export async function handler(event) {
       }
     }
 
+    console.log(JSON.stringify({ event: "contact_revealed", includesPhone: Boolean(payload.phone), ts: Date.now() }));
     return { statusCode: 200, body: JSON.stringify(payload) };
   } catch (err) {
-    console.error("reveal_contact error:", err instanceof Error ? err.message : "Unknown error");
+    console.error(JSON.stringify({ event: "contact_reveal_error", reason: "server-error", details: err instanceof Error ? err.message : "Unknown error", ts: Date.now() }));
     return { statusCode: 500, body: JSON.stringify({ error: "server-error" }) };
   }
 }
