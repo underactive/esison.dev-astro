@@ -42,7 +42,7 @@ const { title, description, image = FallbackImage } = Astro.props;
   defer
 ></script>
 
-<!-- Analytics -->
+<!-- Umami analytics — loads in dev too; no env gating. See CLAUDE.md Known Issues. -->
 <script defer src="https://cloud.umami.is/script.js" data-website-id="e103e05c-83e6-4f8d-9ef5-a75ad9f40662"></script>
 
 <!-- Canonical URL -->
