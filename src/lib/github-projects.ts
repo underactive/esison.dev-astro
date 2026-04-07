@@ -122,9 +122,12 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 				promises.push(fetchWithRetry(buildGitHubReposUrl(p), buildGitHubHeaders()));
 			}
 
-			const responses = await Promise.all(promises);
+			const results = await Promise.allSettled(promises);
 
-			for (const resp of responses) {
+			for (const result of results) {
+				if (result.status !== 'fulfilled') continue;
+
+				const resp = result.value;
 				if (!resp.ok) continue;
 
 				try {
