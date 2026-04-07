@@ -74,45 +74,73 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 		let page = 1;
 		let hasMoreProjects = true;
 
-		while (projects.length < GITHUB_PROJECTS_MAX_COUNT && hasMoreProjects) {
-			const response = await fetchWithRetry(buildGitHubReposUrl(page), buildGitHubHeaders());
+		// Fetch first page
+		const response = await fetchWithRetry(buildGitHubReposUrl(page), buildGitHubHeaders());
 
-			if (!response.ok) {
-				console.warn(
-					`[github-projects] ${JSON.stringify({
-						message: 'GitHub API request failed',
-						status: response.status,
-					})}`
-				);
+		if (!response.ok) {
+			console.warn(
+				`[github-projects] ${JSON.stringify({
+					message: 'GitHub API request failed',
+					status: response.status,
+				})}`
+			);
 
-				return {
-					enabled: true,
-					projects: [],
-					errorMessage: buildGitHubResponseErrorMessage(response.status),
-				};
+			return {
+				enabled: true,
+				projects: [],
+				errorMessage: buildGitHubResponseErrorMessage(response.status),
+			};
+		}
+
+		try {
+			const payload = (await response.json()) as unknown;
+			const parsed = parseGitHubProjectsPage(payload);
+
+			for (const warning of parsed.warnings) {
+				console.warn(`[github-projects] ${warning}`);
 			}
 
-			try {
-				const payload = (await response.json()) as unknown;
-				const parsed = parseGitHubProjectsPage(payload);
+			projects.push(...parsed.projects);
+			hasMoreProjects = parsed.hasMoreProjects;
+			page += 1;
+		} catch (error) {
+			const message = error instanceof Error ? error.message : 'Unknown error';
+			console.warn(`[github-projects] Failed to parse GitHub repository data: ${message}`);
 
-				for (const warning of parsed.warnings) {
-					console.warn(`[github-projects] ${warning}`);
+			return {
+				enabled: true,
+				projects: [],
+				errorMessage:
+					'GitHub projects are enabled, but GitHub returned unexpected repository data during this build.',
+			};
+		}
+
+		// If more projects are needed and available, fetch the rest in parallel up to GITHUB_PROJECTS_MAX_COUNT pages
+		if (projects.length < GITHUB_PROJECTS_MAX_COUNT && hasMoreProjects) {
+			const promises = [];
+			for (let p = page; p <= GITHUB_PROJECTS_MAX_COUNT; p++) {
+				promises.push(fetchWithRetry(buildGitHubReposUrl(p), buildGitHubHeaders()));
+			}
+
+			const responses = await Promise.all(promises);
+
+			for (const resp of responses) {
+				if (!resp.ok) continue;
+
+				try {
+					const payload = (await resp.json()) as unknown;
+					const parsed = parseGitHubProjectsPage(payload);
+
+					for (const warning of parsed.warnings) {
+						console.warn(`[github-projects] ${warning}`);
+					}
+
+					projects.push(...parsed.projects);
+					if (!parsed.hasMoreProjects) break;
+				} catch (error) {
+					const message = error instanceof Error ? error.message : 'Unknown error';
+					console.warn(`[github-projects] Failed to parse GitHub repository data: ${message}`);
 				}
-
-				projects.push(...parsed.projects);
-				hasMoreProjects = parsed.hasMoreProjects;
-				page += 1;
-			} catch (error) {
-				const message = error instanceof Error ? error.message : 'Unknown error';
-				console.warn(`[github-projects] Failed to parse GitHub repository data: ${message}`);
-
-				return {
-					enabled: true,
-					projects: [],
-					errorMessage:
-						'GitHub projects are enabled, but GitHub returned unexpected repository data during this build.',
-				};
 			}
 		}
 
