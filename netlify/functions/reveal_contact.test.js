@@ -1,18 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { handler } from './reveal_contact.js';
-import fetch from 'node-fetch';
-
-vi.mock('node-fetch', () => {
-  return {
-    default: vi.fn()
-  };
-});
 
 describe('reveal_contact handler', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.stubGlobal('fetch', vi.fn());
     process.env = { ...originalEnv };
     process.env.TURNSTILE_SECRET = 'test-secret';
     process.env.CONTACT_EMAIL = 'test@example.com';
@@ -20,6 +14,7 @@ describe('reveal_contact handler', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     process.env = originalEnv;
   });
 
