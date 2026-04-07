@@ -227,11 +227,10 @@ const darkBackgrounds = [
 		applySavedBackground();
 
 		// Listen for theme changes to switch backgrounds
-		const observer = new MutationObserver(() => {
+		window.addEventListener('theme-changed', () => {
 			applySavedBackground();
 			updateActiveStates();
 		});
-		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
 		function updateActiveStates() {
 			const currentLightBg = localStorage.getItem('background-light') || 'default-light';
