@@ -58,8 +58,14 @@ interface ImageData {
 const isVisible = ref(false)
 const currentImage = ref<ImageData | null>(null)
 
+// Only allow relative paths (same-origin assets); block absolute URLs,
+// protocol-relative URLs, data: URIs, and javascript: URIs.
+const isTrustedImageSrc = (src: string): boolean =>
+  typeof src === 'string' && src.startsWith('/') && !src.startsWith('//')
+
 // Modal management
 const showModal = (image: ImageData) => {
+  if (!isTrustedImageSrc(image?.src)) return
   currentImage.value = image
   isVisible.value = true
   document.body.style.overflow = 'hidden'
