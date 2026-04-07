@@ -10,7 +10,7 @@
     <!-- Background overlay -->
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center">
       <div
-        class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm transition-opacity"
+        class="fixed inset-0 bg-black/90 backdrop-blur-sm transition-opacity"
         aria-hidden="true"
         @click="hideModal"
       ></div>
@@ -20,7 +20,7 @@
         <!-- Close button -->
         <button
           @click="hideModal"
-          class="absolute top-4 right-4 z-10 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          class="absolute top-4 right-4 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
