@@ -19,7 +19,8 @@ const { title, description } = Astro.props;
 			// Theme toggle functionality
 			const getThemePreference = () => {
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-					return localStorage.getItem('theme');
+					const theme = localStorage.getItem('theme');
+					return ['light', 'dark'].includes(theme) ? theme : 'dark';
 				}
 				return 'dark'; // Default to dark mode for first-time visitors
 			};
