@@ -73,7 +73,12 @@ All server-side secrets (`TURNSTILE_SECRET`, `CONTACT_EMAIL`, `CONTACT_PHONE`) m
 
 ## Architecture
 
-See [CLAUDE.md](CLAUDE.md) and [AGENTS.md](AGENTS.md) for architecture, environment variables, development rules, and file inventory.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for system design, domain layers,
+and key design decisions.
+
+## Contributing
+
+See [AGENTS.md](AGENTS.md) for repo conventions, workflow, and orientation.
 
 ## License
 
