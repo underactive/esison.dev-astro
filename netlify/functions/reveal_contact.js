@@ -10,7 +10,13 @@ async function verifyTurnstileToken(token, ip) {
       response: token,
       remoteip: ip || ""
     }),
-  }).then(r => r.json()).catch(() => null);
+    signal: AbortSignal.timeout(5000)
+  }).then(r => r.json()).catch((err) => {
+    if (err.name === "TimeoutError" || err.name === "AbortError") {
+      console.error(JSON.stringify({ event: "turnstile_verification_failed", reason: "upstream-timeout", ts: Date.now() }));
+    }
+    return null;
+  });
 
   return { ok: !!res?.success };
 }
