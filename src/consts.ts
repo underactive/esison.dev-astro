@@ -4,5 +4,7 @@
 export const SITE_TITLE = 'esison.dev';
 export const SITE_DESCRIPTION = 'Eric Sison: Full-Stack Developer';
 export const GITHUB_USERNAME = 'underactive';
+// Changing this requires updating the topic on all GitHub repositories you want to display on the homepage.
 export const GITHUB_PROJECTS_REQUIRED_TOPIC = 'portfolio';
+// Maximum number of repositories to display on the homepage.
 export const GITHUB_PROJECTS_MAX_COUNT = 6;
