@@ -182,7 +182,7 @@ const initializeTurnstile = () => {
       }
     )
   } catch (err) {
-    console.error('Failed to initialize Turnstile:', err)
+    console.error('Failed to initialize Turnstile:', err instanceof Error ? err.message : String(err))
     emailStep.error = 'Failed to load security verification.'
     emailStep.status = 'error'
   }
@@ -240,7 +240,7 @@ const initializePhoneTurnstile = () => {
       }
     )
   } catch (err) {
-    console.error('Failed to initialize phone Turnstile:', err)
+    console.error('Failed to initialize phone Turnstile:', err instanceof Error ? err.message : String(err))
     phoneStep.error = 'Failed to load phone verification.'
     phoneStep.status = 'error'
   }
@@ -257,7 +257,7 @@ const handlePhoneSuccess = async (phoneToken: string) => {
     }
     phoneStep.status = 'success'
   } catch (err) {
-    console.error('Phone verification failed:', err)
+    console.error('Phone verification failed:', err instanceof Error ? err.message : String(err))
     phoneStep.error = err instanceof Error ? err.message : 'Phone verification failed.'
     phoneStep.status = 'error'
     resetTurnstileWidget(phoneTurnstileWidgetId.value)
