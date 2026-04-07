@@ -71,6 +71,10 @@ Modular Astro static site with Vue 3 islands for interactivity.
 - Anti-bot measures: honeypot field check, minimum response time validation (1200ms)
 - Contact data stored in server-side env vars (`CONTACT_EMAIL`, `CONTACT_PHONE`)
 - Called from `ContactModal.vue` on the client side
+- **HTTP/JSON contract:** `POST /.netlify/functions/reveal_contact` with JSON body (`token`, `honeypot`, `tNow`, `includePhone`, `phoneToken` — see `reveal_contact.js` for field meaning). Responses are JSON.
+  - **`200`:** `{ email, phone }` — `phone` is a string when revealed, otherwise `null`. If the user asked for phone but secondary Turnstile failed, email is still returned with `phone: null` and optional `meta: { phoneWithheld: true, reason: "secondary-verification-failed" }`.
+  - **`400`:** `{ error }` — `bot-detected` (honeypot tripped: do not auto-retry; fix client/bot); `too-fast` (client `tNow` below 1200ms: wait and resubmit); `captcha-invalid` with `stage`: `primary` \| `secondary` and optional `details` (Turnstile rejected the token: reset widget, new token, retry).
+  - **`500`:** `missing-contact-info` — `CONTACT_EMAIL` missing, or phone path without `CONTACT_PHONE` (fix Netlify env); `server-error` with optional `details` — unexpected failure (show generic message; retry only if appropriate after checking logs).
 
 #### 6. GitHub Projects Sync
 - `GitHubProjectsSection.astro` renders a second homepage projects grid from build-time GitHub data
@@ -135,6 +139,7 @@ Environment files / define sources:
 - **Loaded via:** Script tag in `BaseHead.astro` (`https://challenges.cloudflare.com/turnstile/v0/api.js`, async + defer)
 - **Lifecycle:** Widget rendered in `ContactModal.vue`; tokens verified server-side in `netlify/functions/reveal_contact.js`
 - **Key env vars:** `PUBLIC_TURNSTILE_SITE_KEY` (client), `TURNSTILE_SECRET` (server)
+- **Client integration:** On `captcha-invalid`, use `stage` to know which widget to reset; never assume tokens can be reused after a failed verify.
 - **Gotchas:** Two-stage verification — primary token for email, secondary token for phone. Tokens are single-use; a new widget render is needed for each verification.
 
 ### Umami Analytics
@@ -163,6 +168,10 @@ Environment files / define sources:
 - **Loaded via:** `.github/workflows/refresh-github-projects.yml`
 - **Key config:** `NETLIFY_BUILD_HOOK_URL` GitHub Actions secret
 - **Gotchas:** Without the secret the workflow cannot trigger Netlify, and GitHub repo changes will only show up on the next normal site deploy
+
+### Netlify Functions (contact reveal)
+- **Endpoint:** `POST /.netlify/functions/reveal_contact` (JSON body/response)
+- **Errors:** Structured `{ error, ... }` payloads and HTTP status codes are enumerated under Architecture, **Contact Info Reveal (Serverless)**.
 
 ---
 
