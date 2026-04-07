@@ -46,7 +46,15 @@ const currentTextIndex = ref(0)
 const currentCharIndex = ref(0)
 const isTyping = ref(false)
 const isBackspacing = ref(false)
-const timeoutId = ref<number | null>(null)
+const pendingTimeouts = new Set<number>()
+
+const scheduleTimeout = (cb: () => void, delay: number) => {
+  const id = setTimeout(() => {
+    pendingTimeouts.delete(id as unknown as number)
+    cb()
+  }, delay) as unknown as number
+  pendingTimeouts.add(id)
+}
 
 // Convert texts prop to consistent format
 const textItems = ref<TextItem[]>([])
@@ -94,7 +102,7 @@ onMounted(() => {
   
   // Start the typing cycle after delays
   const totalDelay = props.delay + (props.startDelay * 1000)
-  timeoutId.value = setTimeout(startTypingCycle, totalDelay) as unknown as number
+  scheduleTimeout(startTypingCycle, totalDelay)
 })
 
 // Set cursor to finished state
@@ -156,7 +164,7 @@ const typeNextCharacter = () => {
     requestAnimationFrame(() => {
       if (textElement.value) textElement.value.textContent = textToSet
     })
-    timeoutId.value = setTimeout(typeNextCharacter, props.speed) as unknown as number
+    scheduleTimeout(typeNextCharacter, props.speed)
   } else {
     // Finished typing current text
     isTyping.value = false
@@ -164,7 +172,7 @@ const typeNextCharacter = () => {
     
     // Wait for duration before starting backspace
     const duration = textItems.value[currentTextIndex.value]?.duration || 3
-    timeoutId.value = setTimeout(startBackspace, duration * 1000) as unknown as number
+    scheduleTimeout(startBackspace, duration * 1000)
   }
 }
 
@@ -189,7 +197,7 @@ const backspaceNextCharacter = () => {
     requestAnimationFrame(() => {
       if (textElement.value) textElement.value.textContent = textToSet
     })
-    timeoutId.value = setTimeout(backspaceNextCharacter, props.backspaceSpeed) as unknown as number
+    scheduleTimeout(backspaceNextCharacter, props.backspaceSpeed)
   } else {
     // Finished backspacing
     isBackspacing.value = false
@@ -198,16 +206,16 @@ const backspaceNextCharacter = () => {
     currentTextIndex.value = (currentTextIndex.value + 1) % textItems.value.length
     
     // Start typing next text after a brief pause
-    timeoutId.value = setTimeout(typeCurrentText, 200) as unknown as number
+    scheduleTimeout(typeCurrentText, 200)
   }
 }
 
 onUnmounted(() => {
-  // Cleanup timeouts
-  if (timeoutId.value) {
-    clearTimeout(timeoutId.value)
+  for (const id of pendingTimeouts) {
+    clearTimeout(id)
   }
-  
+  pendingTimeouts.clear()
+
   // Cleanup theme observer
   themeObserver.value?.disconnect()
 })
