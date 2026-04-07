@@ -27,7 +27,7 @@ const MIN_FORM_COMPLETION_MS = 1200;
  * Parses the request body and runs anti-bot validation checks.
  * Returns { fields } on success or { error } with a ready-to-return response on failure.
  */
-function parseAndValidate(event) {
+function parseAndValidate(event, ip) {
   let body;
   try {
     body = JSON.parse(event.body || "{}");
@@ -46,7 +46,6 @@ function parseAndValidate(event) {
     return { error: { statusCode: 400, body: JSON.stringify({ error: "too-fast" }) } };
   }
 
-  const ip = getClientIp(event);
   return { fields: { token, includePhone, phoneToken, ip } };
 }
 
@@ -113,7 +112,7 @@ export async function handler(event) {
       return { statusCode: 429, body: JSON.stringify({ error: "rate-limited" }) };
     }
 
-    const result = parseAndValidate(event);
+    const result = parseAndValidate(event, clientIp);
     if (result.error) return result.error;
     const { token, includePhone, phoneToken, ip } = result.fields;
 
