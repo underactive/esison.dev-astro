@@ -100,8 +100,12 @@ import { ref, onMounted, onUnmounted, nextTick, reactive } from 'vue'
 import VerificationSection from './VerificationSection.vue'
 import ContactInfo from './ContactInfo.vue'
 import PhoneRevealButton from './PhoneRevealButton.vue'
+import {
+  createRevealContactClient,
+  createTurnstileWidget,
+  resetTurnstileWidget
+} from '../lib/contactModalHelpers'
 
-// Types
 interface ContactData {
   email: string
   phone?: string
@@ -110,22 +114,6 @@ interface ContactData {
 interface VerificationStep {
   status: 'idle' | 'loading' | 'success' | 'error' | 'captcha'
   error?: string
-}
-
-// Global Turnstile interface
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (container: string | HTMLElement, options: {
-        sitekey: string
-        callback: (token: string) => void
-        'error-callback'?: () => void
-        theme?: 'light' | 'dark'
-        size?: 'normal' | 'compact'
-      }) => string
-      reset: (widgetId?: string) => void
-    }
-  }
 }
 
 // Reactive state
@@ -144,85 +132,11 @@ const honeypot = ref<HTMLInputElement>()
 const turnstileWidgetId = ref<string>()
 const phoneTurnstileWidgetId = ref<string>()
 
-// Composable: Turnstile Management
-const useTurnstile = () => {
-  const getSiteKey = () => {
-    const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-    return siteKey || '1x00000000000000000000AA' // Fallback for development
-  }
-
-  const createWidget = (
-    container: HTMLElement,
-    callback: (token: string) => void,
-    errorCallback: () => void
-  ) => {
-    if (!window.turnstile) throw new Error('Turnstile not available')
-
-    return window.turnstile.render(container, {
-      sitekey: getSiteKey(),
-      callback,
-      'error-callback': errorCallback,
-      theme: 'dark',
-      size: 'normal'
-    })
-  }
-
-  const resetWidget = (widgetId?: string) => {
-    if (widgetId && window.turnstile) {
-      window.turnstile.reset(widgetId)
-    }
-  }
-
-  return { createWidget, resetWidget }
-}
-
-// Composable: API calls
-const useContactAPI = () => {
-  const callAPI = async (payload: Record<string, any>) => {
-    const response = await fetch('/.netlify/functions/reveal_contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `Server error: ${response.status}`)
-    }
-
-    return response.json()
-  }
-
-  const getEmailInfo = async (token: string) => {
-    const tNow = startTime.value ? performance.now() - startTime.value : 0
-    const honeypotValue = honeypot.value?.value || ''
-
-    return callAPI({
-      token,
-      tNow,
-      honeypot: honeypotValue
-    })
-  }
-
-  const getPhoneInfo = async (phoneToken: string) => {
-    const tNow = startTime.value ? performance.now() - startTime.value : 0
-    const honeypotValue = honeypot.value?.value || ''
-
-    return callAPI({
-      token: "",
-      phoneToken,
-      includePhone: true,
-      tNow,
-      honeypot: honeypotValue
-    })
-  }
-
-  return { getEmailInfo, getPhoneInfo }
-}
-
-// Initialize composables
-const { createWidget, resetWidget } = useTurnstile()
-const { getEmailInfo, getPhoneInfo } = useContactAPI()
+const { getEmailInfo, getPhoneInfo } = createRevealContactClient({
+  getElapsedMs: () =>
+    startTime.value !== undefined ? performance.now() - startTime.value : 0,
+  getHoneypotValue: () => honeypot.value?.value || ''
+})
 
 // Modal management
 const showModal = async () => {
@@ -244,8 +158,8 @@ const hideModal = () => {
   document.body.style.overflow = ''
   
   // Cleanup widgets
-  resetWidget(turnstileWidgetId.value)
-  resetWidget(phoneTurnstileWidgetId.value)
+  resetTurnstileWidget(turnstileWidgetId.value)
+  resetTurnstileWidget(phoneTurnstileWidgetId.value)
   turnstileWidgetId.value = undefined
   phoneTurnstileWidgetId.value = undefined
 }
@@ -259,7 +173,7 @@ const initializeTurnstile = () => {
   }
 
   try {
-    turnstileWidgetId.value = createWidget(
+    turnstileWidgetId.value = createTurnstileWidget(
       turnstileContainer.value,
       handleEmailSuccess,
       () => {
@@ -286,7 +200,7 @@ const handleEmailSuccess = async (token: string) => {
     console.error('Email verification failed:', err)
     emailStep.error = err instanceof Error ? err.message : 'Verification failed.'
     emailStep.status = 'error'
-    resetWidget(turnstileWidgetId.value)
+    resetTurnstileWidget(turnstileWidgetId.value)
   }
 }
 
@@ -294,7 +208,7 @@ const retryEmailVerification = () => {
   emailStep.error = undefined
   contactInfo.value = null
   if (turnstileWidgetId.value) {
-    resetWidget(turnstileWidgetId.value)
+    resetTurnstileWidget(turnstileWidgetId.value)
   } else {
     initializeTurnstile()
   }
@@ -317,7 +231,7 @@ const initializePhoneTurnstile = () => {
   }
 
   try {
-    phoneTurnstileWidgetId.value = createWidget(
+    phoneTurnstileWidgetId.value = createTurnstileWidget(
       phoneTurnstileContainer.value,
       handlePhoneSuccess,
       () => {
@@ -346,14 +260,14 @@ const handlePhoneSuccess = async (phoneToken: string) => {
     console.error('Phone verification failed:', err)
     phoneStep.error = err instanceof Error ? err.message : 'Phone verification failed.'
     phoneStep.status = 'error'
-    resetWidget(phoneTurnstileWidgetId.value)
+    resetTurnstileWidget(phoneTurnstileWidgetId.value)
   }
 }
 
 const retryPhoneVerification = () => {
   phoneStep.error = undefined
   if (phoneTurnstileWidgetId.value) {
-    resetWidget(phoneTurnstileWidgetId.value)
+    resetTurnstileWidget(phoneTurnstileWidgetId.value)
   } else {
     initializePhoneTurnstile()
   }
@@ -378,8 +292,8 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('show-contact-modal', handleShowContactModal)
-  resetWidget(turnstileWidgetId.value)
-  resetWidget(phoneTurnstileWidgetId.value)
+  resetTurnstileWidget(turnstileWidgetId.value)
+  resetTurnstileWidget(phoneTurnstileWidgetId.value)
 
   if ((window as any).showContactModal) {
     delete (window as any).showContactModal
