@@ -79,7 +79,10 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 
 			if (!response.ok) {
 				console.warn(
-					`[github-projects] GitHub API request failed with status ${response.status}.`,
+					`[github-projects] ${JSON.stringify({
+						message: 'GitHub API request failed',
+						status: response.status,
+					})}`
 				);
 
 				return {
