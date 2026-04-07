@@ -142,7 +142,7 @@ const { getEmailInfo, getPhoneInfo } = createRevealContactClient({
 const showModal = async () => {
   isVisible.value = true
   document.body.style.overflow = 'hidden'
-  startTime.value = performance.now()
+  if (startTime.value === undefined) { startTime.value = performance.now() }
   
   // Reset all state
   contactInfo.value = null
@@ -252,9 +252,12 @@ const handlePhoneSuccess = async (phoneToken: string) => {
   
   try {
     const data = await getPhoneInfo(phoneToken)
-    if (contactInfo.value) {
-      if (data?.phone) { contactInfo.value = { ...contactInfo.value, phone: data.phone } }
+    if (!contactInfo.value) {
+      phoneStep.status = 'error'
+      phoneStep.error = 'Session expired. Please close and reopen the contact modal.'
+      return
     }
+    if (data?.phone) { contactInfo.value = { ...contactInfo.value, phone: data.phone } }
     phoneStep.status = 'success'
   } catch (err) {
     console.error('Phone verification failed:', err instanceof Error ? err.message : String(err))
