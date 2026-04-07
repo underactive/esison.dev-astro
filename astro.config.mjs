@@ -8,8 +8,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	// TODO: Update site URL to production domain (e.g., https://esison.dev) for correct canonical URLs and sitemap generation.
-	site: 'https://example.com',
+	site: process.env.PUBLIC_SITE_URL || 'https://example.com',
 	integrations: [mdx(), sitemap(), vue()],
 	vite: {
 		plugins: [tailwindcss()],
