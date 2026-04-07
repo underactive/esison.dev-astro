@@ -80,10 +80,7 @@ const hideModal = () => {
 // Open contact modal
 const openContactModal = () => {
   hideModal()
-  // Call the global function to show contact modal
-  if ((window as any).showContactModal) {
-    (window as any).showContactModal()
-  }
+  window.dispatchEvent(new CustomEvent('show-contact-modal'))
 }
 
 // Event handlers

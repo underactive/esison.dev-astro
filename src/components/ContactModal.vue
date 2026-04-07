@@ -366,17 +366,21 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 }
 
+const handleShowContactModal = () => showModal()
+
 // Lifecycle
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
+  window.addEventListener('show-contact-modal', handleShowContactModal)
   ;(window as any).showContactModal = showModal
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('show-contact-modal', handleShowContactModal)
   resetWidget(turnstileWidgetId.value)
   resetWidget(phoneTurnstileWidgetId.value)
-  
+
   if ((window as any).showContactModal) {
     delete (window as any).showContactModal
   }
