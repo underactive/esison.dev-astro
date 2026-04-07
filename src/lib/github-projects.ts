@@ -28,6 +28,7 @@ export interface GitHubProjectsResult {
 	enabled: boolean;
 	projects: GitHubProject[];
 	errorMessage?: string;
+	isPartial?: boolean;
 }
 
 interface GitHubProjectCandidate extends GitHubProject {
@@ -116,6 +117,8 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 		}
 
 		// If more projects are needed and available, fetch the rest in parallel up to GITHUB_PROJECTS_MAX_COUNT pages
+		let isPartial = false;
+
 		if (projects.length < GITHUB_PROJECTS_MAX_COUNT && hasMoreProjects) {
 			const promises = [];
 			for (let p = page; p <= GITHUB_PROJECTS_MAX_COUNT; p++) {
@@ -125,10 +128,16 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 			const results = await Promise.allSettled(promises);
 
 			for (const result of results) {
-				if (result.status !== 'fulfilled') continue;
+				if (result.status !== 'fulfilled') {
+					isPartial = true;
+					continue;
+				}
 
 				const resp = result.value;
-				if (!resp.ok) continue;
+				if (!resp.ok) {
+					isPartial = true;
+					continue;
+				}
 
 				try {
 					const payload = (await resp.json()) as unknown;
@@ -141,6 +150,7 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 					projects.push(...parsed.projects);
 					if (!parsed.hasMoreProjects) break;
 				} catch (error) {
+					isPartial = true;
 					const message = error instanceof Error ? error.message : 'Unknown error';
 					console.warn(`[github-projects] Failed to parse GitHub repository data: ${message}`);
 				}
@@ -150,6 +160,7 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 		return {
 			enabled: true,
 			projects: projects.slice(0, GITHUB_PROJECTS_MAX_COUNT),
+			...(isPartial && { isPartial }),
 		};
 	} catch (error) {
 		const message = error instanceof Error ? error.message : 'Unknown error';

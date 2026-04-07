@@ -42,6 +42,12 @@ const githubProfileUrl = `https://github.com/${GITHUB_USERNAME}`;
 						<p>No public repositories are currently tagged with <code class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-sm">{GITHUB_PROJECTS_REQUIRED_TOPIC}</code>.</p>
 					</div>
 				) : (
+					<>
+					{githubProjects.isPartial && (
+						<p class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+							Some projects may not be shown due to a temporary issue during the build.
+						</p>
+					)}
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
 						{
 							githubProjects.projects.map((project) => (
@@ -110,6 +116,7 @@ const githubProfileUrl = `https://github.com/${GITHUB_USERNAME}`;
 							))
 						}
 					</div>
+				</>
 				)
 			}
 		</div>
