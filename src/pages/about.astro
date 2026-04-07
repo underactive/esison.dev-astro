@@ -46,7 +46,7 @@ import ImageModal from '../components/ImageModal.vue';
 						I'm always interested in discussing new opportunities where I can help your product or brand shine.
 					</p>
 					<div class="flex flex-col sm:flex-row gap-4 justify-center">
-						<button onclick="showCVModal()" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+						<button id="btn-show-cv-modal" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 							View My CV
 						</button>
 						<button id="btn-show-contact-modal" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
@@ -109,6 +109,13 @@ import ImageModal from '../components/ImageModal.vue';
 		<script>
 			import { globalEventBus } from '../lib/eventBus';
 			
+			const cvBtn = document.getElementById('btn-show-cv-modal');
+			if (cvBtn) {
+				cvBtn.addEventListener('click', () => {
+					globalEventBus.dispatchEvent(new Event('show-cv-modal'));
+				});
+			}
+
 			const contactBtn = document.getElementById('btn-show-contact-modal');
 			if (contactBtn) {
 				contactBtn.addEventListener('click', () => {

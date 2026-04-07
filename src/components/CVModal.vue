@@ -92,22 +92,20 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 }
 
+const handleShowCVModal = () => showModal()
+
 // Lifecycle
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
-  // Expose the showModal function globally
-  ;(window as any).showCVModal = showModal
+  globalEventBus.addEventListener('show-cv-modal', handleShowCVModal)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  globalEventBus.removeEventListener('show-cv-modal', handleShowCVModal)
 
   if (isVisible.value) {
     document.body.style.overflow = ''
-  }
-
-  if ((window as any).showCVModal) {
-    delete (window as any).showCVModal
   }
 })
 
