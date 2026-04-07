@@ -239,6 +239,10 @@ function buildGitHubHeaders(): Headers {
 }
 
 function buildGitHubReposUrl(page: number): URL {
+	if (!/^[a-zA-Z0-9-]+$/.test(GITHUB_USERNAME)) {
+		throw new Error(`Invalid GITHUB_USERNAME: ${GITHUB_USERNAME}`);
+	}
+
 	const url = new URL(`/users/${GITHUB_USERNAME}/repos`, GITHUB_API_BASE_URL);
 
 	url.searchParams.set('type', 'public');
