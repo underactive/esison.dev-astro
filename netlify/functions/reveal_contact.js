@@ -101,7 +101,7 @@ export async function handler(event) {
 
     return { statusCode: 200, body: JSON.stringify(payload) };
   } catch (err) {
-    console.error("reveal_contact error:", err);
+    console.error("reveal_contact error:", err instanceof Error ? err.message : "Unknown error");
     return { statusCode: 500, body: JSON.stringify({ error: "server-error" }) };
   }
 }
