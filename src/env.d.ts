@@ -18,3 +18,7 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+interface Window {
+  showImageModal?: (image: { src: string; alt: string; caption?: string }) => void;
+}

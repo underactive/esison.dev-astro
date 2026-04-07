@@ -88,7 +88,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
   // Expose the showModal function globally
-  ;(window as any).showImageModal = showModal
+  window.showImageModal = showModal
 })
 
 onUnmounted(() => {
@@ -98,8 +98,8 @@ onUnmounted(() => {
     document.body.style.overflow = ''
   }
 
-  if ((window as any).showImageModal) {
-    delete (window as any).showImageModal
+  if (window.showImageModal) {
+    delete window.showImageModal
   }
 })
 
