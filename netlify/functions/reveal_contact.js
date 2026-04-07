@@ -126,15 +126,14 @@ export async function handler(event) {
         return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "secondary" }) };
       }
 
-      const email = process.env.CONTACT_EMAIL;
       const phone = process.env.CONTACT_PHONE || null;
-      if (!email || !phone) {
+      if (!phone) {
         console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
         return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
       }
 
       console.log(JSON.stringify({ event: "contact_revealed", includesPhone: true, ts: Date.now() }));
-      return { statusCode: 200, body: JSON.stringify({ email, phone }) };
+      return { statusCode: 200, body: JSON.stringify({ phone }) };
     }
 
     // Primary CAPTCHA verification (required for initial email reveal)

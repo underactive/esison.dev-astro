@@ -58,7 +58,10 @@ const ERROR_MESSAGES: Record<string, string> = {
 }
 
 export function createRevealContactClient(deps: RevealContactClientDeps) {
-	const callAPI = async (payload: Record<string, unknown>) => {
+	const callAPI = async (
+		payload: Record<string, unknown>,
+		expect: 'email' | 'phoneOnly'
+	) => {
 		let response: Response
 		try {
 			response = await fetch('/.netlify/functions/reveal_contact', {
@@ -86,34 +89,47 @@ export function createRevealContactClient(deps: RevealContactClientDeps) {
 		} catch {
 			throw new Error('Invalid response — please try again.')
 		}
-		if (!data || typeof (data as Record<string, unknown>).email !== 'string') {
+		const rec = data as Record<string, unknown>
+		if (expect === 'email') {
+			if (!data || typeof rec.email !== 'string') {
+				throw new Error('Invalid response — please try again.')
+			}
+			return data as { email: string; phone?: string | null }
+		}
+		if (!data || typeof rec.phone !== 'string') {
 			throw new Error('Invalid response — please try again.')
 		}
-		return data as { email: string; phone?: string | null }
+		return data as { phone: string }
 	}
 
 	const getEmailInfo = async (token: string) => {
 		const tNow = deps.getElapsedMs()
 		const honeypot = deps.getHoneypotValue()
 
-		return callAPI({
-			token,
-			tNow,
-			honeypot
-		})
+		return callAPI(
+			{
+				token,
+				tNow,
+				honeypot
+			},
+			'email'
+		)
 	}
 
 	const getPhoneInfo = async (phoneToken: string) => {
 		const tNow = deps.getElapsedMs()
 		const honeypot = deps.getHoneypotValue()
 
-		return callAPI({
-			token: '',
-			phoneToken,
-			includePhone: true,
-			tNow,
-			honeypot
-		})
+		return callAPI(
+			{
+				token: '',
+				phoneToken,
+				includePhone: true,
+				tNow,
+				honeypot
+			},
+			'phoneOnly'
+		)
 	}
 
 	return { getEmailInfo, getPhoneInfo }

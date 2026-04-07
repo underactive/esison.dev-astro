@@ -82,7 +82,7 @@ describe('reveal_contact handler', () => {
     const event = createEvent({ token: '', includePhone: true, phoneToken: 'valid-phone-token', tNow: 2000 });
     const res = await handler(event);
     expect(res.statusCode).toBe(200);
-    expect(JSON.parse(res.body)).toEqual({ email: 'test@example.com', phone: '+1234567890' });
+    expect(JSON.parse(res.body)).toEqual({ phone: '+1234567890' });
   });
 
   it('rejects phone-only request with invalid token', async () => {
