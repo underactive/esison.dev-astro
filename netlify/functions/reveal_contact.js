@@ -21,6 +21,8 @@ async function verifyTurnstileToken(token, ip) {
   return { ok: !!res?.success };
 }
 
+const MIN_FORM_COMPLETION_MS = 1200;
+
 /**
  * Parses the request body and runs anti-bot validation checks.
  * Returns { fields } on success or { error } with a ready-to-return response on failure.
@@ -33,13 +35,13 @@ function parseAndValidate(event) {
     console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "bot-detected", ts: Date.now() }));
     return { error: { statusCode: 400, body: JSON.stringify({ error: "bot-detected" }) } };
   }
-  // Reject submissions faster than 1200ms — humans cannot realistically complete the form this quickly
-  if (typeof tNow === "number" && tNow < 1200) {
+  const elapsed = Number(tNow);
+  if (!Number.isFinite(elapsed) || elapsed < MIN_FORM_COMPLETION_MS) {
     console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "too-fast", ts: Date.now() }));
     return { error: { statusCode: 400, body: JSON.stringify({ error: "too-fast" }) } };
   }
 
-  const ip = event.headers["x-forwarded-for"] || event.headers["client-ip"] || "";
+  const ip = getClientIp(event);
   return { fields: { token, includePhone, phoneToken, ip } };
 }
 
