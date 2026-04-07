@@ -70,18 +70,25 @@ async function isRateLimited(ip) {
 
   if (url && token) {
     try {
+      const base = url.replace(/\/+$/, "");
       const key = `rl:${ip}`;
-      const res = await fetch(`${url}/incr/${key}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(r => r.json());
-      
-      const count = res.result;
-      if (count === 1) {
-        await fetch(`${url}/expire/${key}/900`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+      const ttlSec = Math.floor(RATE_LIMIT_WINDOW_MS / 1000);
+      const script =
+        "local n=redis.call('INCR',KEYS[1]);if n==1 then redis.call('EXPIRE',KEYS[1],tonumber(ARGV[1])) end;return n";
+      const res = await fetch(base, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(["EVAL", script, "1", key, String(ttlSec)])
+      }).then((r) => r.json());
+
+      const count = Number(res.result);
+      if (!Number.isFinite(count)) {
+        throw new Error("unexpected Redis rate-limit response");
       }
-      
+
       return count > RATE_LIMIT_MAX;
     } catch (err) {
       console.error("Redis rate limit error:", err);
