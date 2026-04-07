@@ -358,14 +358,14 @@ export function readUrlString(
 	}
 
 	for (const candidate of candidates) {
-		if (!URL.canParse(candidate)) {
+		try {
+			const parsed = new URL(candidate);
+
+			if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+				return parsed.toString();
+			}
+		} catch {
 			continue;
-		}
-
-		const parsed = new URL(candidate);
-
-		if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
-			return parsed.toString();
 		}
 	}
 
