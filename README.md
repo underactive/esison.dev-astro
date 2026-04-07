@@ -1,62 +1,67 @@
-# Astro Starter Kit: Blog
+# esison.dev
 
-```sh
-npm create astro@latest -- --template blog
+Personal portfolio and blog for Eric Sison, built with [Astro 6](https://astro.build/) and [Vue 3](https://vuejs.org/) interactive islands. Deployed on [Netlify](https://www.netlify.com/).
+
+## Prerequisites
+
+- Node.js v24+ (tested with v24.4.0)
+- npm v11+ (tested with v11.4.2)
+- [Netlify CLI](https://docs.netlify.com/cli/get-started/) (optional, for testing serverless functions locally)
+
+## Setup
+
+```bash
+git clone <repo-url>
+cd esison.dev-astro
+git lfs pull            # fetch large media files in public/images/ and public/videos/
+npm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Create a `.env` file in the project root with the following variables:
 
-Features:
+### Required Environment Variables
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+| Variable | Description |
+|----------|-------------|
+| `TURNSTILE_SECRET` | Cloudflare Turnstile server-side secret key (used by the contact reveal function) |
+| `CONTACT_EMAIL` | Email address returned by the contact reveal function |
+| `PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile client-side site key |
 
-## 🚀 Project Structure
+### Optional Environment Variables
 
-Inside of your Astro project, you'll see the following folders and files:
+| Variable | Description |
+|----------|-------------|
+| `CONTACT_PHONE` | Phone number returned by the contact reveal function (second CAPTCHA stage) |
+| `ENABLE_GITHUB_PROJECTS` | Set to `'false'` to hide the homepage GitHub projects section (enabled by default) |
+| `GITHUB_TOKEN` | GitHub personal access token for build-time repo API requests (raises rate limits) |
+| `PUBLIC_SITE_NAME` | Site display name (defaults to `esison.dev`) |
+| `PUBLIC_SITE_URL` | Canonical site URL |
 
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+## Development
+
+```bash
+npm run dev             # Dev server at localhost:4321
+npm run build           # Production build to ./dist/
+npm run preview         # Preview production build locally
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+The contact modal relies on the `reveal_contact` Netlify serverless function in `netlify/functions/`. To test it locally, use `netlify dev` instead of `npm run dev`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Key Features
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+- **Blog** -- Markdown/MDX content collections in `src/content/blog/`, with RSS and sitemap generation
+- **Contact reveal** -- Two-stage Cloudflare Turnstile CAPTCHA protecting contact info, served via a Netlify serverless function with anti-bot measures
+- **GitHub projects sync** -- Public repos tagged with the `portfolio` topic appear on the homepage at build time. A [scheduled GitHub Action](.github/workflows/refresh-github-projects.yml) triggers Netlify rebuilds every 6 hours to keep them current
+- **Dark mode** -- Class-based theme toggle, defaults to dark, persisted in localStorage
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Deployment
 
-## 🧞 Commands
+The site is deployed on Netlify as a static build.
 
-All commands are run from the root of the project, from a terminal:
+For the GitHub projects scheduled refresh to work, add a `NETLIFY_BUILD_HOOK_URL` secret to the GitHub repository's Actions settings. This allows the scheduled workflow to trigger Netlify rebuilds so that repository changes propagate to the homepage automatically.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+All server-side secrets (`TURNSTILE_SECRET`, `CONTACT_EMAIL`, `CONTACT_PHONE`) must be configured in the Netlify dashboard under site environment variables.
 
-## 👀 Want to learn more?
+## Architecture
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+See [CLAUDE.md](CLAUDE.md) for detailed architecture documentation, development rules, and file inventory.
