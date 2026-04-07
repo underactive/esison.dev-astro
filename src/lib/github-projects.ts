@@ -129,13 +129,17 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 		let isPartial = false;
 
 		if (projects.length < GITHUB_PROJECTS_MAX_COUNT && hasMoreProjects) {
-			const promises = [];
 			const maxPage = Math.min(GITHUB_PROJECTS_MAX_COUNT, lastPage);
-			for (let p = page; p <= maxPage; p++) {
-				promises.push(fetchWithRetry(buildGitHubReposUrl(p), buildGitHubHeaders()));
+			const concurrencyLimit = 3;
+			const results = [];
+			
+			for (let p = page; p <= maxPage; p += concurrencyLimit) {
+				const chunkPromises = [];
+				for (let i = 0; i < concurrencyLimit && p + i <= maxPage; i++) {
+					chunkPromises.push(fetchWithRetry(buildGitHubReposUrl(p + i), buildGitHubHeaders()));
+				}
+				results.push(...await Promise.allSettled(chunkPromises));
 			}
-
-			const results = await Promise.allSettled(promises);
 
 			for (const result of results) {
 				if (result.status !== 'fulfilled') {
