@@ -87,7 +87,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
-  
+
+  if (isVisible.value) {
+    document.body.style.overflow = ''
+  }
+
   if ((window as any).showImageModal) {
     delete (window as any).showImageModal
   }
