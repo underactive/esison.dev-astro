@@ -52,6 +52,7 @@ function parseAndValidate(event, ip) {
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX = 10;
 const rateLimitStore = new Map();
+let cleanupCounter = 0;
 
 function getClientIp(event) {
   const headers = event.headers;
@@ -76,7 +77,9 @@ function isRateLimited(ip) {
   valid.push(now);
   rateLimitStore.set(ip, valid);
 
-  if (rateLimitStore.size > 1000) {
+  cleanupCounter++;
+  if (rateLimitStore.size > 1000 && cleanupCounter >= 100) {
+    cleanupCounter = 0;
     for (const [key, vals] of rateLimitStore) {
       const active = vals.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
       if (active.length === 0) rateLimitStore.delete(key);
