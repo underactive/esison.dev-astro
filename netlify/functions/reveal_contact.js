@@ -62,8 +62,31 @@ function getClientIp(event) {
   return headers["client-ip"] || "";
 }
 
-function isRateLimited(ip) {
+async function isRateLimited(ip) {
   if (!ip) return false;
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (url && token) {
+    try {
+      const key = `rl:${ip}`;
+      const res = await fetch(`${url}/incr/${key}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(r => r.json());
+      
+      const count = res.result;
+      if (count === 1) {
+        await fetch(`${url}/expire/${key}/900`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      
+      return count > RATE_LIMIT_MAX;
+    } catch (err) {
+      console.error("Redis rate limit error:", err);
+    }
+  }
 
   const now = Date.now();
   const timestamps = rateLimitStore.get(ip) || [];
@@ -110,7 +133,7 @@ function isRateLimited(ip) {
 export async function handler(event) {
   try {
     const clientIp = getClientIp(event);
-    if (isRateLimited(clientIp)) {
+    if (await isRateLimited(clientIp)) {
       console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "rate-limited", ts: Date.now() }));
       return { statusCode: 429, body: JSON.stringify({ error: "rate-limited" }) };
     }
