@@ -297,12 +297,14 @@ function parseGitHubProject(value: unknown): GitHubProjectCandidate | null {
 	const name = readNonEmptyString(value, 'name');
 	const repoUrl = readUrlString(value, 'html_url');
 	const updatedAt = readDate(value, 'updated_at');
-	const pushedAt = readDate(value, 'pushed_at') ?? updatedAt;
+	const rawPushedAt = readDate(value, 'pushed_at');
 	const rawTopics = readStringArray(value, 'topics');
 
-	if (!name || !repoUrl || !pushedAt) {
+	if (!name || !repoUrl || (!rawPushedAt && !updatedAt)) {
 		return null;
 	}
+
+	const pushedAt = rawPushedAt ?? updatedAt;
 
 	return {
 		name,
