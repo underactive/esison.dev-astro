@@ -156,7 +156,7 @@ import GitHubProjectsSection from '../components/GitHubProjectsSection.astro';
 				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
 					<div class="h-64 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
 						<a href="https://onlyfjs.net" target="_blank" rel="noopener" class="w-full h-full cursor-pointer">
-							<video class="w-full h-full object-cover" autoplay loop muted playsinline>
+							<video class="w-full h-full object-cover lazy-video" loop muted playsinline preload="none">
 								<source src="/videos/onlyfjs_out.mp4" type="video/mp4">
 							</video>
 						</a>
@@ -178,7 +178,7 @@ import GitHubProjectsSection from '../components/GitHubProjectsSection.astro';
 				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
 					<div class="h-64 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
 						<a href="https://amfm.video/" target="_blank" rel="noopener" class="w-full h-full cursor-pointer">
-							<video class="w-full h-full object-cover" autoplay loop muted playsinline>
+							<video class="w-full h-full object-cover lazy-video" loop muted playsinline preload="none">
 								<source src="/videos/flowstack_out.mp4" type="video/mp4">
 							</video>
 						</a>
@@ -303,4 +303,19 @@ import GitHubProjectsSection from '../components/GitHubProjectsSection.astro';
 				0 0 20px #00c803;
 		}
 	</style>
+
+	<script>
+		const observer = new IntersectionObserver((entries) => {
+			for (const entry of entries) {
+				const video = entry.target as HTMLVideoElement;
+				if (entry.isIntersecting) {
+					video.play();
+				} else {
+					video.pause();
+				}
+			}
+		}, { rootMargin: '200px' });
+
+		document.querySelectorAll('video.lazy-video').forEach((video) => observer.observe(video));
+	</script>
 </MainLayout>
