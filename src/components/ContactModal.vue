@@ -96,10 +96,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, reactive, defineComponent, h } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, reactive } from 'vue'
+import VerificationSection from './VerificationSection.vue'
+import ContactInfo from './ContactInfo.vue'
+import PhoneRevealButton from './PhoneRevealButton.vue'
 
 // Types
-interface ContactInfo {
+interface ContactData {
   email: string
   phone?: string
 }
@@ -127,7 +130,7 @@ declare global {
 
 // Reactive state
 const isVisible = ref(false)
-const contactInfo = ref<ContactInfo | null>(null)
+const contactInfo = ref<ContactData | null>(null)
 const startTime = ref<number>()
 
 // Step states
@@ -376,150 +379,6 @@ onUnmounted(() => {
   
   if ((window as any).showContactModal) {
     delete (window as any).showContactModal
-  }
-})
-
-// Inline Components (Simple functional components)
-const LoadingSpinner = defineComponent({
-  props: {
-    message: { type: String, default: 'Loading...' }
-  },
-  setup(props) {
-    return () => h('div', { class: 'flex items-center justify-center space-x-2' }, [
-      h('svg', {
-        class: 'animate-spin h-5 w-5 text-purple-500',
-        xmlns: 'http://www.w3.org/2000/svg',
-        fill: 'none',
-        viewBox: '0 0 24 24'
-      }, [
-        h('circle', {
-          class: 'opacity-25',
-          cx: '12',
-          cy: '12',
-          r: '10',
-          stroke: 'currentColor',
-          'stroke-width': '4'
-        }),
-        h('path', {
-          class: 'opacity-75',
-          fill: 'currentColor',
-          d: 'M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-        })
-      ]),
-      h('span', { class: 'text-gray-400 text-sm' }, props.message)
-    ])
-  }
-})
-
-const ErrorMessage = defineComponent({
-  props: {
-    message: { type: String, required: true }
-  },
-  emits: ['retry'],
-  setup(props, { emit }) {
-    return () => h('div', { class: 'p-3 bg-red-900/20 border border-red-500/50 rounded-lg' }, [
-      h('p', { class: 'text-red-400 text-sm' }, props.message),
-      h('button', {
-        class: 'mt-2 text-xs text-purple-400 hover:text-purple-300 underline',
-        onClick: () => emit('retry')
-      }, 'Try again')
-    ])
-  }
-})
-
-const VerificationSection = defineComponent({
-  props: {
-    step: { type: Object, required: true },
-    message: { type: String, required: true }
-  },
-  emits: ['retry'],
-  components: { LoadingSpinner, ErrorMessage },
-  setup(props, { emit, slots }) {
-    return () => {
-      if (props.step.status === 'loading') {
-        return h('div', { class: 'mt-4' }, h(LoadingSpinner))
-      }
-      
-      if (props.step.status === 'error') {
-        return h('div', { class: 'mt-4' }, 
-          h(ErrorMessage, { 
-            message: props.step.error,
-            onRetry: () => emit('retry')
-          })
-        )
-      }
-      
-      if (props.step.status === 'captcha') {
-        return h('div', { class: 'mt-4 space-y-4' }, [
-          h('p', { class: 'text-gray-400 text-sm' }, props.message),
-          slots.default?.()
-        ])
-      }
-      
-      return null
-    }
-  }
-})
-
-const ContactInfo = defineComponent({
-  props: {
-    icon: { type: String, required: true },
-    label: { type: String, required: true },
-    value: { type: String }
-  },
-  setup(props) {
-    const iconPaths: Record<string, string> = {
-      email: "M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-      phone: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-    }
-    
-    return () => h('div', { class: 'flex items-center space-x-3' }, [
-      h('svg', {
-        class: 'h-5 w-5 text-gray-400',
-        fill: 'none',
-        viewBox: '0 0 24 24',
-        stroke: 'currentColor'
-      }, [
-        h('path', {
-          'stroke-linecap': 'round',
-          'stroke-linejoin': 'round',
-          'stroke-width': '2',
-          d: iconPaths[props.icon] || iconPaths.email
-        })
-      ]),
-      h('div', {}, [
-        h('p', { class: 'text-sm font-medium text-gray-400' }, props.label),
-        h('p', { class: 'text-white' }, props.value)
-      ])
-    ])
-  }
-})
-
-const PhoneRevealButton = defineComponent({
-  emits: ['click'],
-  setup(_, { emit }) {
-    return () => h('div', { class: 'text-center' }, [
-      h('p', { class: 'text-sm text-gray-400 mb-3' }, 'Want my phone number too?'),
-      h('button', {
-        class: 'px-4 py-2 bg-purple-600/80 text-white text-sm rounded-lg hover:bg-purple-600 transition-colors duration-200 border border-purple-500/50',
-        onClick: () => emit('click')
-      }, [
-        h('svg', {
-          class: 'h-4 w-4 inline mr-2',
-          fill: 'none',
-          viewBox: '0 0 24 24',
-          stroke: 'currentColor'
-        }, [
-          h('path', {
-            'stroke-linecap': 'round',
-            'stroke-linejoin': 'round',
-            'stroke-width': '2',
-            d: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z'
-          })
-        ]),
-        'Reveal Phone Number'
-      ])
-    ])
   }
 })
 
