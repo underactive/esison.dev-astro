@@ -28,7 +28,12 @@ const MIN_FORM_COMPLETION_MS = 1200;
  * Returns { fields } on success or { error } with a ready-to-return response on failure.
  */
 function parseAndValidate(event) {
-  const body = JSON.parse(event.body || "{}");
+  let body;
+  try {
+    body = JSON.parse(event.body || "{}");
+  } catch {
+    return { error: { statusCode: 400, body: JSON.stringify({ error: "invalid-request" }) } };
+  }
   const { token, honeypot, tNow, includePhone, phoneToken } = body;
 
   if (honeypot && honeypot.trim() !== "") {
