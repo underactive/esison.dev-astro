@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 const textElement = ref<HTMLSpanElement>()
 const cursorElement = ref<HTMLSpanElement>()
 const isLightMode = ref(false)
+const themeObserver = ref<MutationObserver>()
 
 // State management for cycling through texts
 const currentTextIndex = ref(0)
@@ -77,14 +78,11 @@ onMounted(() => {
   checkTheme()
   
   // Listen for theme changes
-  const observer = new MutationObserver(checkTheme)
-  observer.observe(document.documentElement, {
+  themeObserver.value = new MutationObserver(checkTheme)
+  themeObserver.value.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class']
   })
-  
-  // Store observer for cleanup
-  ;(window as any).__themeObserver = observer
   
   if (!textElement.value || !cursorElement.value) return
   
@@ -203,10 +201,7 @@ onUnmounted(() => {
   }
   
   // Cleanup theme observer
-  if (typeof window !== 'undefined' && (window as any).__themeObserver) {
-    ;(window as any).__themeObserver.disconnect()
-    delete (window as any).__themeObserver
-  }
+  themeObserver.value?.disconnect()
 })
 </script>
 
