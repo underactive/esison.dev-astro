@@ -48,6 +48,15 @@ export interface RevealContactClientDeps {
 	getHoneypotValue: () => string
 }
 
+const ERROR_MESSAGES: Record<string, string> = {
+	'rate-limited': 'Too many attempts — please wait and try again.',
+	'too-fast': 'Please slow down and try again.',
+	'captcha-invalid': 'Verification failed — please try again.',
+	'bot-detected': 'Verification failed.',
+	'missing-contact-info': 'Contact info is temporarily unavailable.',
+	'server-error': 'Something went wrong — please try again.',
+}
+
 export function createRevealContactClient(deps: RevealContactClientDeps) {
 	const callAPI = async (payload: Record<string, unknown>) => {
 		let response: Response
@@ -67,10 +76,20 @@ export function createRevealContactClient(deps: RevealContactClientDeps) {
 
 		if (!response.ok) {
 			const errorData = (await response.json().catch(() => ({}))) as { error?: string }
-			throw new Error(errorData.error || `Server error: ${response.status}`)
+			const code = errorData.error ?? ''
+			throw new Error(ERROR_MESSAGES[code] ?? `Server error: ${response.status}`)
 		}
 
-		return response.json()
+		let data: unknown
+		try {
+			data = await response.json()
+		} catch {
+			throw new Error('Invalid response — please try again.')
+		}
+		if (!data || typeof (data as Record<string, unknown>).email !== 'string') {
+			throw new Error('Invalid response — please try again.')
+		}
+		return data as { email: string; phone?: string | null }
 	}
 
 	const getEmailInfo = async (token: string) => {
