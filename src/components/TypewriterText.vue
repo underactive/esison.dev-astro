@@ -94,7 +94,7 @@ onMounted(() => {
   
   // Start the typing cycle after delays
   const totalDelay = props.delay + (props.startDelay * 1000)
-  setTimeout(startTypingCycle, totalDelay)
+  timeoutId.value = setTimeout(startTypingCycle, totalDelay) as unknown as number
 })
 
 // Set cursor to finished state
