@@ -224,17 +224,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null;
 }
 
-function readBoolean(record: Record<string, unknown>, key: string): boolean {
+export function readBoolean(record: Record<string, unknown>, key: string): boolean {
 	return record[key] === true;
 }
 
-function readNumber(record: Record<string, unknown>, key: string): number {
+export function readNumber(record: Record<string, unknown>, key: string): number {
 	const value = record[key];
 
 	return typeof value === 'number' && Number.isFinite(value) ? value : 0;
 }
 
-function readDate(record: Record<string, unknown>, key: string): Date | null {
+export function readDate(record: Record<string, unknown>, key: string): Date | null {
 	const value = readNonEmptyString(record, key);
 
 	if (!value) {
@@ -246,7 +246,7 @@ function readDate(record: Record<string, unknown>, key: string): Date | null {
 	return Number.isNaN(parsed.valueOf()) ? null : parsed;
 }
 
-function readUrlString(
+export function readUrlString(
 	record: Record<string, unknown>,
 	key: string,
 	options?: {
@@ -280,7 +280,7 @@ function readUrlString(
 	return undefined;
 }
 
-function readStringArray(record: Record<string, unknown>, key: string): string[] {
+export function readStringArray(record: Record<string, unknown>, key: string): string[] {
 	const value = record[key];
 
 	if (!Array.isArray(value)) {
@@ -297,7 +297,7 @@ function readStringArray(record: Record<string, unknown>, key: string): string[]
 	});
 }
 
-function readNonEmptyString(
+export function readNonEmptyString(
 	record: Record<string, unknown>,
 	key: string,
 ): string | null {
