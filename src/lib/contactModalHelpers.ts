@@ -32,7 +32,7 @@ export function createTurnstileWidget(
 		sitekey: getTurnstileSiteKey(),
 		callback,
 		'error-callback': errorCallback,
-		theme: 'dark',
+		theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
 		size: 'normal'
 	})
 }
