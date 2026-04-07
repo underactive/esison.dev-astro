@@ -50,11 +50,20 @@ export interface RevealContactClientDeps {
 
 export function createRevealContactClient(deps: RevealContactClientDeps) {
 	const callAPI = async (payload: Record<string, unknown>) => {
-		const response = await fetch('/.netlify/functions/reveal_contact', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(payload)
-		})
+		let response: Response
+		try {
+			response = await fetch('/.netlify/functions/reveal_contact', {
+				method: 'POST',
+				signal: AbortSignal.timeout(8000),
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload)
+			})
+		} catch (err) {
+			if (err instanceof DOMException && err.name === 'TimeoutError') {
+				throw new Error('Request timed out — please try again')
+			}
+			throw err
+		}
 
 		if (!response.ok) {
 			const errorData = (await response.json().catch(() => ({}))) as { error?: string }
