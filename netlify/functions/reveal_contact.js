@@ -43,6 +43,44 @@ function parseAndValidate(event) {
   return { fields: { token, includePhone, phoneToken, ip } };
 }
 
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const RATE_LIMIT_MAX = 10;
+const rateLimitStore = new Map();
+
+function getClientIp(event) {
+  const headers = event.headers;
+  if (headers["x-nf-client-connection-ip"]) return headers["x-nf-client-connection-ip"];
+  const xff = headers["x-forwarded-for"];
+  if (xff) return xff.split(",")[0].trim();
+  return headers["client-ip"] || "";
+}
+
+function isRateLimited(ip) {
+  if (!ip) return false;
+
+  const now = Date.now();
+  const timestamps = rateLimitStore.get(ip) || [];
+  const valid = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+
+  if (valid.length >= RATE_LIMIT_MAX) {
+    rateLimitStore.set(ip, valid);
+    return true;
+  }
+
+  valid.push(now);
+  rateLimitStore.set(ip, valid);
+
+  if (rateLimitStore.size > 1000) {
+    for (const [key, vals] of rateLimitStore) {
+      const active = vals.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+      if (active.length === 0) rateLimitStore.delete(key);
+      else rateLimitStore.set(key, active);
+    }
+  }
+
+  return false;
+}
+
 /**
  * Serverless function to reveal contact information securely.
  *
@@ -62,6 +100,12 @@ function parseAndValidate(event) {
  */
 export async function handler(event) {
   try {
+    const clientIp = getClientIp(event);
+    if (isRateLimited(clientIp)) {
+      console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "rate-limited", ts: Date.now() }));
+      return { statusCode: 429, body: JSON.stringify({ error: "rate-limited" }) };
+    }
+
     const result = parseAndValidate(event);
     if (result.error) return result.error;
     const { token, includePhone, phoneToken, ip } = result.fields;
