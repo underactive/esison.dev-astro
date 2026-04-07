@@ -106,6 +106,7 @@ import {
   resetTurnstileWidget
 } from '../lib/contactModalHelpers'
 import { globalEventBus } from '../lib/eventBus'
+import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock'
 
 interface ContactData {
   email: string
@@ -142,7 +143,7 @@ const { getEmailInfo, getPhoneInfo } = createRevealContactClient({
 // Modal management
 const showModal = async () => {
   isVisible.value = true
-  document.body.style.overflow = 'hidden'
+  acquireScrollLock()
   if (startTime.value === undefined) { startTime.value = performance.now() }
   
   // Reset all state
@@ -156,8 +157,8 @@ const showModal = async () => {
 
 const hideModal = () => {
   isVisible.value = false
-  document.body.style.overflow = ''
-  
+  releaseScrollLock()
+
   // Cleanup widgets
   resetTurnstileWidget(turnstileWidgetId.value)
   resetTurnstileWidget(phoneTurnstileWidgetId.value)
@@ -294,7 +295,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (isVisible.value) {
-    document.body.style.overflow = ''
+    releaseScrollLock()
   }
   document.removeEventListener('keydown', handleKeydown)
   globalEventBus.removeEventListener('show-contact-modal', handleShowContactModal)

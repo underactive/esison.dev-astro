@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock'
 
 // Types
 interface ImageData {
@@ -68,12 +69,12 @@ const showModal = (image: ImageData) => {
   if (!isTrustedImageSrc(image?.src)) return
   currentImage.value = image
   isVisible.value = true
-  document.body.style.overflow = 'hidden'
+  acquireScrollLock()
 }
 
 const hideModal = () => {
   isVisible.value = false
-  document.body.style.overflow = ''
+  releaseScrollLock()
   currentImage.value = null
 }
 
@@ -95,7 +96,7 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
 
   if (isVisible.value) {
-    document.body.style.overflow = ''
+    releaseScrollLock()
   }
 
   if (window.showImageModal) {

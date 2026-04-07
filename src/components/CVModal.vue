@@ -64,6 +64,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 import { globalEventBus } from '../lib/eventBus'
+import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock'
 
 // Reactive state
 const isVisible = ref(false)
@@ -71,12 +72,12 @@ const isVisible = ref(false)
 // Modal management
 const showModal = () => {
   isVisible.value = true
-  document.body.style.overflow = 'hidden'
+  acquireScrollLock()
 }
 
 const hideModal = () => {
   isVisible.value = false
-  document.body.style.overflow = ''
+  releaseScrollLock()
 }
 
 // Open contact modal
@@ -105,7 +106,7 @@ onUnmounted(() => {
   globalEventBus.removeEventListener('show-cv-modal', handleShowCVModal)
 
   if (isVisible.value) {
-    document.body.style.overflow = ''
+    releaseScrollLock()
   }
 })
 
