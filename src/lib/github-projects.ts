@@ -8,6 +8,8 @@ import {
 const GITHUB_API_BASE_URL = 'https://api.github.com';
 const GITHUB_API_RESULTS_PAGE_SIZE = 100;
 const GITHUB_API_TIMEOUT_MS = 5000;
+const GITHUB_API_MAX_RETRIES = 2;
+const GITHUB_API_RETRY_BASE_DELAY_MS = 1000;
 const GITHUB_PROJECTS_DISABLED_VALUE = 'false';
 const DEFAULT_DESCRIPTION = 'No description provided yet.';
 
@@ -35,6 +37,30 @@ interface GitHubProjectCandidate extends GitHubProject {
 	hasRequiredTopic: boolean;
 }
 
+/**
+ * Fetches public GitHub repositories for the configured user and returns
+ * those tagged with the required `portfolio` topic.
+ *
+ * Repositories are included only when they are public, non-fork,
+ * non-archived, non-disabled, and carry the {@link GITHUB_PROJECTS_REQUIRED_TOPIC} topic.
+ *
+ * **Environment variables:**
+ * - `ENABLE_GITHUB_PROJECTS` — set to `'false'` to disable the section
+ *   entirely; the returned result will have `enabled: false` and an empty
+ *   project list.
+ * - `GITHUB_TOKEN` — optional Bearer token that raises GitHub API rate
+ *   limits for build-time requests.
+ *
+ * Transient network failures and timeouts are retried up to
+ * {@link GITHUB_API_MAX_RETRIES} times with exponential backoff.
+ * Non-retryable HTTP errors (e.g. 401, 403, 429) return immediately
+ * with `enabled: true` and an `errorMessage` describing the failure.
+ *
+ * @returns A {@link GitHubProjectsResult} — `enabled` indicates whether the
+ *   section is active, `projects` contains the filtered list (capped at
+ *   {@link GITHUB_PROJECTS_MAX_COUNT}), and `errorMessage` is set only when
+ *   the section is enabled but data could not be loaded.
+ */
 export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 	if (import.meta.env.ENABLE_GITHUB_PROJECTS === GITHUB_PROJECTS_DISABLED_VALUE) {
 		return {
@@ -49,10 +75,7 @@ export async function getGitHubProjects(): Promise<GitHubProjectsResult> {
 		let hasMoreProjects = true;
 
 		while (projects.length < GITHUB_PROJECTS_MAX_COUNT && hasMoreProjects) {
-			const response = await fetch(buildGitHubReposUrl(page), {
-				headers: buildGitHubHeaders(),
-				signal: AbortSignal.timeout(GITHUB_API_TIMEOUT_MS),
-			});
+			const response = await fetchWithRetry(buildGitHubReposUrl(page), buildGitHubHeaders());
 
 			if (!response.ok) {
 				console.warn(
@@ -115,6 +138,31 @@ function buildGitHubResponseErrorMessage(status: number): string {
 	return 'GitHub projects are enabled, but the repository list could not be loaded during this build.';
 }
 
+async function fetchWithRetry(url: URL, headers: Headers): Promise<Response> {
+	let lastError: unknown;
+
+	for (let attempt = 0; attempt <= GITHUB_API_MAX_RETRIES; attempt++) {
+		try {
+			return await fetch(url, {
+				headers,
+				signal: AbortSignal.timeout(GITHUB_API_TIMEOUT_MS),
+			});
+		} catch (error) {
+			lastError = error;
+
+			if (attempt < GITHUB_API_MAX_RETRIES) {
+				const delay = GITHUB_API_RETRY_BASE_DELAY_MS * 2 ** attempt;
+				console.warn(
+					`[github-projects] Fetch attempt ${attempt + 1} failed, retrying in ${delay}ms…`,
+				);
+				await new Promise((resolve) => setTimeout(resolve, delay));
+			}
+		}
+	}
+
+	throw lastError;
+}
+
 function buildGitHubHeaders(): Headers {
 	const headers = new Headers({
 		Accept: 'application/vnd.github+json',
@@ -152,38 +200,27 @@ function parseGitHubProjectsPage(payload: unknown): {
 		throw new Error('GitHub API payload was not a repository array.');
 	}
 
-	const projects: GitHubProjectCandidate[] = [];
+	const projects: GitHubProject[] = [];
 	const warnings: string[] = [];
 
 	for (const [index, rawItem] of payload.entries()) {
-		const project = parseGitHubProject(rawItem);
+		const candidate = parseGitHubProject(rawItem);
 
-		if (!project) {
+		if (!candidate) {
 			warnings.push(`Skipped repository result at index ${index} because it was missing required fields.`);
 			continue;
 		}
 
+		if (!candidate.hasRequiredTopic || candidate.archived || candidate.disabled || candidate.fork) {
+			continue;
+		}
+
+		const { archived: _, disabled: _d, fork: _f, hasRequiredTopic: _h, ...project } = candidate;
 		projects.push(project);
 	}
 
 	return {
-		projects: projects
-			.filter(
-				(project) =>
-					project.hasRequiredTopic &&
-					!project.archived &&
-					!project.disabled &&
-					!project.fork,
-			)
-			.map(
-				({
-					archived: _archived,
-					disabled: _disabled,
-					fork: _fork,
-					hasRequiredTopic: _hasRequiredTopic,
-					...project
-				}) => project,
-			),
+		projects,
 		warnings,
 		hasMoreProjects: payload.length === GITHUB_API_RESULTS_PAGE_SIZE,
 	};
