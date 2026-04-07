@@ -16,6 +16,23 @@ async function verifyTurnstileToken(token, ip) {
   return { ok: !!res?.success, raw: res };
 }
 
+/**
+ * Serverless function to reveal contact information securely.
+ * 
+ * Expected JSON payload:
+ * - token: string (Cloudflare Turnstile token for primary email reveal)
+ * - honeypot: string (Anti-bot hidden field, must be empty)
+ * - tNow: number (Client-side timing check, must be >= 1200ms to prevent instant bot submissions)
+ * - includePhone: boolean (Flag indicating intent to reveal phone number)
+ * - phoneToken: string (Secondary Turnstile token required for phone reveal)
+ * 
+ * Security Protocol:
+ * 1. Validates honeypot (must be empty) and tNow (must be >= 1200ms).
+ * 2. Multi-stage reveal: 
+ *    - Stage 1: Requires `token` to reveal email.
+ *    - Stage 2: Requires `phoneToken` (and `includePhone=true`) to reveal phone number.
+ *    - Tokens are single-use and verified via Cloudflare Turnstile API.
+ */
 export async function handler(event) {
   try {
     const body = JSON.parse(event.body || "{}");
