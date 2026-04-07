@@ -137,7 +137,9 @@ const typeCurrentText = () => {
   isTyping.value = true
   setCursorToTyping()
   currentCharIndex.value = 0
-  textElement.value.textContent = ''
+  requestAnimationFrame(() => {
+    if (textElement.value) textElement.value.textContent = ''
+  })
   
   typeNextCharacter()
 }
@@ -149,8 +151,11 @@ const typeNextCharacter = () => {
   const currentText = textItems.value[currentTextIndex.value]?.text || ''
   
   if (currentCharIndex.value < currentText.length) {
-    textElement.value.textContent += currentText.charAt(currentCharIndex.value)
     currentCharIndex.value++
+    const textToSet = currentText.slice(0, currentCharIndex.value)
+    requestAnimationFrame(() => {
+      if (textElement.value) textElement.value.textContent = textToSet
+    })
     timeoutId.value = setTimeout(typeNextCharacter, props.speed) as unknown as number
   } else {
     // Finished typing current text
@@ -177,10 +182,13 @@ const startBackspace = () => {
 const backspaceNextCharacter = () => {
   if (!textElement.value || !isBackspacing.value) return
   
-  const currentText = textElement.value.textContent || ''
-  
-  if (currentText.length > 0) {
-    textElement.value.textContent = currentText.slice(0, -1)
+  if (currentCharIndex.value > 0) {
+    currentCharIndex.value--
+    const currentText = textItems.value[currentTextIndex.value]?.text || ''
+    const textToSet = currentText.slice(0, currentCharIndex.value)
+    requestAnimationFrame(() => {
+      if (textElement.value) textElement.value.textContent = textToSet
+    })
     timeoutId.value = setTimeout(backspaceNextCharacter, props.backspaceSpeed) as unknown as number
   } else {
     // Finished backspacing
