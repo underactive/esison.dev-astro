@@ -49,13 +49,13 @@ Modular Astro static site with Vue 3 islands for interactivity.
 - Dynamic routes generated in `src/pages/blog/[...slug].astro`
 
 #### 2. Component Model (Astro + Vue Islands)
-- **Astro components** (`src/components/*.astro`) — static/SSR rendering: `BaseHead`, `HeaderCustom`, `Footer`, `FormattedDate`, `HeaderLink`, `Button`, `ColorPicker`
+- **Astro components** (`src/components/*.astro`) — static/SSR rendering: `BaseHead`, `Header` (wraps `HeaderCustom`; edit `HeaderCustom.astro` for header UI), `Footer`, `FormattedDate`, `HeaderLink`, `Button`, `ColorPicker`
 - **Vue components** (`src/components/*.vue`) — client-side interactivity: `TypewriterText`, `MatrixRain`, `ContactModal`, `CVModal`, `ImageModal`
 - All Vue components use `client:load` directive for immediate hydration
 - Do not mix — Astro components handle structure/SEO, Vue handles interactive behavior
 
 #### 3. Layout System
-- `MainLayout.astro` — Top-level wrapper used by all pages. Includes `BaseHead`, `Header` (`Header.astro` renders `HeaderCustom`), `Footer`, fixed parallax background elements, and theme toggle script. Default dark mode for first-time visitors, persisted in localStorage via MutationObserver on `<html>` class changes.
+- `MainLayout.astro` — Top-level wrapper used by all pages. Includes `BaseHead`, `Header`, `Footer`, fixed parallax background elements, and theme toggle script. Default dark mode for first-time visitors, persisted in localStorage via MutationObserver on `<html>` class changes.
 - `BlogPost.astro` — Extends MainLayout for blog posts. Adds hero image with gradient overlay, formatted publication/update dates, prose-purple typography, and back-to-blog navigation.
 
 #### 4. Dark Mode / Theme Toggle
@@ -344,7 +344,7 @@ Version string appears in 1 file:
 | File / Directory | Purpose |
 |------------------|---------|
 | `src/pages/` | Route-based pages: `index.astro`, `about.astro`, `blog/`, `rss.xml.js` |
-| `src/components/` | Astro (`.astro`) and Vue (`.vue`) components, including `GitHubProjectsSection.astro` for build-time repo cards |
+| `src/components/` | Astro (`.astro`) and Vue (`.vue`) components; layouts import `Header.astro`, which renders `HeaderCustom.astro`; also `GitHubProjectsSection.astro` for build-time repo cards |
 | `src/lib/github-projects.ts` | Build-time GitHub repo fetching, validation, normalization, and fallback handling |
 | `src/layouts/` | `MainLayout.astro` (base) and `BlogPost.astro` (blog posts) |
 | `src/content/blog/` | Blog post markdown/MDX files |
