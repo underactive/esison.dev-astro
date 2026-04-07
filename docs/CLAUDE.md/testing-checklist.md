@@ -1,5 +1,18 @@
 # Testing Checklist
 
+## Automation scope (target)
+
+There is no automated test suite or CI test job in this repository yet. The intended coverage split:
+
+- **Unit / integration:** `src/lib/github-projects.ts` and related build-time logic using fixtures (no live GitHub), including validation, URL handling, ordering, and fallbacks.
+- **E2E (optional):** Browser smoke against a production or preview build for layout and flows that are costly to cover in unit tests.
+
+When automated tests exist, run them in CI (for example `npm test` in GitHub Actions) and map or duplicate the highest-risk scenarios from the manual list below so the checklist does not drift from enforced behavior.
+
+## Manual smoke
+
+Use this section for release checks, visual verification, and behavior that depends on external services (Netlify hooks, live GitHub) where automation is impractical or not yet implemented.
+
 - [ ] Homepage shows a "Public Repos on GitHub" section under Featured Projects when `ENABLE_GITHUB_PROJECTS` is unset or `true`.
 - [ ] Homepage hides the GitHub repos section entirely when `ENABLE_GITHUB_PROJECTS=false`.
 - [ ] The GitHub section header does not show the old `Add the portfolio topic...` instruction sentence.
