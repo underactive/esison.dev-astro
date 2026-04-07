@@ -2,6 +2,8 @@
 
 async function verifyTurnstileToken(token, ip) {
   if (!token) return { ok: false };
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
   const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -10,13 +12,13 @@ async function verifyTurnstileToken(token, ip) {
       response: token,
       remoteip: ip || ""
     }),
-    signal: AbortSignal.timeout(5000)
+    signal: controller.signal
   }).then(r => r.json()).catch((err) => {
     if (err.name === "TimeoutError" || err.name === "AbortError") {
       console.error(JSON.stringify({ event: "turnstile_verification_failed", reason: "upstream-timeout", ts: Date.now() }));
     }
     return null;
-  });
+  }).finally(() => clearTimeout(timeoutId));
 
   return { ok: !!res?.success };
 }
@@ -139,63 +141,76 @@ async function isRateLimited(ip) {
  */
 export async function handler(event) {
   try {
-    const clientIp = getClientIp(event);
-    if (await isRateLimited(clientIp)) {
-      console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "rate-limited", ts: Date.now() }));
-      return { statusCode: 429, body: JSON.stringify({ error: "rate-limited" }) };
-    }
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Function execution timed out")), 8000);
+    });
 
-    const result = parseAndValidate(event, clientIp);
-    if (result.error) return result.error;
-    const { token, includePhone, phoneToken, ip } = result.fields;
+    return await Promise.race([
+      timeoutPromise,
+      (async () => {
+        const clientIp = getClientIp(event);
+        if (await isRateLimited(clientIp)) {
+          console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "rate-limited", ts: Date.now() }));
+          return { 
+            statusCode: 429, 
+            headers: { "Retry-After": String(RATE_LIMIT_WINDOW_MS / 1000) },
+            body: JSON.stringify({ error: "rate-limited" }) 
+          };
+        }
 
-    // Phone-only request: the client already revealed email via a prior request and is now
-    // submitting a second CAPTCHA (phoneToken) to unlock the phone number. Turnstile tokens
-    // are single-use, so a fresh widget render is required for this second stage.
-    if (includePhone && phoneToken && (!token || token === "")) {
-      const secondary = await verifyTurnstileToken(phoneToken, ip);
-      if (!secondary.ok) {
-        console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "captcha-invalid", stage: "secondary", ts: Date.now() }));
-        return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "secondary" }) };
-      }
+        const result = parseAndValidate(event, clientIp);
+        if (result.error) return result.error;
+        const { token, includePhone, phoneToken, ip } = result.fields;
 
-      const phone = process.env.CONTACT_PHONE || null;
-      if (!phone) {
-        console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
-        return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
-      }
+        // Phone-only request: the client already revealed email via a prior request and is now
+        // submitting a second CAPTCHA (phoneToken) to unlock the phone number. Turnstile tokens
+        // are single-use, so a fresh widget render is required for this second stage.
+        if (includePhone && phoneToken && (!token || token === "")) {
+          const secondary = await verifyTurnstileToken(phoneToken, ip);
+          if (!secondary.ok) {
+            console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "captcha-invalid", stage: "secondary", ts: Date.now() }));
+            return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "secondary" }) };
+          }
 
-      console.log(JSON.stringify({ event: "contact_revealed", includesPhone: true, ts: Date.now() }));
-      return { statusCode: 200, body: JSON.stringify({ phone }) };
-    }
+          const phone = process.env.CONTACT_PHONE || null;
+          if (!phone) {
+            console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
+            return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
+          }
 
-    // Primary CAPTCHA verification (required for initial email reveal)
-    const primary = await verifyTurnstileToken(token, ip);
-    if (!primary.ok) {
-      console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "captcha-invalid", stage: "primary", ts: Date.now() }));
-      return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "primary" }) };
-    }
+          console.log(JSON.stringify({ event: "contact_revealed", includesPhone: true, ts: Date.now() }));
+          return { statusCode: 200, body: JSON.stringify({ phone }) };
+        }
 
-    const email = process.env.CONTACT_EMAIL;
-    const phone = process.env.CONTACT_PHONE || null;
-    if (!email) {
-      console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
-      return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
-    }
+        // Primary CAPTCHA verification (required for initial email reveal)
+        const primary = await verifyTurnstileToken(token, ip);
+        if (!primary.ok) {
+          console.warn(JSON.stringify({ event: "contact_reveal_rejected", reason: "captcha-invalid", stage: "primary", ts: Date.now() }));
+          return { statusCode: 400, body: JSON.stringify({ error: "captcha-invalid", stage: "primary" }) };
+        }
 
-    let payload = { email, phone: null };
+        const email = process.env.CONTACT_EMAIL;
+        const phone = process.env.CONTACT_PHONE || null;
+        if (!email) {
+          console.error(JSON.stringify({ event: "contact_reveal_error", reason: "missing-contact-info", ts: Date.now() }));
+          return { statusCode: 500, body: JSON.stringify({ error: "missing-contact-info" }) };
+        }
 
-    if (includePhone && phone && phoneToken) {
-      const secondary = await verifyTurnstileToken(phoneToken, ip);
-      if (secondary.ok) {
-        payload.phone = phone;
-      } else {
-        payload.meta = { phoneWithheld: true, reason: "secondary-verification-failed" };
-      }
-    }
+        let payload = { email, phone: null };
 
-    console.log(JSON.stringify({ event: "contact_revealed", includesPhone: Boolean(payload.phone), ts: Date.now() }));
-    return { statusCode: 200, body: JSON.stringify(payload) };
+        if (includePhone && phone && phoneToken) {
+          const secondary = await verifyTurnstileToken(phoneToken, ip);
+          if (secondary.ok) {
+            payload.phone = phone;
+          } else {
+            payload.meta = { phoneWithheld: true, reason: "secondary-verification-failed" };
+          }
+        }
+
+        console.log(JSON.stringify({ event: "contact_revealed", includesPhone: Boolean(payload.phone), ts: Date.now() }));
+        return { statusCode: 200, body: JSON.stringify(payload) };
+      })()
+    ]);
   } catch (err) {
     console.error(JSON.stringify({ event: "contact_reveal_error", reason: "server-error", details: err instanceof Error ? err.message : "Unknown error", ts: Date.now() }));
     return { statusCode: 500, body: JSON.stringify({ error: "server-error" }) };
