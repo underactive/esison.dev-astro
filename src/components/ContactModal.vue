@@ -36,7 +36,7 @@
                 <input 
                   ref="honeypot" 
                   type="text" 
-                  class="absolute -left-9999px opacity-0" 
+                  class="absolute left-[-9999px] opacity-0"
                   tabindex="-1" 
                   autocomplete="off"
                 />
