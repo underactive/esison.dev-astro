@@ -197,7 +197,7 @@ const handleEmailSuccess = async (token: string) => {
     contactInfo.value = data
     emailStep.status = 'success'
   } catch (err) {
-    console.error('Email verification failed:', err)
+    console.error('Email verification failed:', err instanceof Error ? err.message : String(err))
     emailStep.error = err instanceof Error ? err.message : 'Verification failed.'
     emailStep.status = 'error'
     resetTurnstileWidget(turnstileWidgetId.value)
