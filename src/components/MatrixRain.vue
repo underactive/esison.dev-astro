@@ -12,6 +12,7 @@ let animationId: number | undefined
 let observer: MutationObserver | undefined
 let resizeCleanup: (() => void) | undefined
 let visibilityCleanup: (() => void) | undefined
+let motionCleanup: (() => void) | undefined
 
 onMounted(() => {
   const canvas = matrixCanvas.value
@@ -85,19 +86,42 @@ onMounted(() => {
     }
   }
 
-  // Start animation
-  draw()
+  const stopAnimation = () => {
+    if (animationId) {
+      cancelAnimationFrame(animationId)
+      animationId = undefined
+    }
+  }
+
+  const startAnimation = () => {
+    if (!animationId) draw()
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+  if (!reducedMotion.matches) {
+    draw()
+  }
 
   const onVisibilityChange = () => {
     if (document.hidden) {
-      if (animationId) cancelAnimationFrame(animationId)
-      animationId = undefined
-    } else {
-      draw()
+      stopAnimation()
+    } else if (!reducedMotion.matches) {
+      startAnimation()
     }
   }
   document.addEventListener('visibilitychange', onVisibilityChange)
   visibilityCleanup = () => document.removeEventListener('visibilitychange', onVisibilityChange)
+
+  const onMotionChange = (e: MediaQueryListEvent) => {
+    if (e.matches) {
+      stopAnimation()
+    } else if (!document.hidden) {
+      startAnimation()
+    }
+  }
+  reducedMotion.addEventListener('change', onMotionChange)
+  motionCleanup = () => reducedMotion.removeEventListener('change', onMotionChange)
 
   // Update color when theme changes
   observer = new MutationObserver(() => {
@@ -114,6 +138,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (resizeCleanup) resizeCleanup()
   if (visibilityCleanup) visibilityCleanup()
+  if (motionCleanup) motionCleanup()
   if (observer) observer.disconnect()
   if (animationId) cancelAnimationFrame(animationId)
 })
