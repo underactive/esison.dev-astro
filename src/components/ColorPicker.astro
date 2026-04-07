@@ -140,6 +140,28 @@ const darkBackgrounds = [
 <script>
 	import { COLOR_THEME_PRESETS } from '../lib/theme-presets';
 
+	const LIGHT_BACKGROUND_GRADIENTS: Record<string, string> = {
+		'default-light': 'linear-gradient(to bottom right, #f8fafc, #e2e8f0)',
+		'warm-light': 'linear-gradient(to bottom right, #fef7ed, #fed7aa)',
+		'cool-light': 'linear-gradient(to bottom right, #f0f9ff, #bae6fd)',
+		'nature-light': 'linear-gradient(to bottom right, #f0fdf4, #bbf7d0)',
+		'sunset-light': 'linear-gradient(to bottom right, #fef3c7, #fde68a)',
+		'lavender-light': 'linear-gradient(to bottom right, #faf5ff, #e9d5ff)',
+		'rose-light': 'linear-gradient(to bottom right, #fff1f2, #fce7f3)',
+		'clean-light': 'linear-gradient(to bottom right, #ffffff, #f8fafc)',
+	};
+
+	const DARK_BACKGROUND_GRADIENTS: Record<string, string> = {
+		'default-dark': 'linear-gradient(to bottom right, #111827, #374151)',
+		'midnight-dark': 'linear-gradient(to bottom right, #0f172a, #1e293b)',
+		'ocean-dark': 'linear-gradient(to bottom right, #164e63, #0f766e)',
+		'forest-dark': 'linear-gradient(to bottom right, #14532d, #166534)',
+		'royal-dark': 'linear-gradient(to bottom right, #3730a3, #581c87)',
+		'ember-dark': 'linear-gradient(to bottom right, #7c2d12, #991b1b)',
+		'charcoal-dark': 'linear-gradient(to bottom right, #1f2937, #111827)',
+		'space-dark': 'linear-gradient(to bottom right, #000000, #1a202c)',
+	};
+
 	function getThemeColors(theme: string) {
 		return COLOR_THEME_PRESETS.find((t) => t.primary === theme)?.colors;
 	}
@@ -265,13 +287,15 @@ const darkBackgrounds = [
 		function applySavedBackground() {
 			const isDark = document.documentElement.classList.contains('dark');
 			const mode = isDark ? 'dark' : 'light';
-			const savedGradient = localStorage.getItem(`background-${mode}-gradient`);
-			
-			if (savedGradient) {
-				applyBackground(savedGradient);
+			const storedId =
+				localStorage.getItem(`background-${mode}`) ||
+				(isDark ? 'midnight-dark' : 'default-light');
+			const presets = isDark ? DARK_BACKGROUND_GRADIENTS : LIGHT_BACKGROUND_GRADIENTS;
+			const gradient = presets[storedId];
+			if (gradient) {
+				applyBackground(gradient);
 			} else {
-				// Apply default gradient
-				const defaultGradient = isDark 
+				const defaultGradient = isDark
 					? 'linear-gradient(to bottom right, #0f172a, #1e293b)'
 					: 'linear-gradient(to bottom right, #f8fafc, #e2e8f0)';
 				applyBackground(defaultGradient);
