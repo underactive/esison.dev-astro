@@ -42,6 +42,34 @@ const darkBackgrounds = [
 		id="color-picker-dropdown"
 		class="absolute right-0 top-full mt-2 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 hidden z-50 min-w-[320px]"
 	>
+		<!-- Design Style Section -->
+		<div class="mb-4">
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Design Style</h3>
+			<div class="grid grid-cols-3 gap-2">
+				<button
+					class="design-option py-2 px-2 rounded-lg text-xs font-medium transition-all duration-200 border"
+					data-design-value="classic"
+				>
+					Classic
+				</button>
+				<button
+					class="design-option py-2 px-2 rounded-lg text-xs font-medium transition-all duration-200 border"
+					data-design-value="modern"
+				>
+					Modern
+				</button>
+				<button
+					class="design-option py-2 px-2 rounded-lg text-xs font-medium transition-all duration-200 border"
+					data-design-value="artdeco"
+				>
+					Art Deco
+				</button>
+			</div>
+		</div>
+
+		<!-- Divider -->
+		<div class="border-t border-gray-200 dark:border-gray-600 my-4"></div>
+
 		<!-- Color Section -->
 		<div class="mb-6">
 			<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Theme Colors</h3>
@@ -125,6 +153,20 @@ const darkBackgrounds = [
 </div>
 
 <style>
+	.design-option {
+		background-color: transparent;
+		border-color: rgb(209 213 219);
+		color: rgb(107 114 128);
+	}
+	.dark .design-option {
+		border-color: rgb(75 85 99);
+		color: rgb(156 163 175);
+	}
+	.design-option.active {
+		background-color: var(--theme-600, rgb(124 58 237));
+		border-color: var(--theme-600, rgb(124 58 237));
+		color: white;
+	}
 	.color-option.active, .background-option.active {
 		background-color: rgb(243 244 246);
 	}
@@ -234,11 +276,43 @@ const darkBackgrounds = [
 					// Save to localStorage
 					localStorage.setItem(`background-${mode}`, backgroundId);
 					localStorage.setItem(`background-${mode}-gradient`, gradient);
-					
+
 					// Update active states
 					updateActiveStates();
 				}
 			});
+		});
+
+		// Handle design style selection
+		const designOptions = document.querySelectorAll('.design-option');
+		designOptions.forEach(option => {
+			option.addEventListener('click', (e) => {
+				e.stopPropagation();
+				const design = option.getAttribute('data-design-value');
+				if (design) {
+					document.documentElement.setAttribute('data-design', design);
+					localStorage.setItem('design-theme', design);
+					designOptions.forEach(opt => opt.classList.remove('active'));
+					option.classList.add('active');
+					// Suggest appropriate theme for the design
+					if (design === 'artdeco') {
+						document.documentElement.classList.remove('dark');
+						localStorage.setItem('theme', 'light');
+					} else {
+						document.documentElement.classList.add('dark');
+						localStorage.setItem('theme', 'dark');
+					}
+					window.dispatchEvent(new CustomEvent('theme-changed'));
+				}
+			});
+		});
+
+		// Set initial design option active state
+		const currentDesign = localStorage.getItem('design-theme') || 'artdeco';
+		designOptions.forEach(option => {
+			if (option.getAttribute('data-design-value') === currentDesign) {
+				option.classList.add('active');
+			}
 		});
 
 		// Apply saved theme and background on load

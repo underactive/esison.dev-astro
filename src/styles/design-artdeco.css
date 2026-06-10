@@ -1,0 +1,772 @@
+/* ====================================================
+ * Art Deco Design Theme — "Gatsby's Folio"
+ * ====================================================
+ * Activated via: <html data-design="artdeco">
+ * Light-first with warm earthy palette.
+ * Typography: Playfair Display + Josefin Sans.
+ * ==================================================== */
+
+
+/* ─── Custom Properties ─── */
+
+[data-design="artdeco"] {
+	--ad-bg: #FAF7F2;
+	--ad-bg-alt: #F0EBE1;
+	--ad-text: #2D2016;
+	--ad-text-muted: #6B5D4F;
+	--ad-accent: #B8860B;
+	--ad-accent-light: #D4A853;
+	--ad-accent-dark: #8B6914;
+	--ad-secondary: #6B7F5E;
+	--ad-tertiary: #C4704B;
+	--ad-border: #D4C5A9;
+	--heading-font: "Playfair Display", Georgia, serif;
+	--label-font: "Josefin Sans", sans-serif;
+}
+
+.dark[data-design="artdeco"] {
+	--ad-bg: #1A1612;
+	--ad-bg-alt: #231E18;
+	--ad-text: #E8DFD0;
+	--ad-text-muted: #A69882;
+	--ad-accent: #D4A853;
+	--ad-accent-light: #E8C874;
+	--ad-accent-dark: #B8860B;
+	--ad-border: #3D352A;
+}
+
+
+/* ─── Body ─── */
+
+[data-design="artdeco"] body {
+	background: var(--ad-bg) !important;
+	color: var(--ad-text) !important;
+}
+
+
+/* ─── Typography ─── */
+
+[data-design="artdeco"] .righteous-regular,
+[data-design="artdeco"] h1,
+[data-design="artdeco"] h2,
+[data-design="artdeco"] h3 {
+	font-family: var(--heading-font) !important;
+	color: var(--ad-text) !important;
+}
+
+[data-design="artdeco"] p {
+	color: var(--ad-text-muted) !important;
+}
+
+/* Broad text color overrides */
+[data-design="artdeco"] .text-gray-900,
+[data-design="artdeco"] .text-gray-800 {
+	color: var(--ad-text) !important;
+}
+
+[data-design="artdeco"] .text-gray-700,
+[data-design="artdeco"] .text-gray-600 {
+	color: var(--ad-text-muted) !important;
+}
+
+
+/* ─── Purple-to-Gold Accent Overrides ─── */
+
+[data-design="artdeco"] .text-purple-600,
+[data-design="artdeco"] .text-purple-500,
+[data-design="artdeco"] .text-purple-400 {
+	color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .border-purple-600,
+[data-design="artdeco"] .border-purple-500,
+[data-design="artdeco"] .border-purple-400 {
+	border-color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .bg-purple-600,
+[data-design="artdeco"] .bg-purple-700,
+[data-design="artdeco"] .bg-purple-800 {
+	background-color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .hover\:bg-purple-600:hover {
+	background-color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .hover\:bg-purple-700:hover {
+	background-color: var(--ad-accent-dark) !important;
+}
+
+[data-design="artdeco"] .hover\:text-purple-600:hover,
+[data-design="artdeco"] .hover\:text-purple-400:hover {
+	color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .hover\:text-white:hover {
+	color: var(--ad-bg) !important;
+}
+
+/* Blog group-hover */
+[data-design="artdeco"] .group:hover .group-hover\:text-purple-600,
+[data-design="artdeco"] .group:hover .group-hover\:text-purple-400,
+[data-design="artdeco"] .group:hover .group-hover\:text-purple-300 {
+	color: var(--ad-accent) !important;
+}
+
+/* Gradient overrides */
+[data-design="artdeco"] .bg-gradient-to-r.from-purple-600,
+[data-design="artdeco"] .bg-clip-text.from-purple-600,
+[data-design="artdeco"] .bg-clip-text.from-purple-400,
+[data-design="artdeco"] .bg-clip-text.via-purple-800,
+[data-design="artdeco"] .bg-clip-text.via-purple-600 {
+	background-image: linear-gradient(to right, var(--ad-accent-dark), var(--ad-accent), var(--ad-text)) !important;
+}
+
+[data-design="artdeco"] .bg-gradient-to-r.from-purple-50 {
+	background: var(--ad-bg-alt) !important;
+}
+
+
+/* ─── Hero ─── */
+
+[data-design="artdeco"] .hero-name {
+	font-size: clamp(3.5rem, 10vw, 8rem) !important;
+	letter-spacing: -0.02em !important;
+	line-height: 0.95 !important;
+	font-weight: 900 !important;
+	background: linear-gradient(135deg, var(--ad-text), var(--ad-text-muted)) !important;
+	-webkit-background-clip: text !important;
+	background-clip: text !important;
+	-webkit-text-fill-color: transparent !important;
+}
+
+.dark[data-design="artdeco"] .hero-name {
+	background: linear-gradient(135deg, var(--ad-accent-light), var(--ad-accent)) !important;
+	-webkit-background-clip: text !important;
+	background-clip: text !important;
+}
+
+[data-design="artdeco"] .hero-name::after {
+	content: '';
+	display: block;
+	width: 120px;
+	height: 2px;
+	margin: 1.5rem auto 0;
+	background: var(--ad-accent);
+	background-clip: border-box;
+	-webkit-background-clip: border-box;
+}
+
+
+/* ─── Buttons ─── */
+
+[data-design="artdeco"] .hero-cta {
+	border-radius: 0 !important;
+	border-color: var(--ad-accent) !important;
+	color: var(--ad-accent-dark) !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.1em !important;
+	font-family: var(--label-font) !important;
+	font-weight: 400 !important;
+	font-size: 0.875rem !important;
+}
+
+[data-design="artdeco"] .hero-cta:hover {
+	background-color: var(--ad-accent) !important;
+	border-color: var(--ad-accent) !important;
+	color: var(--ad-bg) !important;
+	scale: 1 !important;
+}
+
+[data-design="artdeco"] .hero-cta-primary {
+	background-color: var(--ad-accent) !important;
+	border-color: var(--ad-accent) !important;
+	color: var(--ad-bg) !important;
+}
+
+[data-design="artdeco"] .hero-cta-primary:hover {
+	background-color: var(--ad-accent-dark) !important;
+	border-color: var(--ad-accent-dark) !important;
+}
+
+.dark[data-design="artdeco"] .hero-cta {
+	color: var(--ad-accent-light) !important;
+}
+
+
+/* ─── Cards ─── */
+
+[data-design="artdeco"] .skill-card,
+[data-design="artdeco"] .project-card,
+[data-design="artdeco"] .blog-card {
+	background: var(--ad-bg) !important;
+	border: 1px solid var(--ad-border) !important;
+	border-radius: 0 !important;
+	box-shadow: 0 2px 8px rgba(45, 32, 22, 0.06) !important;
+	position: relative;
+}
+
+/* Gold top accent line */
+[data-design="artdeco"] .skill-card::after,
+[data-design="artdeco"] .blog-card::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: var(--ad-accent);
+	z-index: 1;
+}
+
+[data-design="artdeco"] .skill-card:hover,
+[data-design="artdeco"] .project-card:hover,
+[data-design="artdeco"] .blog-card:hover {
+	border-color: var(--ad-accent) !important;
+	box-shadow: 0 4px 16px rgba(45, 32, 22, 0.1) !important;
+	scale: 1 !important;
+	translate: 0 -2px !important;
+}
+
+.dark[data-design="artdeco"] .skill-card,
+.dark[data-design="artdeco"] .project-card,
+.dark[data-design="artdeco"] .blog-card {
+	background: var(--ad-bg-alt) !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark[data-design="artdeco"] .skill-card:hover,
+.dark[data-design="artdeco"] .project-card:hover,
+.dark[data-design="artdeco"] .blog-card:hover {
+	box-shadow: 0 4px 16px rgba(212, 168, 83, 0.1) !important;
+}
+
+/* Skill card icon boxes */
+[data-design="artdeco"] .skill-card .bg-gradient-to-br {
+	background: linear-gradient(to bottom right, var(--ad-accent), var(--ad-accent-dark)) !important;
+	border-radius: 0 !important;
+}
+
+/* Skill & project tags — uniform gold */
+[data-design="artdeco"] .skill-card span[class*="rounded"],
+[data-design="artdeco"] .project-card span[class*="rounded"] {
+	background: color-mix(in srgb, var(--ad-accent) 10%, var(--ad-bg)) !important;
+	color: var(--ad-accent-dark) !important;
+	border-radius: 0 !important;
+}
+
+.dark[data-design="artdeco"] .skill-card span[class*="rounded"],
+.dark[data-design="artdeco"] .project-card span[class*="rounded"] {
+	background: color-mix(in srgb, var(--ad-accent) 12%, var(--ad-bg-alt)) !important;
+	color: var(--ad-accent-light) !important;
+}
+
+
+/* ─── Sections ─── */
+
+[data-design="artdeco"] #about,
+[data-design="artdeco"] #history {
+	background-color: var(--ad-bg-alt) !important;
+	backdrop-filter: none !important;
+}
+
+
+/* ─── Section Headings (Art Deco double-line) ─── */
+
+[data-design="artdeco"] .section-title {
+	position: relative;
+	padding-bottom: 2rem !important;
+	margin-bottom: 2rem !important;
+	letter-spacing: 0.02em;
+}
+
+[data-design="artdeco"] .section-title::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 80px;
+	height: 5px;
+	border-top: 1px solid var(--ad-accent);
+	border-bottom: 1px solid var(--ad-accent);
+}
+
+
+/* ─── History Timeline ─── */
+
+[data-design="artdeco"] .history-entries {
+	text-align: left !important;
+	max-width: 28rem;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	padding-left: 2.5rem;
+}
+
+[data-design="artdeco"] .history-entries::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0.5rem;
+	bottom: 0.5rem;
+	width: 1px;
+	background: var(--ad-accent);
+}
+
+[data-design="artdeco"] .history-entry {
+	position: relative;
+	text-align: left !important;
+	padding-bottom: 0.25rem;
+	margin-bottom: 1.25rem !important;
+	max-width: none !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+/* Diamond-shaped timeline markers */
+[data-design="artdeco"] .history-entry::before {
+	content: '';
+	position: absolute;
+	left: -2.85rem;
+	top: 0.45rem;
+	width: 8px;
+	height: 8px;
+	background: var(--ad-accent);
+	transform: rotate(45deg);
+	border-radius: 0;
+}
+
+[data-design="artdeco"] .history-entry .company-name {
+	font-weight: 600 !important;
+	font-size: 1.125rem !important;
+	display: block;
+	color: var(--ad-text) !important;
+	font-family: var(--heading-font) !important;
+}
+
+[data-design="artdeco"] .history-entry .company-dates {
+	display: block !important;
+	margin-top: 0.125rem;
+	font-size: 0.75rem !important;
+	color: var(--ad-accent) !important;
+	font-family: var(--label-font) !important;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+
+/* ─── CTA Boxes ─── */
+
+[data-design="artdeco"] .cta-box {
+	background: var(--ad-bg-alt) !important;
+	background-image: none !important;
+	border: 1px solid var(--ad-border) !important;
+	border-radius: 0 !important;
+}
+
+
+/* ─── Header ─── */
+
+[data-design="artdeco"] header {
+	background: color-mix(in srgb, var(--ad-bg) 92%, transparent) !important;
+	border-bottom-color: transparent !important;
+}
+
+[data-design="artdeco"] header::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: var(--ad-accent);
+	opacity: 0.4;
+}
+
+/* Logo text */
+[data-design="artdeco"] header .bg-clip-text {
+	-webkit-text-fill-color: var(--ad-accent) !important;
+	color: var(--ad-accent) !important;
+}
+
+/* Logo icon */
+[data-design="artdeco"] header nav .w-8 {
+	border-radius: 0 !important;
+}
+
+/* Theme toggle buttons */
+[data-design="artdeco"] header nav button {
+	background-color: color-mix(in srgb, var(--ad-accent) 8%, var(--ad-bg)) !important;
+}
+
+.dark[data-design="artdeco"] header nav button {
+	background-color: var(--ad-bg-alt) !important;
+}
+
+
+/* ─── Footer ─── */
+
+[data-design="artdeco"] footer {
+	background: var(--ad-bg-alt) !important;
+	color: var(--ad-text-muted) !important;
+	border-top: 1px solid var(--ad-accent) !important;
+	border-image: none !important;
+	padding: 2.5rem 1rem 3rem !important;
+}
+
+[data-design="artdeco"] footer .social-links a {
+	color: var(--ad-text-muted) !important;
+}
+
+[data-design="artdeco"] footer .social-links a:hover {
+	color: var(--ad-accent) !important;
+}
+
+
+/* ─── Hide Matrix Rain & Parallax ─── */
+
+[data-design="artdeco"] canvas {
+	opacity: 0 !important;
+}
+
+[data-design="artdeco"] .parallax-bg {
+	opacity: 0 !important;
+}
+
+
+/* ─── CRT Effect (vintage warm) ─── */
+
+[data-design="artdeco"] .crt-effect {
+	color: var(--ad-accent-light) !important;
+	text-shadow: none !important;
+}
+
+[data-design="artdeco"] .crt-light-mode {
+	background: #2D2016 !important;
+	border-radius: 0 !important;
+	border: 1px solid var(--ad-border) !important;
+}
+
+[data-design="artdeco"] .crt-light-mode::before {
+	background: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 2px,
+		rgba(184, 134, 11, 0.03) 2px,
+		rgba(184, 134, 11, 0.03) 4px
+	) !important;
+}
+
+
+/* ─── Terminal Code ─── */
+
+[data-design="artdeco"] .terminal-code {
+	background-color: #2D2016 !important;
+	border-color: var(--ad-border) !important;
+	color: var(--ad-accent-light) !important;
+	border-radius: 0 !important;
+}
+
+[data-design="artdeco"] .terminal-code .glow-text {
+	color: var(--ad-accent-light) !important;
+	text-shadow: none !important;
+}
+
+[data-design="artdeco"] .terminal-code .tag {
+	color: var(--ad-secondary) !important;
+}
+
+
+/* ─── About Page ─── */
+
+[data-design="artdeco"] .w-24.h-1 {
+	background: var(--ad-accent) !important;
+	background-image: none !important;
+}
+
+[data-design="artdeco"] .photo-item {
+	border: 1px solid var(--ad-border) !important;
+	border-radius: 0 !important;
+}
+
+[data-design="artdeco"] .photo-item:hover {
+	border-color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .photo-item img {
+	border-radius: 0 !important;
+}
+
+
+/* ─── Blog ─── */
+
+[data-design="artdeco"] .prose a {
+	color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .prose blockquote {
+	border-color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .prose code {
+	color: var(--ad-accent) !important;
+}
+
+[data-design="artdeco"] .bg-purple-600[class*="rounded"] {
+	border-radius: 0 !important;
+}
+
+
+/* ====================================================
+ * LAYOUT TRANSFORMATIONS
+ * Art Deco requires genuinely different structure,
+ * not just different styling of the same layout.
+ * ==================================================== */
+
+
+/* ─── Hero: Title Card with Double-Frame ─── */
+
+[data-design="artdeco"] section:has(.hero-name) {
+	min-height: 75vh !important;
+}
+
+[data-design="artdeco"] section:has(.hero-name)::before {
+	content: '';
+	position: absolute;
+	top: 6rem;
+	left: 3rem;
+	right: 3rem;
+	bottom: 3rem;
+	border: 2px solid var(--ad-accent);
+	pointer-events: none;
+	opacity: 0.5;
+	z-index: 1;
+}
+
+[data-design="artdeco"] section:has(.hero-name)::after {
+	content: '';
+	position: absolute;
+	top: 6.5rem;
+	left: 3.5rem;
+	right: 3.5rem;
+	bottom: 3.5rem;
+	border: 1px solid var(--ad-accent);
+	pointer-events: none;
+	opacity: 0.3;
+	z-index: 1;
+}
+
+@media (max-width: 640px) {
+	[data-design="artdeco"] section:has(.hero-name)::before {
+		top: 5rem;
+		left: 1rem;
+		right: 1rem;
+		bottom: 1rem;
+	}
+	[data-design="artdeco"] section:has(.hero-name)::after {
+		top: 5.5rem;
+		left: 1.5rem;
+		right: 1.5rem;
+		bottom: 1.5rem;
+	}
+}
+
+
+/* ─── Skills: Editorial Vertical List with Numerals ─── */
+
+[data-design="artdeco"] #about > div.container > div.grid {
+	display: flex !important;
+	flex-direction: column !important;
+	max-width: 42rem !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	gap: 0 !important;
+}
+
+[data-design="artdeco"] #about .skill-card {
+	background: transparent !important;
+	border: none !important;
+	border-bottom: 1px solid var(--ad-border) !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	padding: 2rem 0 2rem 5rem !important;
+	margin: 0 !important;
+}
+
+[data-design="artdeco"] #about .skill-card::after {
+	display: none !important;
+}
+
+[data-design="artdeco"] #about .skill-card:last-child {
+	border-bottom: none !important;
+}
+
+[data-design="artdeco"] #about .skill-card:hover {
+	border-color: var(--ad-accent) !important;
+	box-shadow: none !important;
+	translate: 0 !important;
+	scale: 1 !important;
+}
+
+/* Hide icon boxes in editorial layout */
+[data-design="artdeco"] #about .skill-card .w-12.h-12 {
+	display: none !important;
+}
+
+/* Large decorative numerals */
+[data-design="artdeco"] #about > div.container > div.grid > .skill-card::before {
+	position: absolute;
+	left: 0;
+	top: 1.75rem;
+	font-size: 3.5rem;
+	font-family: var(--heading-font);
+	font-weight: 900;
+	color: var(--ad-accent);
+	line-height: 1;
+	opacity: 0.75;
+}
+
+[data-design="artdeco"] #about > div.container > div.grid > .skill-card:nth-of-type(1)::before {
+	content: '01';
+}
+
+[data-design="artdeco"] #about > div.container > div.grid > .skill-card:nth-of-type(2)::before {
+	content: '02';
+}
+
+[data-design="artdeco"] #about > div.container > div.grid > .skill-card:nth-of-type(3)::before {
+	content: '03';
+}
+
+
+/* ─── Portfolio: Feature + Stacked Companion ─── */
+
+[data-design="artdeco"] #portfolio > div.container > div.grid {
+	display: grid !important;
+	grid-template-columns: 1.6fr 1fr !important;
+	grid-template-rows: auto auto !important;
+	gap: 1.5rem !important;
+	max-width: 72rem !important;
+}
+
+[data-design="artdeco"] #portfolio > div.container > div.grid > .project-card:nth-child(1) {
+	grid-row: 1 / 3 !important;
+	grid-column: 1 !important;
+}
+
+[data-design="artdeco"] #portfolio > div.container > div.grid > .project-card:nth-child(2) {
+	grid-column: 2 !important;
+	grid-row: 1 !important;
+}
+
+[data-design="artdeco"] #portfolio > div.container > div.grid > .project-card:nth-child(3) {
+	grid-column: 2 !important;
+	grid-row: 2 !important;
+}
+
+/* Feature card: taller image */
+[data-design="artdeco"] #portfolio > div.container > div.grid > .project-card:nth-child(1) .h-64 {
+	height: 22rem !important;
+}
+
+/* Companion cards: shorter images */
+[data-design="artdeco"] #portfolio > div.container > div.grid > .project-card:nth-child(n+2) .h-64 {
+	height: 10rem !important;
+}
+
+@media (max-width: 768px) {
+	[data-design="artdeco"] #portfolio > div.container > div.grid {
+		display: flex !important;
+		flex-direction: column !important;
+	}
+	[data-design="artdeco"] #portfolio > div.container > div.grid > .project-card .h-64 {
+		height: 16rem !important;
+	}
+}
+
+
+/* ─── History: Two-Column Chronicle ─── */
+
+[data-design="artdeco"] .history-entries {
+	padding-left: 0 !important;
+	max-width: 36rem !important;
+}
+
+[data-design="artdeco"] .history-entries::before {
+	display: none !important;
+}
+
+[data-design="artdeco"] .history-entry {
+	display: grid !important;
+	grid-template-columns: 9rem 1fr !important;
+	gap: 2rem !important;
+	padding: 1rem 0 !important;
+	margin: 0 !important;
+	border-bottom: 1px solid var(--ad-border) !important;
+	align-items: baseline;
+}
+
+[data-design="artdeco"] .history-entry::before {
+	display: none !important;
+}
+
+[data-design="artdeco"] .history-entry:last-child {
+	border-bottom: none !important;
+}
+
+[data-design="artdeco"] .history-entry .company-dates {
+	grid-column: 1 !important;
+	grid-row: 1 !important;
+	font-size: 0.75rem !important;
+	font-family: var(--label-font) !important;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--ad-accent) !important;
+	font-weight: 500;
+	margin-top: 0 !important;
+	text-align: right;
+	white-space: nowrap;
+}
+
+[data-design="artdeco"] .history-entry .company-name {
+	grid-column: 2 !important;
+	grid-row: 1 !important;
+	font-family: var(--heading-font) !important;
+	font-size: 1.25rem !important;
+	font-weight: 600 !important;
+	color: var(--ad-text) !important;
+	margin-top: 0 !important;
+}
+
+@media (max-width: 640px) {
+	[data-design="artdeco"] .history-entry {
+		grid-template-columns: 1fr !important;
+		gap: 0.25rem !important;
+	}
+	[data-design="artdeco"] .history-entry .company-dates {
+		text-align: left !important;
+	}
+}
+
+
+/* ─── Footer: Ornamental Divider ─── */
+
+[data-design="artdeco"] footer {
+	position: relative;
+	padding-top: 4rem !important;
+}
+
+[data-design="artdeco"] footer::before {
+	content: '◆';
+	position: absolute;
+	top: calc(0px - 0.5rem);
+	left: 50%;
+	transform: translateX(-50%);
+	color: var(--ad-accent);
+	font-size: 0.875rem;
+	background: var(--ad-bg-alt);
+	padding: 0 1rem;
+	z-index: 1;
+}

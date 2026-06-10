@@ -38,7 +38,7 @@ import ImageModal from '../components/ImageModal.vue';
 				</div>
 
 				<!-- Call to Action -->
-				<div class="text-center bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-8 rounded-xl mb-16">
+				<div class="cta-box text-center bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-8 rounded-xl mb-16">
 					<h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
 						Let's Work Together
 					</h3>
@@ -46,10 +46,10 @@ import ImageModal from '../components/ImageModal.vue';
 						I'm always interested in discussing new opportunities where I can help your product or brand shine.
 					</p>
 					<div class="flex flex-col sm:flex-row gap-4 justify-center">
-						<button id="btn-show-cv-modal" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+						<button id="btn-show-cv-modal" class="hero-cta hero-cta-primary rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 							View My CV
 						</button>
-						<button id="btn-show-contact-modal" class="rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+						<button id="btn-show-contact-modal" class="hero-cta rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
 							Contact Me
 						</button>
 					</div>
@@ -66,9 +66,9 @@ import ImageModal from '../components/ImageModal.vue';
 				<div class="mb-16">
 					<div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
 						<!-- Jojo -->
-						<div class="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-							<img 
-								src="/images/jojo.jpg" 
+						<div class="photo-item cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+							<img
+								src="/images/jojo.jpg"
 								alt="Jojo the French Bulldog" 
 								class="w-48 h-64 object-cover rounded-lg shadow-lg"
 								onclick="showImageModal({
@@ -80,9 +80,9 @@ import ImageModal from '../components/ImageModal.vue';
 						</div>
 						
 						<!-- FJ Cruiser under stars -->
-						<div class="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-							<img 
-								src="/images/fj_stars.jpg" 
+						<div class="photo-item cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+							<img
+								src="/images/fj_stars.jpg"
 								alt="FJ Cruiser under starry night sky" 
 								class="w-48 h-64 object-cover rounded-lg shadow-lg"
 								onclick="showImageModal({
