@@ -27,12 +27,12 @@ fetching for content, no JavaScript required for core navigation. Vue islands
 add polish, not gates.
 
 ### 4. The terminal is the identity
-The site is a terminal: amber phosphor on black, monospace throughout, scanlines,
+The site is a terminal: green phosphor on black, monospace throughout, scanlines,
 prompt-style navigation. This is a deliberate aesthetic commitment, not a theme
 among themes — which is why there is no light mode and no design switcher. The
 form states what the person does, so it carries argument rather than decoration.
 
-The one concession to preference is the phosphor accent (amber, green, cyan,
+The one concession to preference is the phosphor accent (green, amber, cyan,
 white), and even that stays inside the metaphor: those are the phosphors real CRTs
 used. Customization that would break the metaphor — the eight arbitrary accent
 colors and sixteen background gradients of the old picker — was removed rather

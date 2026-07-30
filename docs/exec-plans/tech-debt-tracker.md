@@ -69,10 +69,14 @@ by targeted cleanup tasks on a regular cadence — not accumulated for a
 - **Severity:** medium
 - **Added:** 2026-07-29
 - **Notes:** All five entries in `src/content/blog/` are unmodified Astro
-  starter content — three are literal Lorem Ipsum, two are stock demo docs. The
-  blog is linked from the main nav, so visitors reach placeholder text. Either
-  publish real posts or hide the blog until there is writing. Note
-  `markdown-style-guide.md` doubles as the prose regression fixture (above).
+  starter content — three are literal Lorem Ipsum, two are stock demo docs.
+  **Mitigated 2026-07-29:** the blog link was removed from the header nav, so the
+  placeholder posts are no longer surfaced to visitors. They remain reachable by
+  direct URL and are still listed in `sitemap-index.xml` and `/rss.xml`, so search
+  engines can still index them — consider excluding them from the sitemap if this
+  persists. Resolved by publishing real posts and restoring the nav entry in
+  `src/lib/nav.ts`. Note `markdown-style-guide.md` doubles as the prose regression
+  fixture (above).
 
 ## Resolved debt
 
@@ -92,7 +96,7 @@ by targeted cleanup tasks on a regular cadence — not accumulated for a
 - **Resolved:** 2026-07-29 (promote-terminal-design)
 - **Notes:** Resolved by deletion. `ColorPicker.astro` and the whole `design-theme`
   mechanism are gone; there is one design and the only stored preference is
-  `phosphor`, which falls back to amber on any unrecognized value.
+  `phosphor`, which falls back to the default green on any unrecognized value.
 
 ### Docs still name the GitHub topic `portfolio`
 - **Resolved:** 2026-07-29 (promote-terminal-design)

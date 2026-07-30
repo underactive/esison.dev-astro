@@ -239,6 +239,16 @@ error and retry states were verified; the reveal path was not. This is the one
 acceptance criterion in
 [terminal-design.md](../../product-specs/terminal-design.md) left unchecked.
 
+## Amendments after completion
+
+- **2026-07-29:** the default phosphor changed from amber to **green (P1)** at the
+  owner's request, and the **blog link was removed from the header nav** while its
+  posts are still placeholder text. The default swap was done by moving green's
+  token block into `:root` and giving amber its own `[data-phosphor='amber']` rule,
+  preserving the invariant that the default is the absence of the attribute. The
+  body of this plan describes the original amber default; current behaviour is
+  documented in [docs/DESIGN.md](../../DESIGN.md).
+
 ## Follow-ups
 
 1. **Verify the contact reveal on a deploy preview** with Turnstile env vars set —

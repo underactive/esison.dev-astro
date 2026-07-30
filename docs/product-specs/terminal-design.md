@@ -8,10 +8,10 @@ looking like a generic template with a color picker bolted on.
 
 ## Acceptance criteria
 
-- [x] Every page renders in the Terminal design: amber-on-black, monospace, scanlines, prompt-style navigation
+- [x] Every page renders in the Terminal design: phosphor-on-black, monospace, scanlines, prompt-style navigation
 - [x] No page uses a Tailwind utility class, and Tailwind is not a project dependency
 - [x] The site is dark only — there is no light/dark toggle and no `theme` localStorage key
-- [x] A phosphor picker offers amber, green, cyan and white; the choice persists across reloads and applies before first paint
+- [x] A phosphor picker offers green (default), amber, cyan and white; the choice persists across reloads and applies before first paint
 - [x] Changing phosphor recolors every accent on the page via CSS custom properties, with no `!important` rules
 - [x] The hero typewriter cycles all three taglines using their configured per-line durations
 - [x] Matrix rain renders behind the hero in the active phosphor color
@@ -26,8 +26,8 @@ looking like a generic template with a color picker bolted on.
 
 | Scenario | Expected behavior |
 |----------|-------------------|
-| First-time visitor, no stored phosphor | Amber, applied before first paint with no flash |
-| Corrupt or unknown phosphor value in localStorage | Falls back to amber rather than rendering unstyled accents |
+| First-time visitor, no stored phosphor | Green (P1), applied before first paint with no flash |
+| Corrupt or unknown phosphor value in localStorage | Falls back to the default green rather than rendering unstyled accents |
 | JavaScript disabled | Page is fully readable and navigable; typewriter shows the first tagline as static text, matrix rain is absent, modals are unreachable but their trigger buttons do not appear broken |
 | `prefers-reduced-motion: reduce` | Scanlines stay static, matrix rain and typewriter animation are suppressed |
 | GitHub unreachable at build time | Repo section renders the Terminal-styled error panel, not a broken grid |

@@ -25,12 +25,17 @@ so the compiler enforces the contract. Two things are not visible from the types
 
 ### `Phosphor` notes
 
-**`amber` is represented by the absence of the `data-phosphor` attribute** — its
-values are the `:root` defaults in `terminal.css`. This is load-bearing: an unknown
-or corrupt stored value matches no attribute rule and renders as amber, so the
-pre-paint script needs no validation branch. Adding an explicit
-`[data-phosphor='amber']` rule would not break anything, but removing the `:root`
-defaults would.
+**`DEFAULT_PHOSPHOR` (green) is represented by the absence of the `data-phosphor`
+attribute** — its values are the `:root` defaults in `terminal.css`, and the other
+three phosphors are attribute rules. This is load-bearing: an unknown or corrupt
+stored value matches no attribute rule and renders as the default, so the pre-paint
+script needs no validation branch.
+
+Changing the default is therefore a two-part edit: move the new default's token
+block into `:root`, and give the previous default its own `[data-phosphor='...']`
+rule. `NON_DEFAULT_PHOSPHOR_IDS` exists so the id list stays derivable, but the
+pre-paint script in `MainLayout.astro` hardcodes it — it must run before any module
+loads, so it cannot import from here. Keep the two in sync.
 
 Key data contracts still to document:
 - Blog post frontmatter schema (defined in `src/content.config.ts` via Zod)

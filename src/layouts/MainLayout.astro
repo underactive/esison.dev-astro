@@ -18,17 +18,19 @@ const { title, description, page } = Astro.props;
 	<head>
 		<BaseHead title={title} description={description} />
 		<script is:inline>
-			// Phosphor accent, applied before first paint to avoid a flash. Amber is
+			// Phosphor accent, applied before first paint to avoid a flash. Green is
 			// the :root default and needs no attribute, so an unknown stored value
-			// falls through to amber instead of rendering unstyled accents.
+			// falls through to green instead of rendering unstyled accents.
+			// Inlined rather than imported from src/lib/phosphors.ts because this must
+			// run before any module loads; keep the id list in sync with PHOSPHORS.
 			(function () {
 				try {
 					var stored = localStorage.getItem('phosphor');
-					if (stored === 'green' || stored === 'cyan' || stored === 'white') {
+					if (stored === 'amber' || stored === 'cyan' || stored === 'white') {
 						document.documentElement.setAttribute('data-phosphor', stored);
 					}
 				} catch (error) {
-					/* localStorage unavailable; amber default applies */
+					/* localStorage unavailable; green default applies */
 				}
 			})();
 		</script>

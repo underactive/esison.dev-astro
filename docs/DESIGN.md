@@ -2,7 +2,7 @@
 
 Conventions for the esison.dev portfolio site's user-facing output and interface design.
 
-The site has one design: **Terminal** — amber phosphor on black, monospace
+The site has one design: **Terminal** — green phosphor on black, monospace
 throughout, scanlines, prompt-style navigation. It was chosen from five candidates
 built in the [design lab](exec-plans/completed/design-lab.md) and promoted in
 [promote-terminal-design](exec-plans/completed/promote-terminal-design.md).
@@ -54,13 +54,15 @@ built in the [design lab](exec-plans/completed/design-lab.md) and promoted in
 
 ## Phosphor accent
 
-- Four CRT-authentic options: amber (P3), green (P1), cyan, white (P4)
+- Four CRT-authentic options: green (P1, **default**), amber (P3), cyan, white (P4)
 - Switched by `data-phosphor` on `<html>`; picker in
   [`PhosphorPicker.astro`](../src/components/PhosphorPicker.astro), values in
   [`src/lib/phosphors.ts`](../src/lib/phosphors.ts)
-- **Amber is the absence of the attribute** — its values are the `:root` defaults.
-  A corrupt or unknown stored value therefore matches no rule and renders as amber
-  rather than leaving accents unstyled.
+- **The default is the absence of the attribute** — green's values are the `:root`
+  defaults and the other three phosphors are attribute rules. A corrupt or unknown
+  stored value therefore matches no rule and renders as green rather than leaving
+  accents unstyled. To change the default, move its token block into `:root` and
+  give the previous default its own `[data-phosphor='...']` rule.
 - Applied pre-paint by an `is:inline` script in `MainLayout.astro` to avoid a flash
 - Persisted to `localStorage` under `phosphor`, wrapped in try/catch because
   localStorage throws in some privacy modes

@@ -80,10 +80,10 @@ function with Turnstile verification.
    easy to get) with privacy (phone requires extra intent).
 
 5. **Dark only, with a phosphor accent.** There is no light mode and no theme
-   toggle. The only user-facing theming is the CRT phosphor accent (amber, green,
+   toggle. The only user-facing theming is the CRT phosphor accent (green, amber,
    cyan, white), applied as `data-phosphor` on `<html>` and driving CSS custom
-   properties. Amber is the absence of the attribute, so an unknown stored value
-   degrades to amber rather than to unstyled accents.
+   properties. The default — green — is the absence of the attribute, so an unknown
+   stored value degrades to it rather than to unstyled accents.
 
 6. **No CSS framework.** The site ships a single hand-rolled stylesheet,
    `src/styles/terminal.css`, which carries its own reset. Tailwind was removed
@@ -114,14 +114,17 @@ function with Turnstile verification.
 
 ### Phosphor Accent (the whole of `theme`)
 
-- Four CRT-authentic options in `src/lib/phosphors.ts`: amber (P3), green (P1),
-  cyan, white (P4)
+- Four CRT-authentic options in `src/lib/phosphors.ts`: green (P1, **default**),
+  amber (P3), cyan, white (P4)
 - Applied as `data-phosphor` on `<html>`; each phosphor is an attribute rule in
   `terminal.css` that overrides `--term-fg`, `--term-fg-dim`, `--term-fg-bright`,
   `--term-glow`, `--term-glow-soft` and `--term-rule`
-- **Amber is represented by the absence of the attribute** — its values are the
-  `:root` defaults. This is deliberate: a corrupt or unknown stored value matches
-  no rule and renders as amber, so no validation branch is needed at paint time
+- **The default phosphor is represented by the absence of the attribute** — green's
+  values are the `:root` defaults and the other three are attribute rules. This is
+  deliberate: a corrupt or unknown stored value matches no rule and renders as the
+  default, so no validation branch is needed at paint time. Changing the default
+  means moving its token block into `:root` and giving the old default its own
+  `[data-phosphor='...']` rule
 - An `is:inline` script in `MainLayout.astro` applies it before first paint to
   avoid a flash; reads are wrapped in try/catch because `localStorage` throws in
   some privacy modes

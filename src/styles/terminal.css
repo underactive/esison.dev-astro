@@ -98,13 +98,15 @@ ol {
 	--term-text: #d8d0c0;
 	--term-text-dim: #8a8378;
 
-	/* Amber (P3) — default */
-	--term-fg: #ffb000;
-	--term-fg-dim: #a87400;
-	--term-fg-bright: #ffd479;
-	--term-glow: rgba(255, 176, 0, 0.45);
-	--term-glow-soft: rgba(255, 176, 0, 0.15);
-	--term-rule: #2a2419;
+	/* Green (P1) — default. The default phosphor lives here rather than in an
+	 * attribute rule so that an unknown or corrupt stored value matches nothing
+	 * and degrades to it, with no validation branch at paint time. */
+	--term-fg: #33ff33;
+	--term-fg-dim: #1f9d1f;
+	--term-fg-bright: #b6ffb6;
+	--term-glow: rgba(51, 255, 51, 0.4);
+	--term-glow-soft: rgba(51, 255, 51, 0.14);
+	--term-rule: #162a16;
 
 	--term-ok: #4ade80;
 	--term-info: #67e8f9;
@@ -117,14 +119,14 @@ ol {
 	--term-shell: 1180px;
 }
 
-/* Green (P1) */
-[data-phosphor='green'] {
-	--term-fg: #33ff33;
-	--term-fg-dim: #1f9d1f;
-	--term-fg-bright: #b6ffb6;
-	--term-glow: rgba(51, 255, 51, 0.4);
-	--term-glow-soft: rgba(51, 255, 51, 0.14);
-	--term-rule: #162a16;
+/* Amber (P3) */
+[data-phosphor='amber'] {
+	--term-fg: #ffb000;
+	--term-fg-dim: #a87400;
+	--term-fg-bright: #ffd479;
+	--term-glow: rgba(255, 176, 0, 0.45);
+	--term-glow-soft: rgba(255, 176, 0, 0.15);
+	--term-rule: #2a2419;
 }
 
 [data-phosphor='cyan'] {

@@ -47,9 +47,9 @@ onMounted(() => {
   }
 
   // Follow the active phosphor rather than hardcoding a colour, so the rain
-  // recolours with the picker. Falls back to amber if the property is unset.
+  // recolours with the picker. Falls back to the default green if unset.
   const readPhosphor = () =>
-    getComputedStyle(document.documentElement).getPropertyValue('--term-fg').trim() || '#ffb000'
+    getComputedStyle(document.documentElement).getPropertyValue('--term-fg').trim() || '#33ff33'
 
   let glyphColor = readPhosphor()
 

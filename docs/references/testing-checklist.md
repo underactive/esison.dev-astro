@@ -51,11 +51,11 @@ normal viewport-sized screenshot instead — this is a capture artifact, not a b
 
 ### Phosphor accent
 
-- [ ] First visit with empty localStorage renders amber, with no flash of unstyled accents.
-- [ ] Each of amber / green / cyan / white recolours the logo, nav, headings, borders, buttons and section labels.
+- [ ] First visit with empty localStorage renders green (P1), with no flash of unstyled accents, and no `data-phosphor` attribute is set.
+- [ ] Each of green / amber / cyan / white recolours the logo, nav, headings, borders, buttons and section labels.
 - [ ] Switching phosphor also recolours the homepage matrix rain without a reload.
 - [ ] The choice survives a reload and applies before first paint.
-- [ ] Setting `localStorage.phosphor = 'banana'` and reloading renders amber rather than unstyled accents.
+- [ ] Setting `localStorage.phosphor = 'banana'` and reloading renders green rather than unstyled accents, and the picker marks green as selected.
 - [ ] With cookies/storage blocked, the picker still applies a phosphor for the session and does not throw.
 - [ ] `Escape` closes the picker menu and returns focus to its toggle; clicking outside closes it.
 - [ ] There is no light/dark toggle anywhere in the UI, and no `theme` key is written to localStorage.
@@ -66,7 +66,8 @@ normal viewport-sized screenshot instead — this is a capture artifact, not a b
 - [ ] The sticky header stays legible over scrolled content.
 - [ ] Scanlines and vignette never intercept clicks — every link and button in the hero is clickable.
 - [ ] The skip link becomes visible on first Tab and jumps to `#main`.
-- [ ] Nav marks the current page with `aria-current="page"` on `/`, `/about/` and `/blog/`.
+- [ ] Nav shows only `home` and `about` — blog is intentionally hidden while its posts are placeholders — and marks the current one with `aria-current="page"`.
+- [ ] `/blog/`, blog posts, `/rss.xml` and the sitemap all still work despite the nav link being absent.
 
 ### Content
 

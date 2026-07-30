@@ -56,7 +56,7 @@ The contact modal relies on the `reveal_contact` Netlify serverless function in 
 - **Contact reveal** -- Two-stage Cloudflare Turnstile CAPTCHA protecting contact info, served via a Netlify serverless function with anti-bot measures
 - **GitHub projects sync** -- Build-time fetch in `src/lib/github-projects.ts`; public repos tagged with the `spotlight` topic appear on the homepage. A [scheduled GitHub Action](.github/workflows/refresh-github-projects.yml) triggers Netlify rebuilds every 6 hours to keep them current
 - **Terminal design** -- One hand-rolled stylesheet (`src/styles/terminal.css`), no CSS framework. Amber phosphor on black, monospace, scanlines
-- **Phosphor accent** -- Four CRT-authentic accents (amber, green, cyan, white) switched via `data-phosphor` on `<html>`, applied before first paint, persisted in localStorage. The site is dark only; there is no light mode
+- **Phosphor accent** -- Four CRT-authentic accents (green P1 by default, plus amber P3, cyan and white P4) switched via `data-phosphor` on `<html>`, applied before first paint, persisted in localStorage. The site is dark only; there is no light mode
 - **Content layer** -- All page copy lives in [`src/data/site-content.ts`](src/data/site-content.ts), mirrored readably in [docs/content-inventory.md](docs/content-inventory.md). Pages read from it rather than hardcoding strings
 
 ## Deployment
