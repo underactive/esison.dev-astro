@@ -17,7 +17,8 @@ code is structured.
 
 | Spec | Status | Description |
 |------|--------|-------------|
-| (none yet) | — | — |
+| [terminal-design](terminal-design.md) | Implemented | Terminal as the site's only design: amber phosphor, monospace, no Tailwind |
+| [design-lab](design-lab.md) | Retired | Five candidate designs with a chooser. Terminal was picked and the lab removed; kept for the decision record |
 
 ## Writing specs
 

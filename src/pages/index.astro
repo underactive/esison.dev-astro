@@ -1,323 +1,131 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import MatrixRain from '../components/MatrixRain.vue';
 import TypewriterText from '../components/TypewriterText.vue';
 import GitHubProjectsSection from '../components/GitHubProjectsSection.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { siteContent } from '../data/site-content';
+
+const { home } = siteContent;
+const bootDate = new Date().toDateString();
 ---
 
-<MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<!-- Hero Section -->
-	<section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-		<div class="container mx-auto px-6 text-center relative z-10">
-			<div class="max-w-4xl mx-auto">
-				<h1 class="hero-name righteous-regular text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 via-purple-800 to-black dark:from-purple-400 dark:via-purple-600 dark:to-white bg-clip-text text-transparent mb-6 animate-fade-in">
-					Eric Sison
-				</h1>
-				<TypewriterText
-					texts={[
-						{ text: "// web developer", duration: 10 },
-						{ text: "// making computers do cool things since 1983", duration: 3 },
-						{ text: "// 改善 mindset", duration: 3 },
-					]}
-					fontSize="text-base"
-					color="text-gray-600 dark:text-gray-300"
-					cursorType="breathing-alt"
-					crt={true}
-					startDelay={2}
-					client:load />
-				<div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-delay-2">
-					<a href="#about" class="hero-cta hero-cta-primary rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
-						About Me
-					</a>
-					<a href="#portfolio" class="hero-cta rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
-						View My Work
-					</a>
-					<a href="#history" class="hero-cta rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
-						My History
-					</a>
-				</div>
-			</div>
-		</div>
-		<!-- Matrix Rain Effect -->
+<MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION} page="home">
+	<section class="term-hero">
 		<MatrixRain client:load />
-	</section>
-
-	<!-- About Section -->
-	<section id="about" class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-		<div class="container mx-auto px-6">
-			<div class="max-w-4xl mx-auto text-center">
-				<h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
-					About Me
-				</h2>
-				<p class="text-lg text-gray-600 dark:text-gray-300 mb-12 leading-relaxed">
-					I'm a seasoned interactive webdev veteran. For SEO purposes, I'm a <span class="terminal-code"><span class="tag">&lt;</span><span class="tag">sarcastic-quote</span><span class="tag">&gt;</span><span class="glow-text">full-stack developer</span><span class="tag">&lt;/</span><span class="tag">sarcastic-quote</span><span class="tag">&gt;</span></span> <span class="text-xs">(even though new tech gets constantly added to said stack)</span>.
-				</p>
-			</div>
-			
-			<!-- Skills Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-				<div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105">
-					<div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-							<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
-						</svg>
-					</div>
-					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Frontend Development</h3>
-					<div class="flex flex-wrap gap-2">
-							<span class="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-full text-sm">Vue.js</span>
-						<span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm">TypeScript</span>
-						<span class="px-3 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-sm">Angular.js</span>
-						<span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-full text-sm">Tailwind CSS</span>
-					</div>
-				</div>
-
-				<div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105">
-					<div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
-						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-							<path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h3.5a3.5 3.5 0 100-7H11V3.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 3.414V6H5.5A3.5 3.5 0 002 9.5z" clip-rule="evenodd"></path>
-						</svg>
-					</div>
-					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Backend Development</h3>
-					<div class="flex flex-wrap gap-2">
-						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Supabase</span>
-						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">Node.js</span>
-						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Perl</span>
-						<span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm">Python</span>
-						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">PostgreSQL</span>
-					</div>
-				</div>
-
-				<div class="skill-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105">
-					<div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-						<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-							<path d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
-						</svg>
-					</div>
-					<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Serverless / Ops</h3>
-					<div class="flex flex-wrap gap-2">
-						<span class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm">AWS</span>
-						<span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">GCP</span>
-						<span class="px-3 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full text-sm">Netlify</span>
-						<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">Docker</span>
-						<span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-full text-sm">CI/CD</span>
-					</div>
-				</div>
-			</div>
-
-			<!-- Call to Action -->
-			<div class="cta-box text-center bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-8 rounded-xl mt-16">
-				<p class="text-gray-600 dark:text-gray-300 mb-6">
-					My origin story, career path, contact info.
-				</p>
-				<div class="flex flex-col sm:flex-row gap-4 justify-center">
-					<a href="/about" class="hero-cta rounded-full px-8 py-4 border-2 border-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105">
-						More about me
-					</a>
-				</div>
+		<div class="term-shell term-hero-inner">
+			<p class="term-hero-meta">
+				esison.dev tty1 — login: <span>eric</span><br />
+				last login: {bootDate}
+			</p>
+			<h1 class="term-hero-name">{home.heroName}</h1>
+			<TypewriterText
+				texts={home.taglines.map((tagline) => ({
+					text: tagline.text,
+					duration: tagline.durationSeconds,
+				}))}
+				cursorType="breathing-alt"
+				startDelay={2}
+				client:load
+			/>
+			<div class="term-cta-row">
+				{home.heroCtas.map((cta) => <a class="term-btn" href={cta.href}>{cta.label}</a>)}
 			</div>
 		</div>
 	</section>
 
-	<!-- Portfolio Section -->
-	<section id="portfolio" class="py-20">
-		<div class="container mx-auto px-6">
-			<div class="text-center mb-16">
-				<h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
-					Featured Projects
-				</h2>
-				<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-					Here are some projects that I've worked on.
-				</p>
-			</div>
-
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-				<!-- Project 1 -->
-				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-					<div class="h-64 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-						<a href="https://underactive.net" target="_blank" rel="noopener" class="w-full h-full cursor-pointer">
-							<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://underactive.net/content/images/size/w2000/2024/04/15771985113_98687dda36.jpg')"></div>
-						</a>
-					</div>
-					<div class="p-6">
-						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">underactive.net</h3>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">My personal weblog that I've had since 1999<sup>*</sup></p>
-						<p class="text-gray-600 dark:text-gray-500 mb-4">* <sub>The content has been lost to the sands of time, except for a SQL dump from b2 blog (precursor to Wordpress) from the early 2000s. I might restore it with some kind of cringe disclaimer. But then there's also the time when I used Livejournal and I know that stuff is gone. And then there's the time when microblogging was big and I suppose I can post my old Twitter posts but it's pretty noisy. We'll see.</sub></p>
-						<div class="flex flex-wrap gap-2 mb-4">
-							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Ghost</span>
-						</div>
-						<div class="flex space-x-4">
-							<a href="https://underactive.net" target="_blank" rel="noopener" class="text-purple-600 dark:text-purple-400 hover:underline">Go to Site</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Project 2 -->
-				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-					<div class="h-64 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-						<a href="https://onlyfjs.net" target="_blank" rel="noopener" class="w-full h-full cursor-pointer">
-							<video class="w-full h-full object-cover lazy-video" loop muted playsinline preload="none">
-								<source src="/videos/onlyfjs_out.mp4" type="video/mp4">
-							</video>
-						</a>
-					</div>
-					<div class="p-6">
-						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">OnlyFJs</h3>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">I made a TikTok clone for a work project. This is a stripped down version utilizing the important bits of the project (intersection observers, web audio API, lazy loading, etc). I built this app without any AI assistance.</p>
-						<div class="flex flex-wrap gap-2 mb-4">
-							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Vue.js</span>
-							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">TypeScript</span>
-						</div>
-						<div class="flex space-x-4">
-							<a href="https://onlyfjs.net" target="_blank" rel="noopener" class="text-purple-600 dark:text-purple-400 hover:underline">Go to Site</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Project 3 -->
-				<div class="project-card bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-					<div class="h-64 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-						<a href="https://amfm.video/" target="_blank" rel="noopener" class="w-full h-full cursor-pointer">
-							<video class="w-full h-full object-cover lazy-video" loop muted playsinline preload="none">
-								<source src="/videos/flowstack_out.mp4" type="video/mp4">
-							</video>
-						</a>
-					</div>
-					<div class="p-6">
-						<h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">AMFM.video</h3>
-						<p class="text-gray-600 dark:text-gray-300 mb-4">I didn't want to fall behind the AI bandwagon, so I created this app from the ground up using Cursor. Inspired by PoolSuite, this app uses music and visuals to set the vibe and help me code.</p>
-						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Note: As this was just a code-experiment, it's only been tested on macOS Safari and Chromium-based browsers.</sub></p>
-						<p class="text-gray-600 dark:text-gray-500 mb-4"><sub>Also: This app uses embeded YouTube videos, and Google is clamping down on downloader apps, you might see a "Sign in to confirm you're not a bot" prompt in place of the video. Disconnecting from your VPN usually fixes this.</sub></p>
-						<div class="flex flex-wrap gap-2 mb-4">
-							<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-sm">Nuxt</span>
-							<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-sm">TypeScript</span>
-						</div>
-						<div class="flex space-x-4">
-							<a href="https://amfm.video/" target="_blank" rel="noopener" class="text-purple-600 dark:text-purple-400 hover:underline">Go to Site</a>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<GitHubProjectsSection />
-		</div>
-	</section>
-
-	<!-- History Section -->
-	<section id="history" class="py-20 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-		<div class="container mx-auto px-6">
-			<div class="text-center mb-16">
-				<h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-8">
-					History | briefly
-				</h2>
-				<div class="history-entries">
-					<p class="history-entry text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-						<span class="company-name">Hypermedia Systems</span>
-						<span class="company-dates text-xs text-gray-600 dark:text-gray-300">2005-Present</span>
-					</p>
-					<p class="history-entry text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-						<span class="company-name">Sony Online Entertainment</span>
-						<span class="company-dates text-xs text-gray-600 dark:text-gray-300">2002-2005</span>
-					</p>
-					<p class="history-entry text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-						<span class="company-name">Sony Computer Entertainment America</span>
-						<span class="company-dates text-xs text-gray-600 dark:text-gray-300">2002</span>
-					</p>
-					<p class="history-entry text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-						<span class="company-name">OnAir Streaming Networks</span>
-						<span class="company-dates text-xs text-gray-600 dark:text-gray-300">2000-2001</span>
-					</p>
-					<p class="history-entry text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-						<span class="company-name">Digital Entertainment Network</span>
-						<span class="company-dates text-xs text-gray-600 dark:text-gray-300">1999-2000</span>
-					</p>
-					<p class="history-entry text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-						<span class="company-name">Learning Tree International</span>
-						<span class="company-dates text-xs text-gray-600 dark:text-gray-300">1997-1999</span>
-					</p>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<style>
-		.righteous-regular {
-			font-family: "Righteous", sans-serif;
-			font-style: normal;
-		}
-
-		@keyframes fade-in {
-			from { opacity: 0; transform: translateY(30px); }
-			to { opacity: 1; transform: translateY(0); }
-		}
-		
-		@keyframes float {
-			0%, 100% { transform: translateY(0px); }
-			50% { transform: translateY(-10px); }
-		}
-		
-		.animate-fade-in {
-			animation: fade-in 1s ease-out;
-		}
-		
-		.animate-fade-in-delay {
-			animation: fade-in 1s ease-out 0.3s both;
-		}
-		
-		.animate-fade-in-delay-2 {
-			animation: fade-in 1s ease-out 0.6s both;
-		}
-		
-		.animate-float {
-			animation: float 3s ease-in-out infinite;
-		}
-		
-		.animate-float-delay {
-			animation: float 3s ease-in-out 1s infinite;
-		}
-		
-		.animate-float-delay-2 {
-			animation: float 3s ease-in-out 2s infinite;
-		}
-		
-		.terminal-code {
-			display: inline-block;
-			font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'DejaVu Sans Mono', monospace;
-			background-color: #0f0f0f;
-			color: #e0e0e0;
-			padding: 2px 6px;
-			border-radius: 4px;
-			font-size: 0.8em;
-			border: 1px solid #333;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-		}
-		
-		.terminal-code .tag {
-			color: #569cd6;
-		}
-		
-		.terminal-code .glow-text {
-			color: #fff;
-			text-shadow: 
-				0 0 5px #00c803,
-				0 0 10px #00c803,
-				0 0 15px #00c803,
-				0 0 20px #00c803;
-		}
-	</style>
-
-	<script>
-		const observer = new IntersectionObserver((entries) => {
-			for (const entry of entries) {
-				const video = entry.target as HTMLVideoElement;
-				if (entry.isIntersecting) {
-					video.play();
-				} else {
-					video.pause();
+	<section id="about" class="term-shell term-section">
+		<p class="term-section-label">whoami</p>
+		<h2 class="term-h2">{home.aboutHeading}</h2>
+		<div class="term-prose">
+			<p>
+				{
+					home.aboutBio.segments.map((segment) => {
+						if (segment.kind === 'text') return segment.value;
+						if (segment.kind === 'aside') return <span class="term-aside">{segment.value}</span>;
+						return (
+							<span class="term-quote">
+								<span class="term-quote-tag">&lt;sarcastic-quote&gt;</span
+								><span class="term-quote-value">{segment.value}</span><span
+									class="term-quote-tag">&lt;/sarcastic-quote&gt;</span
+								>
+							</span>
+						);
+					})
 				}
-			}
-		}, { rootMargin: '200px' });
+			</p>
+		</div>
 
-		document.querySelectorAll('video.lazy-video').forEach((video) => observer.observe(video));
-	</script>
+		<div class="term-grid-3">
+			{
+				home.skillGroups.map((group) => (
+					<article class="term-card">
+						<h3 class="term-card-title">{group.title}</h3>
+						<div class="term-taglist">
+							{group.skills.map((skill) => <span class="term-tag">{skill}</span>)}
+						</div>
+					</article>
+				))
+			}
+		</div>
+
+		<div class="term-callout">
+			<p>{home.aboutCta.blurb}</p>
+			<a class="term-btn" href={home.aboutCta.link.href}>{home.aboutCta.link.label}</a>
+		</div>
+	</section>
+
+	<section id="portfolio" class="term-shell term-section">
+		<p class="term-section-label">ls -la ~/projects</p>
+		<h2 class="term-h2">{home.projectsHeading}</h2>
+		<p class="term-prose">{home.projectsSubhead}</p>
+
+		<div class="term-projects">
+			{
+				home.featuredProjects.map((project) => (
+					<article class="term-project">
+						<div class="term-project-media">
+							{
+								project.media.kind === 'image' ? (
+									<img src={project.media.src} alt="" loading="lazy" />
+								) : (
+									<video src={project.media.src} autoplay muted loop playsinline />
+								)
+							}
+						</div>
+						<div>
+							<h3 class="term-project-name">{project.name}</h3>
+							<p class="term-project-summary">{project.summary}</p>
+							{project.notes.map((note) => <p class="term-note">{note}</p>)}
+							<div class="term-taglist">
+								{project.tags.map((tag) => <span class="term-tag">{tag}</span>)}
+							</div>
+							<div class="term-project-foot">
+								<a class="term-link" href={project.href} target="_blank" rel="noopener noreferrer">
+									{project.linkLabel}
+								</a>
+							</div>
+						</div>
+					</article>
+				))
+			}
+		</div>
+
+		<GitHubProjectsSection />
+	</section>
+
+	<section id="history" class="term-shell term-section">
+		<p class="term-section-label">cat ~/.history</p>
+		<h2 class="term-h2">{home.historyHeading}</h2>
+		<div class="term-history">
+			{
+				home.history.map((entry) => (
+					<div class="term-history-row" data-current={entry.endYear === null ? 'true' : 'false'}>
+						<span class="term-history-years">{entry.period}</span>
+						<span class="term-history-company">{entry.company}</span>
+					</div>
+				))
+			}
+		</div>
+	</section>
 </MainLayout>

@@ -21,16 +21,18 @@ cleanup and investment.
 | `blog`           | C     | Works, no automated tests, schema is solid      | 2026-04-07    |
 | `github-sync`    | B     | Validated, audited, fallbacks in place, no automated tests | 2026-04-07 |
 | `contact-reveal` | B     | Two-stage CAPTCHA, rate limiting, no automated tests | 2026-04-07 |
-| `theme`          | C+    | Works, persists, no tests or edge case handling  | 2026-04-07    |
-| `layout`         | C     | Functional, no tests                             | 2026-04-07    |
+| `theme`          | B     | Now just the phosphor accent: 4 values, pre-paint applied, unknown values fall back to amber, localStorage guarded. Much smaller surface since light mode was removed. No tests | 2026-07-29 |
+| `layout`         | B-    | Single hand-rolled stylesheet with documented tokens; no override sheets and no utility coupling. No tests | 2026-07-29 |
+| `design-system`  | B-    | `terminal.css` is self-contained and token-driven, covers prose/modals/forms. Gutter rule (`padding-block` only) is a documented footgun. No visual regression tests | 2026-07-29 |
 
 ## Cross-cutting grades
 
 | Concern           | Grade | Notes                                          | Last reviewed |
 |-------------------|-------|-------------------------------------------------|---------------|
-| Testing           | D     | No automated test suite; manual checklist only  | 2026-04-07    |
+| Testing           | D     | No automated test suite; manual checklist only. A `test` script exists but there are no test files | 2026-07-29 |
 | Linting           | F     | No linter or formatter configured               | 2026-04-07    |
 | Documentation     | B     | Comprehensive AGENTS.md harness in place        | 2026-04-07    |
+| CSS payload       | A-    | One 20.5KB stylesheet, no framework. Was 98.8KB of mostly-unused Tailwind plus two override sheets | 2026-07-29 |
 | Security          | B     | Input validation at boundaries, CAPTCHA, rate limiting | 2026-04-07 |
 
 ## Process

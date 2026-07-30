@@ -1,12 +1,7 @@
 <template>
-  <div class="p-3 bg-red-900/20 border border-red-500/50 rounded-lg">
-    <p class="text-red-400 text-sm">{{ message }}</p>
-    <button
-      class="mt-2 text-xs text-purple-400 hover:text-purple-300 underline"
-      @click="$emit('retry')"
-    >
-      Try again
-    </button>
+  <div class="term-error" role="alert">
+    <span>{{ message }}</span>
+    <button type="button" class="term-inline-btn" @click="$emit('retry')">Try again</button>
   </div>
 </template>
 

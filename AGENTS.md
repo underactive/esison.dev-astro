@@ -25,8 +25,9 @@ Personal portfolio and blog website for Eric Sison, built with Astro 6 as a stat
 ## Repo conventions
 
 - **Language:** TypeScript (strict mode) + Astro 6 templates + Vue 3 SFCs
+- **Styling:** One hand-rolled stylesheet, `src/styles/terminal.css`. No CSS framework — do not reintroduce utility classes. See [docs/DESIGN.md](docs/DESIGN.md)
 - **Boundaries:** Validate all external input at system edges (API responses, user input, Turnstile tokens). Interior code trusts typed interfaces.
-- **Tests:** No automated test suite yet. Manual smoke checklist in [docs/references/testing-checklist.md](docs/references/testing-checklist.md).
+- **Tests:** `npm run test` runs Vitest, but there are no test files yet, so the suite is empty. Manual smoke checklist in [docs/references/testing-checklist.md](docs/references/testing-checklist.md).
 - **Logging:** No structured logging. Build-time failures surface as actionable fallback UI states.
 - **Naming:** PascalCase components (`BaseHead.astro`, `TypewriterText.vue`), camelCase utilities and constants (`consts.ts`), kebab-case config files.
 - **File size:** Keep files focused. Split when a file serves multiple unrelated concerns.
@@ -43,7 +44,7 @@ Personal portfolio and blog website for Eric Sison, built with Astro 6 as a stat
    If none exists, **create one** using the template in
    [docs/PLANS.md](docs/PLANS.md) before starting implementation.
    Update [docs/PLANS.md](docs/PLANS.md) index when adding or completing plans.
-4. No automated test command or lint command configured yet.
+4. `npm run test` (Vitest) exists but has no tests yet; no linter or formatter is configured. Verify with `npm run build` plus the manual checklist.
 5. If you add a new domain or package, update [ARCHITECTURE.md](ARCHITECTURE.md).
 6. If you add or change a user-facing behavior, update the relevant spec in
    [docs/product-specs/](docs/product-specs/). If no spec exists for the

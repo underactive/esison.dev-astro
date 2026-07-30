@@ -1,13 +1,15 @@
 <template>
-  <div v-if="step.status === 'loading'" class="mt-4">
-    <LoadingSpinner />
+  <div v-if="step.status === 'loading'">
+    <LoadingSpinner message="verifying..." />
   </div>
-  <div v-else-if="step.status === 'error'" class="mt-4">
+  <div v-else-if="step.status === 'error'">
     <ErrorMessage :message="step.error!" @retry="$emit('retry')" />
   </div>
-  <div v-else-if="step.status === 'captcha'" class="mt-4 space-y-4">
-    <p class="text-gray-400 text-sm">{{ message }}</p>
-    <slot />
+  <div v-else-if="step.status === 'captcha'">
+    <p class="term-prompt">{{ message }}</p>
+    <div style="margin-top:0.9rem">
+      <slot />
+    </div>
   </div>
 </template>
 

@@ -1,0 +1,120 @@
+---
+// Replaces the old ColorPicker. Terminal's CSS is driven by --term-fg* custom
+// properties, so switching accent is a `data-phosphor` attribute swap on <html>
+// rather than !important overrides of utility classes.
+import { PHOSPHORS, DEFAULT_PHOSPHOR } from '../lib/phosphors';
+---
+
+<div class="term-phosphor" data-phosphor-root>
+	<button
+		type="button"
+		class="term-phosphor-toggle"
+		aria-expanded="false"
+		aria-haspopup="true"
+		data-phosphor-toggle
+	>
+		<span class="term-phosphor-dot"></span>
+		<span>Phosphor</span>
+	</button>
+
+	<div class="term-phosphor-menu" role="radiogroup" aria-label="Phosphor color" hidden data-phosphor-menu>
+		<p class="term-phosphor-label">CRT phosphor</p>
+		{
+			PHOSPHORS.map((phosphor) => (
+				<button
+					type="button"
+					class="term-phosphor-option"
+					role="radio"
+					aria-checked={phosphor.id === DEFAULT_PHOSPHOR ? 'true' : 'false'}
+					data-phosphor-value={phosphor.id}
+				>
+					<span class="term-phosphor-swatch" style={`background:${phosphor.swatch}`}></span>
+					<span>{phosphor.label}</span>
+					<span class="term-phosphor-code">{phosphor.code}</span>
+				</button>
+			))
+		}
+	</div>
+</div>
+
+<script>
+	import { DEFAULT_PHOSPHOR, isPhosphorId, PHOSPHOR_STORAGE_KEY } from '../lib/phosphors';
+
+	function initPhosphorPicker() {
+		const root = document.querySelector<HTMLElement>('[data-phosphor-root]');
+		const toggle = root?.querySelector<HTMLButtonElement>('[data-phosphor-toggle]');
+		const menu = root?.querySelector<HTMLElement>('[data-phosphor-menu]');
+		if (!root || !toggle || !menu) return;
+
+		const options = Array.from(
+			menu.querySelectorAll<HTMLButtonElement>('[data-phosphor-value]'),
+		);
+
+		// localStorage throws in some privacy modes; a failed read or write must
+		// never break the picker, so fall back to the amber default.
+		const read = () => {
+			try {
+				const stored = localStorage.getItem(PHOSPHOR_STORAGE_KEY);
+				return stored && isPhosphorId(stored) ? stored : DEFAULT_PHOSPHOR;
+			} catch {
+				return DEFAULT_PHOSPHOR;
+			}
+		};
+
+		const apply = (id: string, persist: boolean) => {
+			if (id === DEFAULT_PHOSPHOR) {
+				document.documentElement.removeAttribute('data-phosphor');
+			} else {
+				document.documentElement.setAttribute('data-phosphor', id);
+			}
+			options.forEach((option) => {
+				const isActive = option.dataset.phosphorValue === id;
+				option.setAttribute('aria-checked', isActive ? 'true' : 'false');
+			});
+			if (persist) {
+				try {
+					localStorage.setItem(PHOSPHOR_STORAGE_KEY, id);
+				} catch {
+					/* non-persistent session; the attribute is still applied */
+				}
+			}
+			window.dispatchEvent(new CustomEvent('phosphor-changed', { detail: { id } }));
+		};
+
+		const setOpen = (open: boolean) => {
+			menu.hidden = !open;
+			toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+		};
+
+		toggle.addEventListener('click', (event) => {
+			event.stopPropagation();
+			setOpen(menu.hidden);
+		});
+
+		options.forEach((option) => {
+			option.addEventListener('click', () => {
+				const id = option.dataset.phosphorValue;
+				if (id) apply(id, true);
+				setOpen(false);
+				toggle.focus();
+			});
+		});
+
+		document.addEventListener('click', (event) => {
+			if (!menu.hidden && !root.contains(event.target as Node)) setOpen(false);
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !menu.hidden) {
+				setOpen(false);
+				toggle.focus();
+			}
+		});
+
+		// Sync the checked state with whatever the pre-paint script applied.
+		apply(read(), false);
+	}
+
+	initPhosphorPicker();
+	document.addEventListener('astro:after-swap', initPhosphorPicker);
+</script>

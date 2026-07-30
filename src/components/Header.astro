@@ -1,4 +1,12 @@
 ---
 import HeaderCustom from './HeaderCustom.astro';
+import type { NavPage } from '../lib/nav';
+
+export interface Props {
+	page?: NavPage;
+}
+
+const { page } = Astro.props;
 ---
-<HeaderCustom />
+
+<HeaderCustom page={page} />

@@ -1,7 +1,8 @@
 # Plan: Design Lab — extract content, build 5 design mocks, pick a winner
 
 **Goal:** Extract all site copy into a typed content layer and build 5 self-contained design mocks with a side-by-side chooser, so a direction can be picked before committing to a site-wide overhaul.
-**Status:** Active — implementation complete, awaiting the owner's design choice.
+**Status:** Completed
+**Completed:** 2026-07-29
 **Started:** 2026-07-29
 
 ## Context
@@ -60,7 +61,9 @@ follow-up plan. The live site is untouched apart from one line in `astro.config.
 - [x] 12. Build `retro80s`, `dossier`, `aurora` end-to-end
 - [x] 13. Full verification pass (build + manual + live-site regression)
 - [x] 14. Documentation closeout
-- [ ] 15. **Owner picks a winning design** — then open the follow-up promotion plan
+- [x] 15. **Owner picks a winning design** — Terminal, 2026-07-29. Promoted in
+       [promote-terminal-design](../completed/promote-terminal-design.md); the lab
+       was removed after being committed for the record (`a6f2595`).
 
 **Ordering rationale.** Step 9 was a hard gate: it tested the CSS-isolation
 assumption the entire 15-route architecture rests on, while only one design
@@ -279,13 +282,11 @@ chooser's iframes, where it looks like a floating widget over the mock content.
 
 ## Follow-ups
 
-1. **Owner picks a design.** Then open a promotion plan covering: lifting the
-   winner's CSS onto the real pages, building its second colour mode, extending it
-   to `/blog/<slug>`, wiring the CV and Contact modals back in, and deleting
-   `src/styles/design-modern.css`, `design-artdeco.css` and the Design Style
-   section of `ColorPicker.astro`.
-2. **Delete the lab** once promotion lands — see the removal procedure in
-   ARCHITECTURE.md and the tech-debt entry.
+1. ~~Owner picks a design.~~ **Done: Terminal**, 2026-07-29. Promoted in
+   [promote-terminal-design](../completed/promote-terminal-design.md), which also
+   removed the old override themes, `ColorPicker.astro` and Tailwind itself.
+2. ~~Delete the lab once promotion lands.~~ **Done.** The lab was committed first
+   (`a6f2595`) so the four unpicked designs stay recoverable, then removed.
 3. **Blog content is still Astro-starter Lorem Ipsum.** The lab's six fixture posts
    are illustrative. Whatever design wins, the blog needs real posts or the section
    should be hidden.

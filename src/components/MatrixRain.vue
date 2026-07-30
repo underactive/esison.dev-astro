@@ -1,18 +1,18 @@
 <template>
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <canvas ref="matrixCanvas" class="opacity-20"></canvas>
+  <div class="term-rain" aria-hidden="true">
+    <canvas ref="matrixCanvas"></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const matrixCanvas = ref<HTMLCanvasElement>()
 let animationId: number | undefined
-let observer: MutationObserver | undefined
 let resizeCleanup: (() => void) | undefined
 let visibilityCleanup: (() => void) | undefined
 let motionCleanup: (() => void) | undefined
+let phosphorCleanup: (() => void) | undefined
 
 onMounted(() => {
   const canvas = matrixCanvas.value
@@ -21,12 +21,11 @@ onMounted(() => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  // Matrix characters
-  const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789"
+  const chars =
+    'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789'
   const drops: number[] = []
   const fontSize = 16
 
-  // Set canvas size to match viewport and recompute columns
   const resizeCanvas = () => {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
@@ -35,6 +34,7 @@ onMounted(() => {
     drops.length = newColumns
   }
   resizeCanvas()
+
   let resizeTimer: ReturnType<typeof setTimeout>
   const debouncedResize = () => {
     clearTimeout(resizeTimer)
@@ -46,16 +46,19 @@ onMounted(() => {
     window.removeEventListener('resize', debouncedResize)
   }
 
-  // Get theme color based on dark mode
-  const getThemeColor = () => {
-    return document.documentElement.classList.contains('dark') ? 
-      'rgba(168, 85, 247, 0.8)' : // Purple in dark mode
-      'rgba(147, 51, 234, 0.9)'   // Darker purple in light mode
+  // Follow the active phosphor rather than hardcoding a colour, so the rain
+  // recolours with the picker. Falls back to amber if the property is unset.
+  const readPhosphor = () =>
+    getComputedStyle(document.documentElement).getPropertyValue('--term-fg').trim() || '#ffb000'
+
+  let glyphColor = readPhosphor()
+
+  const onPhosphorChange = () => {
+    glyphColor = readPhosphor()
   }
+  window.addEventListener('phosphor-changed', onPhosphorChange)
+  phosphorCleanup = () => window.removeEventListener('phosphor-changed', onPhosphorChange)
 
-  let themeColor = getThemeColor()
-
-  // Drawing animation throttled to ~24fps
   const frameInterval = 1000 / 24
   let lastFrameTime = 0
 
@@ -71,16 +74,15 @@ onMounted(() => {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = themeColor
+    ctx.fillStyle = glyphColor
     ctx.font = fontSize + 'px monospace'
 
     for (let i = 0; i < drops.length; i++) {
       const text = chars[Math.floor(Math.random() * chars.length)]
       ctx.fillText(text, i * fontSize, drops[i] * fontSize)
 
-      // ~2.5% chance per frame to reset the drop, producing staggered column resets
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
-        drops[i] = 0
+      // ~2.5% chance per frame to reset the drop, producing staggered columns
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0
 
       drops[i]++
     }
@@ -98,10 +100,7 @@ onMounted(() => {
   }
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-
-  if (!reducedMotion.matches) {
-    draw()
-  }
+  if (!reducedMotion.matches) draw()
 
   const onVisibilityChange = () => {
     if (document.hidden) {
@@ -113,8 +112,8 @@ onMounted(() => {
   document.addEventListener('visibilitychange', onVisibilityChange)
   visibilityCleanup = () => document.removeEventListener('visibilitychange', onVisibilityChange)
 
-  const onMotionChange = (e: MediaQueryListEvent) => {
-    if (e.matches) {
+  const onMotionChange = (event: MediaQueryListEvent) => {
+    if (event.matches) {
       stopAnimation()
     } else if (!document.hidden) {
       startAnimation()
@@ -122,24 +121,26 @@ onMounted(() => {
   }
   reducedMotion.addEventListener('change', onMotionChange)
   motionCleanup = () => reducedMotion.removeEventListener('change', onMotionChange)
-
-  // Update color when theme changes
-  observer = new MutationObserver(() => {
-    themeColor = getThemeColor()
-  })
-
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  })
-
 })
 
 onUnmounted(() => {
-  if (resizeCleanup) resizeCleanup()
-  if (visibilityCleanup) visibilityCleanup()
-  if (motionCleanup) motionCleanup()
-  if (observer) observer.disconnect()
+  resizeCleanup?.()
+  visibilityCleanup?.()
+  motionCleanup?.()
+  phosphorCleanup?.()
   if (animationId) cancelAnimationFrame(animationId)
 })
 </script>
+
+<style scoped>
+.term-rain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.term-rain canvas {
+  opacity: 0.16;
+}
+</style>

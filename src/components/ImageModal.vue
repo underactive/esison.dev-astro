@@ -2,60 +2,44 @@
   <div
     v-show="isVisible"
     id="image-modal"
-    class="fixed inset-0 z-50 overflow-y-auto"
-    aria-labelledby="modal-title"
+    class="term-overlay"
     role="dialog"
     aria-modal="true"
+    :aria-label="currentImage?.caption ?? 'Image'"
+    @click.self="hideModal"
   >
-    <!-- Background overlay -->
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center">
-      <div
-        class="fixed inset-0 bg-black/90 backdrop-blur-sm transition-opacity"
-        aria-hidden="true"
-        @click="hideModal"
-      ></div>
-
-      <!-- Modal container -->
-      <div class="relative inline-block align-middle max-w-4xl w-full mx-4">
-        <!-- Close button -->
-        <button
-          @click="hideModal"
-          class="absolute top-4 right-4 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+    <div class="term-modal term-modal--bare">
+      <div class="term-modal-bar" style="width:100%;max-width:100%">
+        <p class="term-modal-title">{{ currentImage?.caption ?? 'Image' }}</p>
+        <button type="button" class="term-modal-close" aria-label="Close" @click="hideModal">
+          ×
         </button>
-        
-        <!-- Image -->
-        <img
-          v-if="currentImage"
-          :src="currentImage.src"
-          :alt="currentImage.alt"
-          class="w-full h-auto max-h-[80vh] object-contain rounded-lg shadow-2xl"
-        />
-        
-        <!-- Caption -->
-        <div v-if="currentImage?.caption" class="mt-4 text-center">
-          <p class="text-white text-lg font-medium">{{ currentImage.caption }}</p>
-        </div>
       </div>
+
+      <img
+        v-if="currentImage"
+        class="term-lightbox-img"
+        :src="currentImage.src"
+        :alt="currentImage.alt"
+      />
+
+      <p v-if="currentImage?.caption" class="term-lightbox-caption">
+        {{ currentImage.caption }}
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock'
 
-// Types
 interface ImageData {
   src: string
   alt: string
   caption?: string
 }
 
-// Reactive state
 const isVisible = ref(false)
 const currentImage = ref<ImageData | null>(null)
 
@@ -64,7 +48,6 @@ const currentImage = ref<ImageData | null>(null)
 const isTrustedImageSrc = (src: string): boolean =>
   typeof src === 'string' && src.startsWith('/') && !src.startsWith('//')
 
-// Modal management
 const showModal = (image: ImageData) => {
   if (!isTrustedImageSrc(image?.src)) return
   currentImage.value = image
@@ -78,32 +61,22 @@ const hideModal = () => {
   currentImage.value = null
 }
 
-// Event handlers
 const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape' && isVisible.value) {
-    hideModal()
-  }
+  if (e.key === 'Escape' && isVisible.value) hideModal()
 }
 
-// Lifecycle
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
-  // Expose the showModal function globally
   window.showImageModal = showModal
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
 
-  if (isVisible.value) {
-    releaseScrollLock()
-  }
+  if (isVisible.value) releaseScrollLock()
 
-  if (window.showImageModal) {
-    delete window.showImageModal
-  }
+  if (window.showImageModal) delete window.showImageModal
 })
 
-// Expose API
 defineExpose({ showModal, hideModal })
 </script>

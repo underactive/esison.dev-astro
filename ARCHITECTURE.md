@@ -40,8 +40,8 @@ function with Turnstile verification.
 | Layer          | Responsibility                                       | May depend on       |
 |----------------|------------------------------------------------------|---------------------|
 | **Types**      | TypeScript interfaces, Zod schemas, env declarations | Nothing             |
-| **Config**     | `consts.ts`, `astro.config.mjs`, `tailwind.config.js`, env vars | Types   |
-| **Data**       | Content collections, GitHub API fetcher, blog posts  | Types, Config       |
+| **Config**     | `consts.ts`, `astro.config.mjs`, `src/lib/nav.ts`, `src/lib/phosphors.ts`, env vars | Types   |
+| **Data**       | Content collections, GitHub API fetcher, blog posts, `src/data/site-content.ts` | Types, Config |
 | **Components** | Astro (static) and Vue (interactive) components      | Types, Config, Data |
 | **Layouts**    | `MainLayout.astro`, `BlogPost.astro`                 | All above           |
 | **Pages**      | Route-based pages in `src/pages/`                    | All above           |
@@ -56,6 +56,7 @@ function with Turnstile verification.
 | `contact-reveal` | Serverless contact info reveal with CAPTCHA         | Implemented |
 | `theme`          | Dark/light mode toggle with localStorage persistence | Implemented |
 | `layout`         | Page layout system with parallax backgrounds        | Implemented |
+| `design-system`  | Terminal design: one hand-rolled stylesheet, phosphor accent | Implemented |
 
 ## Key design decisions
 
@@ -70,16 +71,25 @@ function with Turnstile verification.
    workflow triggers Netlify rebuilds every 6 hours to keep data fresh.
 
 3. **Topic-based repo visibility.** Public repos appear on the homepage only
-   when tagged with the `portfolio` topic. This gives per-repo control without
-   configuration files or hardcoded lists.
+   when tagged with the `spotlight` topic (see `GITHUB_PROJECTS_REQUIRED_TOPIC`
+   in `src/consts.ts`). This gives per-repo control without configuration files
+   or hardcoded lists.
 
 4. **Two-stage CAPTCHA for contact reveal.** Email requires one Turnstile
    verification, phone requires a second. This balances accessibility (email is
    easy to get) with privacy (phone requires extra intent).
 
-5. **Class-based dark mode.** Theme toggling uses a `dark` class on `<html>`
-   with localStorage persistence and MutationObserver sync. Default is dark mode
-   for first-time visitors.
+5. **Dark only, with a phosphor accent.** There is no light mode and no theme
+   toggle. The only user-facing theming is the CRT phosphor accent (amber, green,
+   cyan, white), applied as `data-phosphor` on `<html>` and driving CSS custom
+   properties. Amber is the absence of the attribute, so an unknown stored value
+   degrades to amber rather than to unstyled accents.
+
+6. **No CSS framework.** The site ships a single hand-rolled stylesheet,
+   `src/styles/terminal.css`, which carries its own reset. Tailwind was removed
+   when Terminal shipped: the previous design system was override sheets fighting
+   utility classes baked into markup, which is what made a Tailwind v4 upgrade
+   break a modal (`27a6836`).
 
 ---
 
@@ -93,21 +103,31 @@ function with Turnstile verification.
 - Dynamic routes generated in `src/pages/blog/[...slug].astro`
 
 ### Component Model (Astro + Vue Islands)
-- **Astro components** (`src/components/*.astro`) — static/SSR rendering: `BaseHead`, `Header` (wraps `HeaderCustom`; edit `HeaderCustom.astro` for header UI), `Footer`, `FormattedDate`, `HeaderLink`, `Button`, `ColorPicker`
+- **Astro components** (`src/components/*.astro`) — static/SSR rendering: `BaseHead`, `Header` (wraps `HeaderCustom`; edit `HeaderCustom.astro` for header UI), `Footer`, `FormattedDate`, `Button`, `PhosphorPicker`, `GitHubProjectsSection`
 - **Vue components** (`src/components/*.vue`) — client-side interactivity: `TypewriterText`, `MatrixRain`, `ContactModal`, `CVModal`, `ImageModal`
 - All Vue components use `client:load` directive for immediate hydration
 - Do not mix — Astro components handle structure/SEO, Vue handles interactive behavior
 
 ### Layout System
-- `MainLayout.astro` — Top-level wrapper used by all pages. Includes `BaseHead`, `Header`, `Footer`, fixed parallax background elements, and theme toggle script. Default dark mode for first-time visitors, persisted in localStorage via MutationObserver on `<html>` class changes.
-- `BlogPost.astro` — Extends MainLayout for blog posts. Adds hero image with gradient overlay, formatted publication/update dates, prose-purple typography, and back-to-blog navigation.
+- `MainLayout.astro` — Top-level wrapper used by all pages. Includes `BaseHead`, a skip link, `Header`, `Footer`, and the pre-paint phosphor script. Takes an optional `page` prop so the nav can mark the current item with `aria-current="page"`.
+- `BlogPost.astro` — Extends MainLayout for blog posts. Adds an optional hero image, publication/update dates, `.term-prose` markdown styling, and back-to-blog navigation.
 
-### Dark Mode / Theme Toggle
-- Class-based strategy: `dark` class on `<html>` element
-- Toggled via global `window.toggleTheme()` function (defined in MainLayout)
-- Persisted to localStorage; defaults to dark for first-time visitors
-- MutationObserver watches `<html>` class attribute changes and syncs to localStorage
-- Tailwind's `darkMode: 'class'` config enables `dark:` variant utilities
+### Phosphor Accent (the whole of `theme`)
+
+- Four CRT-authentic options in `src/lib/phosphors.ts`: amber (P3), green (P1),
+  cyan, white (P4)
+- Applied as `data-phosphor` on `<html>`; each phosphor is an attribute rule in
+  `terminal.css` that overrides `--term-fg`, `--term-fg-dim`, `--term-fg-bright`,
+  `--term-glow`, `--term-glow-soft` and `--term-rule`
+- **Amber is represented by the absence of the attribute** — its values are the
+  `:root` defaults. This is deliberate: a corrupt or unknown stored value matches
+  no rule and renders as amber, so no validation branch is needed at paint time
+- An `is:inline` script in `MainLayout.astro` applies it before first paint to
+  avoid a flash; reads are wrapped in try/catch because `localStorage` throws in
+  some privacy modes
+- Persisted under the `phosphor` key. There is no `theme` key and no light mode
+- `PhosphorPicker.astro` owns the UI and dispatches `phosphor-changed`;
+  `MatrixRain.vue` listens and re-reads `--term-fg` so the canvas recolours
 
 ### Contact Info Reveal (Serverless)
 - `netlify/functions/reveal_contact.js` — Netlify serverless function
@@ -124,11 +144,46 @@ function with Turnstile verification.
 ### GitHub Projects Sync
 - `GitHubProjectsSection.astro` renders a second homepage projects grid from build-time GitHub data
 - `src/lib/github-projects.ts` calls the GitHub repositories API during the Astro build, paginates over public repos sorted by push time, validates external input, and normalizes repo metadata before rendering
-- Public repositories appear only when they include the `portfolio` topic; removing that topic hides the repo from the homepage
+- Public repositories appear only when they include the `spotlight` topic; removing that topic hides the repo from the homepage
 - Project cards display the repository `pushed_at` time so the visible date reflects last code push activity rather than metadata-only repo edits
 - The whole GitHub-driven section is controlled by the optional `ENABLE_GITHUB_PROJECTS` server-side environment variable
 - `GITHUB_TOKEN` is optional but recommended to raise API limits for build-time fetches
 - `.github/workflows/refresh-github-projects.yml` triggers a Netlify rebuild every 6 hours and on manual dispatch so GitHub repo changes can propagate to the static site
+
+### Terminal Design System
+
+One stylesheet, `src/styles/terminal.css` (~20KB), imported by `BaseHead.astro`.
+It contains its own reset, so there is no framework CSS underneath it. Promoted
+from the design lab — see
+[docs/exec-plans/completed/design-lab.md](docs/exec-plans/completed/design-lab.md)
+and
+[promote-terminal-design](docs/exec-plans/completed/promote-terminal-design.md).
+
+- **Tokens are CSS custom properties on `:root`** — `--term-bg`, `--term-fg`,
+  `--term-rule`, `--term-text`, `--term-measure`, `--term-gutter`. Style against
+  tokens, never raw hex.
+- **Selectors are `term-` prefixed.** The prefix originally stopped Tailwind's
+  content scanner from matching design-lab classes; it is retained as a namespace.
+- **Section classes must use `padding-block`, never the `padding` shorthand.**
+  Elements carry `.term-shell` (which sets `padding-inline` for the page gutter)
+  *plus* a section class. Both are single-class selectors, so a `padding`
+  shorthand silently wins and destroys the gutter. This is invisible on wide
+  screens because `max-width` centering supplies incidental margins — it only
+  shows up at narrow widths.
+- **Markdown prose** is `.term-prose`, covering headings, links, lists,
+  blockquotes, tables, inline code, `pre`, `mark`, `kbd`, `abbr`, `dl` and images.
+  It replaced nine `prose-*` variants from `@tailwindcss/typography`.
+- **Code blocks are Shiki's `vesper` theme**, set in `astro.config.mjs`. Shiki
+  writes its background and token colours as *inline styles*, so CSS cannot
+  restyle them — the theme choice is the styling decision. `vesper` is warm amber
+  on near-black; the default `github-dark` is slate blue and clashed.
+- **Scanlines and vignette** are fixed overlays on `body::before` / `body::after`
+  with `pointer-events: none`. Because they are `position: fixed`, full-page
+  screenshots show them as banding artifacts; that is a capture artifact, not a
+  rendering bug.
+- **Vue templates carry no utility classes and take no class names as props.**
+  `TypewriterText` previously hardcoded Tailwind classes and accepted
+  `fontSize`/`color` strings, which made it unusable without Tailwind.
 
 ---
 
@@ -136,13 +191,18 @@ function with Turnstile verification.
 
 ### Astro
 - **`site`** — Set to `https://example.com` (needs updating for production canonical URLs)
-- **Integrations** — MDX, Sitemap, Vue; Tailwind is connected through the Vite plugin in `astro.config.mjs`
+- **Integrations** — MDX, Sitemap, Vue. There is no CSS framework plugin
 - **Output** — Static (default) — builds to `./dist/`
 
-### Tailwind CSS
-- **`darkMode: 'class'`** — Class-based dark mode toggling on `<html>` element
-- **`prose-purple`** — Custom typography theme with purple accent colors for blog content, including full invert variants for dark mode
-- **`@tailwindcss/typography`** — Plugin for prose styling in blog posts
+### Markdown
+- **`shikiConfig.theme: 'vesper'`** — syntax highlighting theme for fenced code
+  blocks. Shiki emits its colours inline, so this is the only way to restyle them
+- MDX inherits the same markdown configuration
+
+### Styling
+- No framework. `src/styles/terminal.css` is the only stylesheet, imported once by
+  `BaseHead.astro`
+- Vue components use scoped `<style>` blocks for component-local rules
 
 ### Dependencies
 - `astro@^6.0.1` — Static site generator framework
@@ -151,9 +211,6 @@ function with Turnstile verification.
 - `@astrojs/sitemap@^3.7.1` — Automatic sitemap.xml generation
 - `@astrojs/vue@^6.0.0` — Vue island integration
 - `@astrojs/rss@^4.0.12` — RSS feed generation
-- `@tailwindcss/vite@^4.0.0` — Tailwind CSS Vite integration
-- `@tailwindcss/typography@^0.5.16` — Prose styling plugin (prose-purple theme)
-- `tailwindcss@^4.0.0` — Utility-first CSS framework
 - `sharp@^0.34.2` — Image optimization for Astro Image component
 
 ### Prerequisites
@@ -215,7 +272,7 @@ Environment file sources:
 ### Google Fonts
 - **What:** Righteous font for headings
 - **Loaded via:** Preconnect + stylesheet link in `BaseHead.astro`
-- **Gotchas:** Atkinson font is self-hosted (`public/fonts/`), but Righteous is externally loaded.
+- **Gotchas:** JetBrains Mono is loaded from Google Fonts with `display=swap`; there are no self-hosted fonts.
 
 ### Gravatar
 - **What:** Profile avatar displayed in the header
@@ -225,7 +282,7 @@ Environment file sources:
 - **What:** Build-time source of public repository metadata for the homepage
 - **Loaded via:** `src/lib/github-projects.ts` during Astro page generation
 - **Key env vars:** `ENABLE_GITHUB_PROJECTS`, `GITHUB_TOKEN`
-- **Gotchas:** Repos only appear when public and tagged with `portfolio`; cards display last push time; builds fall back to visible error state if GitHub is unreachable.
+- **Gotchas:** Repos only appear when public and tagged with `spotlight`; cards display last push time; builds fall back to visible error state if GitHub is unreachable.
 
 ### Netlify Build Hook
 - **What:** Scheduled rebuild trigger for GitHub data freshness
@@ -246,20 +303,19 @@ Environment file sources:
 | `src/pages/` | Route-based pages: `index.astro`, `about.astro`, `blog/`, `rss.xml.js` |
 | `src/components/` | Astro (`.astro`) and Vue (`.vue`) components |
 | `src/lib/github-projects.ts` | Build-time GitHub repo fetching, validation, normalization |
+| `src/data/site-content.ts` | All site copy as typed data, plus GitHub/blog fixtures for the design lab |
 | `src/layouts/` | `MainLayout.astro` (base) and `BlogPost.astro` (blog posts) |
 | `src/content/blog/` | Blog post markdown/MDX files |
 | `src/content.config.ts` | Content collection schema definitions |
-| `src/styles/global.css` | Tailwind directives and custom Atkinson font faces |
+| `src/styles/terminal.css` | The site's only stylesheet: reset, tokens, components, prose, modals |
 | `src/consts.ts` | Global constants and GitHub sync settings |
 | `src/env.d.ts` | TypeScript env var type declarations |
 | `src/assets/` | Blog placeholder images (optimized by Astro) |
-| `public/fonts/` | Self-hosted Atkinson font files (woff) |
 | `public/images/` | Static images (Git LFS tracked) |
 | `public/videos/` | Video assets (Git LFS tracked) |
 | `public/favicons` | Favicon variants and PWA manifest |
 | `netlify/functions/` | Serverless functions (`reveal_contact.js`) |
 | `astro.config.mjs` | Astro framework and integration config |
-| `tailwind.config.js` | Tailwind CSS + prose-purple typography config |
 | `netlify.toml` | Netlify deployment config |
 | `.github/workflows/` | Scheduled Netlify rebuild workflow |
 | `.gitattributes` | Git LFS tracking rules |
@@ -286,8 +342,8 @@ Environment file sources:
 3. Access public env vars via `import.meta.env.PUBLIC_*` if needed
 
 ### Showing or hiding a GitHub repo on the homepage
-1. Add the `portfolio` topic to a public GitHub repository to show it
-2. Remove the `portfolio` topic to hide it
+1. Add the `spotlight` topic to a public GitHub repository to show it
+2. Remove the `spotlight` topic to hide it
 3. Set `ENABLE_GITHUB_PROJECTS=false` to hide the entire section
 4. Set `GITHUB_TOKEN` if build-time requests hit rate limits
 5. Configure `NETLIFY_BUILD_HOOK_URL` secret for scheduled refreshes

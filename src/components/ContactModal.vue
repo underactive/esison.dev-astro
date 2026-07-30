@@ -2,94 +2,64 @@
   <div
     v-show="isVisible"
     id="contact-modal"
-    class="fixed inset-0 z-50 overflow-y-auto"
-    aria-labelledby="modal-title"
+    class="term-overlay"
     role="dialog"
     aria-modal="true"
+    aria-labelledby="contact-modal-title"
+    @click.self="hideModal"
   >
-    <!-- Background overlay -->
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div
-        class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
-        aria-hidden="true"
-        @click="hideModal"
-      ></div>
+    <div class="term-modal">
+      <div class="term-modal-bar">
+        <h2 class="term-modal-title" id="contact-modal-title">Contact Information</h2>
+        <button type="button" class="term-modal-close" aria-label="Close" @click="hideModal">
+          ×
+        </button>
+      </div>
 
-      <!-- Modal container -->
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      
-      <div class="relative inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-        <div class="bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div class="sm:flex sm:items-start">
-            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-              <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">
-                Contact Information
-              </h3>
-              
-              <!-- Email Verification Section -->
-              <VerificationSection
-                :step="emailStep"
-                message="Please complete verification to view contact information:"
-                @retry="retryEmailVerification"
-              >
-                <div ref="turnstileContainer" class="flex justify-center"></div>
-                <input 
-                  ref="honeypot" 
-                  type="text" 
-                  class="absolute left-[-9999px] opacity-0"
-                  tabindex="-1" 
-                  autocomplete="off"
-                />
-              </VerificationSection>
+      <div class="term-modal-body">
+        <VerificationSection
+          :step="emailStep"
+          message="Please complete verification to view contact information:"
+          @retry="retryEmailVerification"
+        >
+          <div ref="turnstileContainer"></div>
+          <input
+            ref="honeypot"
+            type="text"
+            class="term-honeypot"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+        </VerificationSection>
 
-              <!-- Contact Info Display -->
-              <div v-if="emailStep.status === 'success'" class="mt-4 space-y-4">
-                <ContactInfo 
-                  icon="email"
-                  label="Email"
-                  :value="contactInfo?.email"
-                />
-                
-                <!-- Phone Section -->
-                <div class="border-t border-gray-700 pt-4">
-                  <ContactInfo 
-                    v-if="contactInfo?.phone"
-                    icon="phone"
-                    label="Phone"
-                    :value="contactInfo.phone"
-                  />
-                  
-                  <!-- Phone Reveal Process -->
-                  <template v-else>
-                    <PhoneRevealButton 
-                      v-if="phoneStep.status === 'idle'"
-                      @click="startPhoneReveal"
-                    />
-                    
-                    <VerificationSection
-                      v-else
-                      :step="phoneStep"
-                      message="Additional verification required for phone access:"
-                      @retry="retryPhoneVerification"
-                    >
-                      <div ref="phoneTurnstileContainer" class="flex justify-center"></div>
-                    </VerificationSection>
-                  </template>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <button
-            type="button"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200"
-            @click="hideModal"
-          >
-            Close
-          </button>
-        </div>
+        <template v-if="emailStep.status === 'success'">
+          <ContactInfo icon="email" label="Email" :value="contactInfo?.email" />
+
+          <ContactInfo
+            v-if="contactInfo?.phone"
+            icon="phone"
+            label="Phone"
+            :value="contactInfo.phone"
+          />
+
+          <template v-else>
+            <PhoneRevealButton v-if="phoneStep.status === 'idle'" @click="startPhoneReveal" />
+
+            <VerificationSection
+              v-else
+              :step="phoneStep"
+              message="Additional verification required for phone access:"
+              @retry="retryPhoneVerification"
+            >
+              <div ref="phoneTurnstileContainer"></div>
+            </VerificationSection>
+          </template>
+        </template>
+      </div>
+
+      <div class="term-modal-foot">
+        <button type="button" class="term-btn" @click="hideModal">Close</button>
       </div>
     </div>
   </div>

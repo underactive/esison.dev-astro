@@ -40,7 +40,7 @@ interface GitHubProjectCandidate extends GitHubProject {
 
 /**
  * Fetches public GitHub repositories for the configured user and returns
- * those tagged with the required `portfolio` topic.
+ * those tagged with the required `spotlight` topic.
  *
  * Repositories are included only when they are public, non-fork,
  * non-archived, non-disabled, and carry the {@link GITHUB_PROJECTS_REQUIRED_TOPIC} topic.

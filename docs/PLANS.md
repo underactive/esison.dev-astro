@@ -18,6 +18,8 @@ See [exec-plans/active/](exec-plans/active/) for full plan documents.
 |------|------|-----------|
 | [sync-github-projects](exec-plans/completed/sync-github-projects.md) | Build-time GitHub repo sync on homepage | 2026-04-07 |
 | [fix-github-project-metadata](exec-plans/completed/fix-github-project-metadata.md) | Display push date instead of metadata date | 2026-04-07 |
+| [design-lab](exec-plans/completed/design-lab.md) | Extract site content and build 5 comparable design mocks with a chooser | 2026-07-29 |
+| [promote-terminal-design](exec-plans/completed/promote-terminal-design.md) | Make Terminal the site's only design; remove Tailwind and the old override themes | 2026-07-29 |
 
 See [exec-plans/completed/](exec-plans/completed/) for full plan documents.
 

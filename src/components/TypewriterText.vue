@@ -1,47 +1,41 @@
 <template>
-  <div :class="[fontSize, 'mb-8 leading-relaxed animate-fade-in-delay font-mono', { 'crt-effect': crt, 'crt-light-mode': crt && isLightMode }, crt ? '' : color]">
-    <span ref="textElement"></span><span ref="cursorElement" class="typewriter-cursor">█</span>
+  <div class="term-typewriter" :data-cursor="cursorType">
+    <span ref="textElement"></span><span ref="cursorElement" class="term-caret">█</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 interface TextItem {
   text: string
-  duration?: number // duration in seconds, defaults to 3 if not specified
+  /** Seconds to hold the completed line before backspacing it. */
+  duration?: number
 }
 
 interface Props {
-  texts?: TextItem[] | string // array of text objects or single string for backwards compatibility
+  texts?: TextItem[] | string
   speed?: number
   delay?: number
-  fontSize?: string
-  color?: string
   cursorType?: 'blinking' | 'breathing' | 'breathing-alt'
-  crt?: boolean
   startDelay?: number
-  backspaceSpeed?: number // speed for backspacing animation
+  backspaceSpeed?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   texts: 'TYPEWRITER TEXT',
   speed: 100,
   delay: 800,
-  fontSize: 'text-xl md:text-2xl',
-  color: 'text-gray-600 dark:text-gray-300',
   cursorType: 'blinking',
-  crt: false,
   startDelay: 0,
-  backspaceSpeed: 50
+  backspaceSpeed: 50,
 })
+
+const DEFAULT_HOLD_SECONDS = 3
 
 const textElement = ref<HTMLSpanElement>()
 const cursorElement = ref<HTMLSpanElement>()
-const isLightMode = ref(false)
-const themeObserver = ref<MutationObserver>()
 
-// State management for cycling through texts
 const currentTextIndex = ref(0)
 const currentCharIndex = ref(0)
 const isTyping = ref(false)
@@ -56,108 +50,23 @@ const scheduleTimeout = (cb: () => void, delay: number) => {
   pendingTimeouts.add(id)
 }
 
-// Convert texts prop to consistent format
 const textItems = ref<TextItem[]>([])
 
-// Initialize textItems based on props
 const initializeTexts = () => {
-  if (Array.isArray(props.texts)) {
-    textItems.value = props.texts.map(item => ({
-      text: item.text,
-      duration: item.duration || 3 // default 3 seconds
-    }))
-  } else {
-    textItems.value = [{
-      text: props.texts || 'TYPEWRITER TEXT',
-      duration: 3
-    }]
-  }
+  textItems.value = Array.isArray(props.texts)
+    ? props.texts.map((item) => ({ text: item.text, duration: item.duration || DEFAULT_HOLD_SECONDS }))
+    : [{ text: props.texts || 'TYPEWRITER TEXT', duration: DEFAULT_HOLD_SECONDS }]
 }
 
-// Function to check theme
-const checkTheme = () => {
-  if (typeof window !== 'undefined') {
-    isLightMode.value = !document.documentElement.classList.contains('dark')
-  }
+const setCursorState = (state: 'typing' | 'idle') => {
+  cursorElement.value?.setAttribute('data-state', state)
 }
 
-onMounted(() => {
-  // Initial theme check
-  checkTheme()
-  
-  // Listen for theme changes
-  themeObserver.value = new MutationObserver(checkTheme)
-  themeObserver.value.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  })
-  
-  if (!textElement.value || !cursorElement.value) return
-  
-  // Initialize texts array
-  initializeTexts()
-  
-  // Initially show cursor in finished state (blinking)
-  setCursorToFinished()
-  
-  // Start the typing cycle after delays
-  const totalDelay = props.delay + (props.startDelay * 1000)
-  scheduleTimeout(startTypingCycle, totalDelay)
-})
-
-// Set cursor to finished state
-const setCursorToFinished = () => {
-  if (!cursorElement.value) return
-  
-  cursorElement.value.classList.remove('typing', 'breathing', 'breathing-alt')
-  if (props.cursorType === 'breathing') {
-    cursorElement.value.classList.add('finished-breathing')
-  } else if (props.cursorType === 'breathing-alt') {
-    cursorElement.value.classList.add('finished-breathing-alt')
-  } else {
-    cursorElement.value.classList.add('finished')
-  }
-}
-
-// Set cursor to typing state
-const setCursorToTyping = () => {
-  if (!cursorElement.value) return
-  
-  cursorElement.value.classList.remove('finished', 'finished-breathing', 'finished-breathing-alt')
-  cursorElement.value.classList.add('typing')
-  if (props.cursorType === 'breathing') {
-    cursorElement.value.classList.add('breathing')
-  } else if (props.cursorType === 'breathing-alt') {
-    cursorElement.value.classList.add('breathing-alt')
-  }
-}
-
-// Start the main typing cycle
-const startTypingCycle = () => {
-  if (textItems.value.length === 0) return
-  typeCurrentText()
-}
-
-// Type the current text
-const typeCurrentText = () => {
-  if (!textElement.value || isBackspacing.value) return
-  
-  isTyping.value = true
-  setCursorToTyping()
-  currentCharIndex.value = 0
-  requestAnimationFrame(() => {
-    if (textElement.value) textElement.value.textContent = ''
-  })
-  
-  typeNextCharacter()
-}
-
-// Type next character
 const typeNextCharacter = () => {
   if (!textElement.value || !isTyping.value) return
-  
+
   const currentText = textItems.value[currentTextIndex.value]?.text || ''
-  
+
   if (currentCharIndex.value < currentText.length) {
     currentCharIndex.value++
     const textToSet = currentText.slice(0, currentCharIndex.value)
@@ -165,31 +74,31 @@ const typeNextCharacter = () => {
       if (textElement.value) textElement.value.textContent = textToSet
     })
     scheduleTimeout(typeNextCharacter, props.speed)
-  } else {
-    // Finished typing current text
-    isTyping.value = false
-    setCursorToFinished()
-    
-    // Wait for duration before starting backspace
-    const duration = textItems.value[currentTextIndex.value]?.duration || 3
-    scheduleTimeout(startBackspace, duration * 1000)
+    return
   }
+
+  isTyping.value = false
+  setCursorState('idle')
+  const hold = textItems.value[currentTextIndex.value]?.duration || DEFAULT_HOLD_SECONDS
+  scheduleTimeout(startBackspace, hold * 1000)
 }
 
-// Start backspace animation
-const startBackspace = () => {
-  if (!textElement.value || isTyping.value) return
-  
-  isBackspacing.value = true
-  setCursorToTyping()
-  
-  backspaceNextCharacter()
+const typeCurrentText = () => {
+  if (!textElement.value || isBackspacing.value) return
+
+  isTyping.value = true
+  setCursorState('typing')
+  currentCharIndex.value = 0
+  requestAnimationFrame(() => {
+    if (textElement.value) textElement.value.textContent = ''
+  })
+
+  typeNextCharacter()
 }
 
-// Backspace next character
 const backspaceNextCharacter = () => {
   if (!textElement.value || !isBackspacing.value) return
-  
+
   if (currentCharIndex.value > 0) {
     currentCharIndex.value--
     const currentText = textItems.value[currentTextIndex.value]?.text || ''
@@ -198,154 +107,112 @@ const backspaceNextCharacter = () => {
       if (textElement.value) textElement.value.textContent = textToSet
     })
     scheduleTimeout(backspaceNextCharacter, props.backspaceSpeed)
-  } else {
-    // Finished backspacing
-    isBackspacing.value = false
-    
-    // Move to next text (cycle back to beginning if at end)
-    currentTextIndex.value = (currentTextIndex.value + 1) % textItems.value.length
-    
-    // Start typing next text after a brief pause
-    scheduleTimeout(typeCurrentText, 200)
+    return
   }
+
+  isBackspacing.value = false
+  currentTextIndex.value = (currentTextIndex.value + 1) % textItems.value.length
+  scheduleTimeout(typeCurrentText, 200)
 }
 
-onUnmounted(() => {
-  for (const id of pendingTimeouts) {
-    clearTimeout(id)
-  }
-  pendingTimeouts.clear()
+const startBackspace = () => {
+  if (!textElement.value || isTyping.value) return
 
-  // Cleanup theme observer
-  themeObserver.value?.disconnect()
+  isBackspacing.value = true
+  setCursorState('typing')
+  backspaceNextCharacter()
+}
+
+onMounted(() => {
+  if (!textElement.value || !cursorElement.value) return
+
+  initializeTexts()
+  setCursorState('idle')
+
+  // Cycling text is motion. Honour the OS preference by showing the first line
+  // as static text instead.
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (prefersReducedMotion) {
+    textElement.value.textContent = textItems.value[0]?.text ?? ''
+    return
+  }
+
+  scheduleTimeout(typeCurrentText, props.delay + props.startDelay * 1000)
+})
+
+onUnmounted(() => {
+  for (const id of pendingTimeouts) clearTimeout(id)
+  pendingTimeouts.clear()
 })
 </script>
 
 <style scoped>
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+.term-typewriter {
+  font-family: var(--term-font);
+  font-size: clamp(0.85rem, 2.4vw, 1rem);
+  line-height: 1.7;
+  min-height: 1.7em;
+  color: var(--term-fg);
+  text-shadow:
+    0 0 4px var(--term-glow),
+    0 0 10px var(--term-glow-soft);
+  animation: term-vhold 8s infinite;
 }
 
-.animate-fade-in-delay {
-  animation: fade-in 1s ease-out 0.3s both;
-}
-
-.typewriter-cursor {
-  animation: cursor-fade 1.5s ease-in-out infinite;
+.term-caret {
   padding-left: 2px;
+  animation: term-caret-idle 1s step-end infinite;
 }
 
-.typewriter-cursor.typing {
-  animation: cursor-fade-typing 1s ease-in-out infinite;
+.term-caret[data-state='typing'] {
+  animation: term-caret-typing 1s ease-in-out infinite;
 }
 
-.typewriter-cursor.typing.breathing {
-  animation: cursor-breathing-typing 1.5s ease-in-out infinite;
+[data-cursor='breathing'] .term-caret {
+  animation: term-caret-breathing 2s ease-in-out infinite;
 }
 
-.typewriter-cursor.typing.breathing-alt {
-  animation: cursor-breathing-alt-typing 0.75s ease-in-out infinite;
+[data-cursor='breathing-alt'] .term-caret {
+  animation: term-caret-breathing-alt 1s ease-in-out infinite;
 }
 
-.typewriter-cursor.finished {
-  animation: cursor-blink 1s ease-in-out infinite;
+[data-cursor='breathing'] .term-caret[data-state='typing'],
+[data-cursor='breathing-alt'] .term-caret[data-state='typing'] {
+  animation: term-caret-typing 0.75s ease-in-out infinite;
 }
 
-.typewriter-cursor.finished-breathing {
-  animation: cursor-breathing 2s ease-in-out infinite;
+@keyframes term-caret-idle {
+  50% { opacity: 0; }
 }
 
-.typewriter-cursor.finished-breathing-alt {
-  animation: cursor-breathing-alt 1s ease-in-out infinite;
+@keyframes term-caret-typing {
+  0% { opacity: 1; }
+  50% { opacity: 0.35; }
+  100% { opacity: 1; }
 }
 
-@keyframes cursor-fade {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-@keyframes cursor-fade-typing {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0.3; }
-}
-
-@keyframes cursor-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-@keyframes cursor-breathing {
+@keyframes term-caret-breathing {
   0% { opacity: 1; }
   50% { opacity: 0.2; }
   100% { opacity: 1; }
 }
 
-@keyframes cursor-breathing-typing {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
-
-@keyframes cursor-breathing-alt {
+@keyframes term-caret-breathing-alt {
   0% { opacity: 1; }
   100% { opacity: 0.2; }
 }
 
-@keyframes cursor-breathing-alt-typing {
-  0% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-
-/* CRT Effect Styles */
-.crt-effect {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  color: #00ff41;
-  text-shadow: 
-    0 0 3px #00ff41,
-    0 0 6px #00ff41;
-  animation: vhold-instability 8s infinite;
-}
-
-/* Light mode CRT background and scanlines */
-.crt-light-mode {
-  background: #0a0a0a;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.crt-light-mode::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 255, 65, 0.03) 2px,
-    rgba(0, 255, 65, 0.03) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-.crt-effect span {
-  position: relative;
-  z-index: 3;
-}
-
-@keyframes vhold-instability {
-  0% { transform: translateY(0); }
-  98% { transform: translateY(0); }
+/* Occasional vertical-hold slip, like a CRT losing sync. */
+@keyframes term-vhold {
+  0%, 98% { transform: translateY(0); }
   98.5% { transform: translateY(-2px); }
   99% { transform: translateY(1px); }
   99.5% { transform: translateY(-1px); }
   100% { transform: translateY(0); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .term-typewriter { animation: none; }
+  .term-caret { animation: none; }
+}
 </style>

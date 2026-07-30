@@ -52,9 +52,58 @@ by targeted cleanup tasks on a regular cadence — not accumulated for a
 - **Added:** 2026-04-07
 - **Notes:** Repository visibility changes appear on the homepage only after the next successful site rebuild. Mitigated by 6-hour scheduled rebuilds.
 
+### Terminal prose has no visual regression coverage
+- **Domain:** design-system
+- **Grade impact:** design-system B-
+- **Severity:** low
+- **Added:** 2026-07-29
+- **Notes:** `.term-prose` in `src/styles/terminal.css` replaced nine
+  `@tailwindcss/typography` variants by hand. It was verified against
+  `src/content/blog/markdown-style-guide.md`, which exercises every element, but
+  nothing prevents a regression. That file is effectively the only test for prose
+  styling — do not delete it without replacing the coverage.
+
+### Blog content is still Astro starter placeholder text
+- **Domain:** blog
+- **Grade impact:** blog C
+- **Severity:** medium
+- **Added:** 2026-07-29
+- **Notes:** All five entries in `src/content/blog/` are unmodified Astro
+  starter content — three are literal Lorem Ipsum, two are stock demo docs. The
+  blog is linked from the main nav, so visitors reach placeholder text. Either
+  publish real posts or hide the blog until there is writing. Note
+  `markdown-style-guide.md` doubles as the prose regression fixture (above).
+
 ## Resolved debt
 
-(none)
+### Content duplicated between live pages and `site-content.ts`
+- **Resolved:** 2026-07-29 (promote-terminal-design)
+- **Notes:** Resolved by promotion rather than reconciliation. The live pages now
+  read from `src/data/site-content.ts`, so it is the single source and
+  `docs/content-inventory.md` is its readable mirror.
+
+### Design-lab mocks ship to production
+- **Resolved:** 2026-07-29 (promote-terminal-design)
+- **Notes:** Terminal was chosen; the lab was committed for the record (`a6f2595`)
+  and then removed, along with the sitemap `filter` and the `netlify.toml`
+  `X-Robots-Tag` block. Build is back to 8 pages.
+
+### Design-style default disagrees between ColorPicker and MainLayout
+- **Resolved:** 2026-07-29 (promote-terminal-design)
+- **Notes:** Resolved by deletion. `ColorPicker.astro` and the whole `design-theme`
+  mechanism are gone; there is one design and the only stored preference is
+  `phosphor`, which falls back to amber on any unrecognized value.
+
+### Docs still name the GitHub topic `portfolio`
+- **Resolved:** 2026-07-29 (promote-terminal-design)
+- **Notes:** ARCHITECTURE.md, README.md, testing-checklist.md and the JSDoc on
+  `getGitHubProjects` in `src/lib/github-projects.ts` now all say `spotlight`,
+  matching `GITHUB_PROJECTS_REQUIRED_TOPIC` as changed in `1667c7a`.
+
+### AGENTS.md claims no test command exists
+- **Resolved:** 2026-07-29 (promote-terminal-design)
+- **Notes:** AGENTS.md now states that `npm run test` runs Vitest but has no test
+  files yet. The underlying gap (no tests) is tracked separately.
 
 ## Process
 
