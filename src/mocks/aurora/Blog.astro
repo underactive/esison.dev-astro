@@ -1,0 +1,58 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import { siteContent } from '../../data/site-content';
+
+const { blog } = siteContent;
+const posts = [...siteContent.fixtures.blogPosts].sort(
+	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf(),
+);
+---
+
+<section class="aur-shell aur-page-head">
+	<p class="aur-pill" style="margin-inline:auto">Writing</p>
+	<h1 class="aur-h1 aur-gradient-text">{blog.heading}</h1>
+	<p class="aur-hero-sub">{blog.subhead}</p>
+</section>
+
+<section class="aur-shell aur-section">
+	{
+		posts.length > 0 ? (
+			<div class="aur-posts">
+				{posts.map((post, index) => (
+					<a
+						class:list={['aur-post', index === 0 && 'aur-post--featured']}
+						href={`/blog/${post.slug}/`}
+					>
+						{
+							post.heroImage ? (
+								<div class="aur-media">
+									<img src={post.heroImage} alt="" loading="lazy" />
+								</div>
+							) : (
+								<div class="aur-nomedia" />
+							)
+						}
+						<div class="aur-post-body">
+							<p class="aur-meta">
+								<FormattedDate date={post.pubDate} />
+								{
+									post.updatedDate && (
+										<> &middot; updated <FormattedDate date={post.updatedDate} /></>
+									)
+								}
+							</p>
+							<h2 class="aur-post-title">{post.title}</h2>
+							{post.description && <p class="aur-post-desc">{post.description}</p>}
+							<span class="aur-link">{blog.readMoreLabel} →</span>
+						</div>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="aur-prose">
+				<h2 class="aur-h2">{blog.emptyState.heading}</h2>
+				<p>{blog.emptyState.blurb}</p>
+			</div>
+		)
+	}
+</section>

@@ -1,0 +1,50 @@
+---
+import { siteContent } from '../../data/site-content';
+
+const { about } = siteContent;
+---
+
+<section class="term-shell term-page-head">
+	<h1 class="term-h1">{about.heading}</h1>
+	<p class="term-page-sub">cat ~/about.md</p>
+</section>
+
+<section class="term-shell term-section">
+	<div class="term-prose">
+		{about.workStory.map((paragraph) => <p>{paragraph}</p>)}
+	</div>
+
+	<div class="term-callout">
+		<div>
+			<h2 class="term-card-title">{about.collaborationCta.heading}</h2>
+			<p style="margin-top:0.5rem">{about.collaborationCta.blurb}</p>
+		</div>
+		<div class="term-cta-row">
+			{
+				about.collaborationCta.actions.map((action) => (
+					<span class="term-btn" aria-disabled="true">
+						{action.label}
+					</span>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<section class="term-shell term-section">
+	<p class="term-section-label">cat ~/offline.md</p>
+	<div class="term-prose">
+		{about.personalStory.map((paragraph) => <p>{paragraph}</p>)}
+	</div>
+
+	<div class="term-photos">
+		{
+			about.photos.map((photo) => (
+				<figure class="term-photo">
+					<img src={photo.src} alt={photo.alt} loading="lazy" />
+					<figcaption>{photo.caption}</figcaption>
+				</figure>
+			))
+		}
+	</div>
+</section>

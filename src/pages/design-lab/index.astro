@@ -1,0 +1,18 @@
+---
+// Uses MockHead rather than MainLayout on purpose: MainLayout would wrap the
+// previews in the live site's purple gradients, animated parallax blobs and
+// design-theme localStorage machinery, biasing the comparison.
+import MockHead from '../../mocks/_shared/MockHead.astro';
+import DesignLabChooser from '../../mocks/_shared/DesignLabChooser.vue';
+import './chooser.css';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<MockHead title="Design Lab — esison.dev" />
+	</head>
+	<body>
+		<DesignLabChooser client:load />
+	</body>
+</html>

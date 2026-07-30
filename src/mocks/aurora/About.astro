@@ -1,0 +1,51 @@
+---
+import { siteContent } from '../../data/site-content';
+
+const { about } = siteContent;
+---
+
+<section class="aur-shell aur-page-head">
+	<p class="aur-pill" style="margin-inline:auto">Profile</p>
+	<h1 class="aur-h1 aur-gradient-text">{about.heading}</h1>
+</section>
+
+<section class="aur-shell aur-section">
+	<div class="aur-prose" style="margin-inline:auto">
+		{about.workStory.map((paragraph) => <p>{paragraph}</p>)}
+	</div>
+
+	<div class="aur-banner">
+		<div>
+			<h2 class="aur-project-name" style="margin-bottom:0.4rem">
+				{about.collaborationCta.heading}
+			</h2>
+			<p class="aur-project-summary">{about.collaborationCta.blurb}</p>
+		</div>
+		<div class="aur-cta-row" style="margin-top:0">
+			{
+				about.collaborationCta.actions.map((action) => (
+					<span class="aur-btn" aria-disabled="true">
+						{action.label}
+					</span>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<section class="aur-shell aur-section">
+	<div class="aur-prose" style="margin-inline:auto">
+		{about.personalStory.map((paragraph) => <p>{paragraph}</p>)}
+	</div>
+
+	<div class="aur-photos">
+		{
+			about.photos.map((photo) => (
+				<figure class="aur-photo">
+					<img src={photo.src} alt={photo.alt} loading="lazy" />
+					<figcaption>{photo.caption}</figcaption>
+				</figure>
+			))
+		}
+	</div>
+</section>

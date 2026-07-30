@@ -1,0 +1,63 @@
+---
+import MockHead from '../_shared/MockHead.astro';
+import { mockPageUrl, MOCK_PAGES, PAGE_LABELS, type MockPage } from '../registry';
+import { siteContent } from '../../data/site-content';
+import './dossier.css';
+
+export interface Props {
+	page: MockPage;
+}
+
+const { page } = Astro.props;
+const { shared, meta } = siteContent;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<MockHead title={`${meta.siteTitle} — Dossier`} />
+		<link
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="dos-root">
+			<header class="dos-header">
+				<div class="dos-shell dos-header-inner">
+					<a class="dos-logo" href={mockPageUrl('dossier', 'home')}>{shared.logo}</a>
+					<nav class="dos-nav">
+						{
+							MOCK_PAGES.map((p) => (
+								<a
+									href={mockPageUrl('dossier', p)}
+									aria-current={p === page ? 'page' : undefined}
+								>
+									{PAGE_LABELS[p]}
+								</a>
+							))
+						}
+					</nav>
+				</div>
+			</header>
+
+			<main>
+				<slot />
+			</main>
+
+			<footer class="dos-shell dos-footer">
+				<p>{shared.copyright(year)}</p>
+				<div class="dos-footer-links">
+					{
+						shared.socials.map((social) => (
+							<a href={social.href} aria-label={social.label} rel="noopener" target="_blank">
+								{social.handle}
+							</a>
+						))
+					}
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>

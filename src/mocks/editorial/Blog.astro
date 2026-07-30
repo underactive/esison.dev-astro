@@ -1,0 +1,67 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import { siteContent } from '../../data/site-content';
+
+const { blog } = siteContent;
+const posts = [...siteContent.fixtures.blogPosts].sort(
+	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf(),
+);
+const [lead, ...rest] = posts;
+---
+
+<section class="ed-shell ed-page-head">
+	<p class="ed-standfirst">Journal</p>
+	<h1 class="ed-h1">{blog.heading}</h1>
+	<p class="ed-deck" style="margin-top:1rem">{blog.subhead}</p>
+</section>
+
+<section class="ed-shell ed-section">
+	{
+		lead ? (
+			<>
+				<a class="ed-lead" href={`/blog/${lead.slug}/`}>
+					<div>
+						<p class="ed-byline">
+							Lead story &middot; <FormattedDate date={lead.pubDate} />
+						</p>
+						<h2 class="ed-lead-title">{lead.title}</h2>
+						{lead.description && <p class="ed-lead-desc">{lead.description}</p>}
+						<p class="ed-meta-row">{blog.readMoreLabel}</p>
+					</div>
+					{
+						lead.heroImage && (
+							<figure class="ed-lead-media">
+								<img src={lead.heroImage} alt="" loading="lazy" />
+							</figure>
+						)
+					}
+				</a>
+
+				<div class="ed-storylist">
+					{rest.map((post) => (
+						<a class="ed-story" href={`/blog/${post.slug}/`}>
+							{
+								post.heroImage && (
+									<figure class="ed-story-media">
+										<img src={post.heroImage} alt="" loading="lazy" />
+									</figure>
+								)
+							}
+							<p class="ed-byline">
+								<FormattedDate date={post.pubDate} />
+								{post.updatedDate && <> &middot; rev. <FormattedDate date={post.updatedDate} /></>}
+							</p>
+							<h3 class="ed-story-title">{post.title}</h3>
+							{post.description && <p class="ed-story-desc">{post.description}</p>}
+						</a>
+					))}
+				</div>
+			</>
+		) : (
+			<div class="ed-prose">
+				<h2 class="ed-h2">{blog.emptyState.heading}</h2>
+				<p>{blog.emptyState.blurb}</p>
+			</div>
+		)
+	}
+</section>

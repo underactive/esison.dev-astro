@@ -1,0 +1,54 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import { siteContent } from '../../data/site-content';
+
+const { blog } = siteContent;
+const posts = [...siteContent.fixtures.blogPosts].sort(
+	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf(),
+);
+---
+
+<section class="r80-shell r80-page-head">
+	<p class="r80-label">Transmissions</p>
+	<h1 class="r80-chrome r80-h1">{blog.heading}</h1>
+	<p class="r80-hero-taglines">{blog.subhead}</p>
+</section>
+
+<section class="r80-shell r80-section">
+	{
+		posts.length > 0 ? (
+			<div class="r80-posts">
+				{posts.map((post, index) => (
+					<a
+						class:list={['r80-post', index === 0 && 'r80-post--featured']}
+						href={`/blog/${post.slug}/`}
+					>
+						{
+							post.heroImage ? (
+								<div class="r80-screen">
+									<img src={post.heroImage} alt="" loading="lazy" />
+								</div>
+							) : (
+								<div class="r80-noscreen">no signal</div>
+							)
+						}
+						<div class="r80-post-body">
+							<p class="r80-meta">
+								<FormattedDate date={post.pubDate} />
+								{post.updatedDate && <> &middot; rev <FormattedDate date={post.updatedDate} /></>}
+							</p>
+							<h2 class="r80-post-title">{post.title}</h2>
+							{post.description && <p class="r80-post-desc">{post.description}</p>}
+							<span class="r80-link">{blog.readMoreLabel}</span>
+						</div>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="r80-bezel">
+				<h2 class="r80-chrome r80-h2">{blog.emptyState.heading}</h2>
+				<p class="r80-prose">{blog.emptyState.blurb}</p>
+			</div>
+		)
+	}
+</section>

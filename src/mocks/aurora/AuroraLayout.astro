@@ -1,0 +1,71 @@
+---
+import MockHead from '../_shared/MockHead.astro';
+import { mockPageUrl, MOCK_PAGES, PAGE_LABELS, type MockPage } from '../registry';
+import { siteContent } from '../../data/site-content';
+import './aurora.css';
+
+export interface Props {
+	page: MockPage;
+}
+
+const { page } = Astro.props;
+const { shared, meta } = siteContent;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<MockHead title={`${meta.siteTitle} — Aurora`} />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="aur-root">
+			<div class="aur-mesh" aria-hidden="true">
+				<span class="aur-blob"></span>
+				<span class="aur-blob"></span>
+				<span class="aur-blob"></span>
+			</div>
+
+			<div class="aur-layer">
+				<header class="aur-header">
+					<div class="aur-shell aur-header-inner">
+						<a class="aur-logo" href={mockPageUrl('aurora', 'home')}>{shared.logo}</a>
+						<nav class="aur-nav">
+							{
+								MOCK_PAGES.map((p) => (
+									<a
+										href={mockPageUrl('aurora', p)}
+										aria-current={p === page ? 'page' : undefined}
+									>
+										{PAGE_LABELS[p]}
+									</a>
+								))
+							}
+						</nav>
+					</div>
+				</header>
+
+				<main>
+					<slot />
+				</main>
+
+				<footer class="aur-shell aur-footer">
+					<p>{shared.copyright(year)}</p>
+					<div class="aur-socials">
+						{
+							shared.socials.map((social) => (
+								<a href={social.href} aria-label={social.label} rel="noopener" target="_blank">
+									{social.handle}
+								</a>
+							))
+						}
+					</div>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>

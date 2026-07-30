@@ -1,0 +1,148 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import { siteContent } from '../../data/site-content';
+
+const { home, shared } = siteContent;
+const repos = siteContent.fixtures.githubRepos;
+---
+
+<section class="aur-shell aur-hero">
+	<p class="aur-pill">{home.taglines[0].text.replace('// ', '')}</p>
+	<h1 class="aur-h1 aur-gradient-text">{home.heroName}</h1>
+	<p class="aur-hero-sub">
+		{home.taglines.slice(1).map((tagline) => tagline.text.replace('// ', '')).join(' · ')}
+	</p>
+	<div class="aur-cta-row">
+		{
+			home.heroCtas.map((cta, index) => (
+				<a class:list={['aur-btn', index === 0 && 'aur-btn--primary']} href={cta.href}>
+					{cta.label}
+				</a>
+			))
+		}
+	</div>
+</section>
+
+<section id="about" class="aur-shell aur-section">
+	<h2 class="aur-h2">{home.aboutHeading}</h2>
+	<div class="aur-prose">
+		<p>
+			{
+				home.aboutBio.segments.map((segment) => {
+					if (segment.kind === 'text') return segment.value;
+					if (segment.kind === 'aside') return <span class="aur-aside">{segment.value}</span>;
+					return <span class="aur-quote">{segment.value}</span>;
+				})
+			}
+		</p>
+	</div>
+
+	<div class="aur-grid">
+		{
+			home.skillGroups.map((group) => (
+				<article class="aur-card">
+					<h3>{group.title}</h3>
+					<div class="aur-chips">
+						{group.skills.map((skill) => <span class="aur-chip">{skill}</span>)}
+					</div>
+				</article>
+			))
+		}
+	</div>
+
+	<div class="aur-banner">
+		<p>{home.aboutCta.blurb}</p>
+		<a class="aur-btn aur-btn--primary" href="/design-lab/aurora/about/">
+			{home.aboutCta.link.label}
+		</a>
+	</div>
+</section>
+
+<section id="portfolio" class="aur-shell aur-section">
+	<h2 class="aur-h2">{home.projectsHeading}</h2>
+	<p class="aur-prose">{home.projectsSubhead}</p>
+
+	<div class="aur-projects">
+		{
+			home.featuredProjects.map((project) => (
+				<article class="aur-project">
+					<div class="aur-media">
+						{
+							project.media.kind === 'image' ? (
+								<img src={project.media.src} alt="" loading="lazy" />
+							) : (
+								<video src={project.media.src} autoplay muted loop playsinline />
+							)
+						}
+					</div>
+					<div class="aur-project-body">
+						<h3 class="aur-project-name">{project.name}</h3>
+						<p class="aur-project-summary">{project.summary}</p>
+						{project.notes.map((note) => <p class="aur-note">{note}</p>)}
+						<div class="aur-chips">
+							{project.tags.map((tag) => <span class="aur-chip">{tag}</span>)}
+						</div>
+						<div class="aur-link-row">
+							<a class="aur-link" href={project.href} target="_blank" rel="noopener">
+								{project.linkLabel} →
+							</a>
+						</div>
+					</div>
+				</article>
+			))
+		}
+	</div>
+
+	<div style="margin-top:3.5rem">
+		<h3 class="aur-h2">{shared.github.heading}</h3>
+		<a class="aur-link" href={shared.github.profileUrl} target="_blank" rel="noopener">
+			{shared.github.profileLinkLabel} →
+		</a>
+		<div class="aur-repos">
+			{
+				repos.map((repo) => (
+					<article class="aur-repo">
+						<div class="aur-repo-head">
+							<h4 class="aur-repo-name">{repo.name}</h4>
+							{repo.stars > 0 && <span class="aur-stars">★ {repo.stars}</span>}
+						</div>
+						<p class="aur-repo-desc">{repo.description}</p>
+						<div class="aur-chips">
+							{repo.language && <span class="aur-chip">{repo.language}</span>}
+							{repo.topics.map((topic) => <span class="aur-chip">{topic}</span>)}
+						</div>
+						<p class="aur-meta">
+							{shared.github.lastPushLabel} <FormattedDate date={repo.pushedAt} />
+						</p>
+						<div class="aur-link-row">
+							<a class="aur-link" href={repo.repoUrl} target="_blank" rel="noopener">
+								{shared.github.repoLinkLabel}
+							</a>
+							{
+								repo.homepageUrl && (
+									<a class="aur-link" href={repo.homepageUrl} target="_blank" rel="noopener">
+										{shared.github.liveSiteLinkLabel}
+									</a>
+								)
+							}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<section id="history" class="aur-shell aur-section">
+	<h2 class="aur-h2">{home.historyHeading.replace(' | ', ', ')}</h2>
+	<div class="aur-timeline">
+		{
+			home.history.map((entry) => (
+				<div class="aur-tl-row" data-current={entry.endYear === null ? 'true' : 'false'}>
+					<span class="aur-tl-years">{entry.period}</span>
+					<span class="aur-tl-company">{entry.company}</span>
+				</div>
+			))
+		}
+	</div>
+</section>

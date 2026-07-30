@@ -1,0 +1,45 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import { siteContent } from '../../data/site-content';
+
+const { blog } = siteContent;
+const posts = [...siteContent.fixtures.blogPosts].sort(
+	(a, b) => b.pubDate.valueOf() - a.pubDate.valueOf(),
+);
+---
+
+<section class="dos-shell dos-page-head">
+	<p class="dos-label">Writing</p>
+	<h1 class="dos-h1">{blog.heading}</h1>
+	<p class="dos-prose" style="margin-top:0.9rem">{blog.subhead}</p>
+</section>
+
+<section class="dos-shell dos-section">
+	{
+		posts.length > 0 ? (
+			<div class="dos-index-list">
+				{posts.map((post, index) => (
+					<a
+						class:list={['dos-entry', index === 0 && 'dos-entry--lead']}
+						href={`/blog/${post.slug}/`}
+					>
+						<span class="dos-entry-date">
+							<FormattedDate date={post.pubDate} />
+							{post.updatedDate && <><br />rev <FormattedDate date={post.updatedDate} /></>}
+						</span>
+						<div>
+							<h2 class="dos-entry-title">{post.title}</h2>
+							{post.description && <p class="dos-entry-desc">{post.description}</p>}
+						</div>
+						<span class="dos-entry-more">{blog.readMoreLabel} →</span>
+					</a>
+				))}
+			</div>
+		) : (
+			<div class="dos-prose">
+				<h2 class="dos-h2">{blog.emptyState.heading}</h2>
+				<p>{blog.emptyState.blurb}</p>
+			</div>
+		)
+	}
+</section>

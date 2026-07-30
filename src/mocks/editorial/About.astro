@@ -1,0 +1,50 @@
+---
+import { siteContent } from '../../data/site-content';
+
+const { about } = siteContent;
+---
+
+<section class="ed-shell ed-page-head">
+	<p class="ed-standfirst">Profile</p>
+	<h1 class="ed-h1">{about.heading}</h1>
+</section>
+
+<section class="ed-shell ed-section">
+	<div class="ed-columns ed-columns--dropcap">
+		{about.workStory.map((paragraph) => <p>{paragraph}</p>)}
+	</div>
+
+	<div class="ed-pull">
+		<div>
+			<p class="ed-standfirst">{about.collaborationCta.heading}</p>
+			<p>{about.collaborationCta.blurb}</p>
+		</div>
+		<div class="ed-cta-row" style="margin-top:0">
+			{
+				about.collaborationCta.actions.map((action) => (
+					<span class="ed-btn" aria-disabled="true">
+						{action.label}
+					</span>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<section class="ed-shell ed-section">
+	<p class="ed-kicker">Off the clock</p>
+	<div class="ed-columns">
+		{about.personalStory.map((paragraph) => <p>{paragraph}</p>)}
+	</div>
+
+	<div class="ed-plates">
+		{
+			about.photos.map((photo) => (
+				<figure class="ed-plate-figure">
+					<img src={photo.src} alt={photo.alt} loading="lazy" />
+					<figcaption>{photo.caption}</figcaption>
+				</figure>
+			))
+		}
+	</div>
+</section>

@@ -1,0 +1,164 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import { siteContent } from '../../data/site-content';
+
+const { home, shared } = siteContent;
+const [firstTagline, ...restTaglines] = home.taglines;
+const repos = siteContent.fixtures.githubRepos;
+---
+
+<section class="term-shell term-hero">
+	<p class="term-hero-meta">
+		esison.dev tty1 — login: <span>eric</span><br />
+		last login: {new Date().toDateString()}
+	</p>
+	<h1 class="term-hero-name">{home.heroName}</h1>
+	<p class="term-typeline" style={`--term-typeline-ch:${firstTagline.text.length}`}>
+		{firstTagline.text}
+	</p>
+	<ul class="term-tagline-rest">
+		{restTaglines.map((tagline) => <li>{tagline.text}</li>)}
+	</ul>
+	<div class="term-cta-row">
+		{home.heroCtas.map((cta) => <a class="term-btn" href={cta.href}>{cta.label}</a>)}
+	</div>
+</section>
+
+<section id="about" class="term-shell term-section">
+	<p class="term-section-label">whoami</p>
+	<h2 class="term-h2">{home.aboutHeading}</h2>
+	<div class="term-prose">
+		<p>
+			{
+				home.aboutBio.segments.map((segment) => {
+					if (segment.kind === 'text') return segment.value;
+					if (segment.kind === 'aside') return <span class="term-aside">{segment.value}</span>;
+					return (
+						<span class="term-quote">
+							<span class="term-quote-tag">&lt;sarcastic-quote&gt;</span
+							><span class="term-quote-value">{segment.value}</span><span class="term-quote-tag"
+								>&lt;/sarcastic-quote&gt;</span
+							>
+						</span>
+					);
+				})
+			}
+		</p>
+	</div>
+
+	<div class="term-grid-3">
+		{
+			home.skillGroups.map((group) => (
+				<article class="term-card">
+					<h3 class="term-card-title">{group.title}</h3>
+					<div class="term-taglist">
+						{group.skills.map((skill) => <span class="term-tag">{skill}</span>)}
+					</div>
+				</article>
+			))
+		}
+	</div>
+
+	<div class="term-callout">
+		<p>{home.aboutCta.blurb}</p>
+		<a class="term-btn" href="/design-lab/terminal/about/">{home.aboutCta.link.label}</a>
+	</div>
+</section>
+
+<section id="portfolio" class="term-shell term-section">
+	<p class="term-section-label">ls -la ~/projects</p>
+	<h2 class="term-h2">{home.projectsHeading}</h2>
+	<p class="term-prose">{home.projectsSubhead}</p>
+
+	<div class="term-projects">
+		{
+			home.featuredProjects.map((project) => (
+				<article class="term-project">
+					<div class="term-project-media">
+						{
+							project.media.kind === 'image' ? (
+								<img src={project.media.src} alt="" loading="lazy" />
+							) : (
+								<video src={project.media.src} autoplay muted loop playsinline />
+							)
+						}
+					</div>
+					<div>
+						<h3 class="term-project-name">{project.name}</h3>
+						<p class="term-project-summary">{project.summary}</p>
+						{project.notes.map((note) => <p class="term-note">{note}</p>)}
+						<div class="term-taglist">
+							{project.tags.map((tag) => <span class="term-tag">{tag}</span>)}
+						</div>
+						<div class="term-project-foot">
+							<a class="term-link" href={project.href} target="_blank" rel="noopener">
+								{project.linkLabel}
+							</a>
+						</div>
+					</div>
+				</article>
+			))
+		}
+	</div>
+
+	<div style="margin-top:4rem">
+		<p class="term-section-label">gh repo list --topic spotlight</p>
+		<h3 class="term-h2">{shared.github.heading}</h3>
+		<a class="term-link" href={shared.github.profileUrl} target="_blank" rel="noopener">
+			{shared.github.profileLinkLabel}
+		</a>
+		<div class="term-repos">
+			{
+				repos.map((repo) => (
+					<article class="term-repo">
+						<div class="term-repo-head">
+							<h4 class="term-repo-name">{repo.name}</h4>
+							{
+								repo.stars > 0 && (
+									<span class="term-stars">
+										★ {repo.stars} star{repo.stars === 1 ? '' : 's'}
+									</span>
+								)
+							}
+						</div>
+						<p class="term-repo-desc">{repo.description}</p>
+						<div class="term-taglist">
+							{repo.language && <span class="term-tag">{repo.language}</span>}
+							{repo.topics.map((topic) => <span class="term-tag">{topic}</span>)}
+						</div>
+						<p class="term-repo-meta">
+							{shared.github.lastPushLabel} <FormattedDate date={repo.pushedAt} />
+						</p>
+						<div class="term-project-foot">
+							<a class="term-link" href={repo.repoUrl} target="_blank" rel="noopener">
+								{shared.github.repoLinkLabel}
+							</a>
+							{
+								repo.homepageUrl && (
+									<a class="term-link" href={repo.homepageUrl} target="_blank" rel="noopener">
+										{shared.github.liveSiteLinkLabel}
+									</a>
+								)
+							}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<section id="history" class="term-shell term-section">
+	<p class="term-section-label">cat ~/.history</p>
+	<h2 class="term-h2">{home.historyHeading}</h2>
+	<div class="term-history">
+		{
+			home.history.map((entry) => (
+				<div class="term-history-row" data-current={entry.endYear === null ? 'true' : 'false'}>
+					<span class="term-history-years">{entry.period}</span>
+					<span class="term-history-company">{entry.company}</span>
+				</div>
+			))
+		}
+	</div>
+</section>
