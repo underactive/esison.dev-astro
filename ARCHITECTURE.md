@@ -188,6 +188,33 @@ and
   `TypewriterText` previously hardcoded Tailwind classes and accepted
   `fontSize`/`color` strings, which made it unusable without Tailwind.
 
+### Crawling and Indexing
+
+The blog is published but deliberately kept out of search results while its posts
+are unmodified Astro-starter placeholder text.
+
+- **`noindex` is the mechanism, not `robots.txt`.** `BaseHead.astro` takes a
+  `noindex` prop, threaded through `MainLayout`, which emits
+  `<meta name="robots" content="noindex, nofollow">`. `src/pages/blog/index.astro`
+  and `src/layouts/BlogPost.astro` set it.
+- **`robots.txt` deliberately does not `Disallow: /blog/`.** A disallowed URL is
+  never fetched, so a crawler would never see the `noindex` — and Google can still
+  index a blocked URL it finds linked elsewhere. Blocking would make the pages
+  *harder* to de-index. This reasoning is written into the generated file so nobody
+  "fixes" it later.
+- **`robots.txt` is generated, not static.** `src/pages/robots.txt.ts` uses
+  `context.site` so the `Sitemap:` directive carries the real origin from
+  `PUBLIC_SITE_URL`. A file in `public/` could not interpolate it.
+- **Blog is excluded from the sitemap** via `sitemap({ filter })`, because
+  advertising a URL you do not want indexed works against the `noindex`.
+- **`/rss.xml` still lists the posts.** Feeds are not search indexes, and the feed
+  is how a reader would legitimately follow the blog. Worth revisiting if the
+  placeholder posts persist.
+
+To reverse all of this when real posts ship: drop the `noindex` attribute from the
+two blog templates, remove the sitemap `filter` argument, and restore the blog entry
+in `src/lib/nav.ts`.
+
 ---
 
 ## Build configuration
@@ -195,6 +222,9 @@ and
 ### Astro
 - **`site`** — Set to `https://example.com` (needs updating for production canonical URLs)
 - **Integrations** — MDX, Sitemap, Vue. There is no CSS framework plugin
+- **Sitemap `filter`** — excludes any URL containing `/blog`, since blog pages are
+  `noindex` while their posts are placeholder text. `filter` receives the full
+  absolute URL, not a path
 - **Output** — Static (default) — builds to `./dist/`
 
 ### Markdown
@@ -303,7 +333,7 @@ Environment file sources:
 
 | File / Directory | Purpose |
 |------------------|---------|
-| `src/pages/` | Route-based pages: `index.astro`, `about.astro`, `blog/`, `rss.xml.js` |
+| `src/pages/` | Route-based pages: `index.astro`, `about.astro`, `blog/`, `rss.xml.js`, `robots.txt.ts` |
 | `src/components/` | Astro (`.astro`) and Vue (`.vue`) components |
 | `src/lib/github-projects.ts` | Build-time GitHub repo fetching, validation, normalization |
 | `src/data/site-content.ts` | All site copy as typed data, plus GitHub/blog fixtures for the design lab |

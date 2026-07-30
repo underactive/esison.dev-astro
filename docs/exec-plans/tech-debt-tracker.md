@@ -19,10 +19,17 @@ by targeted cleanup tasks on a regular cadence — not accumulated for a
 
 ### `site` URL is placeholder
 - **Domain:** config
-- **Grade impact:** SEO, sitemap, RSS feeds all use wrong canonical URL
+- **Grade impact:** SEO, sitemap, RSS feeds, robots.txt all use wrong canonical URL
 - **Severity:** medium
 - **Added:** 2026-04-07
-- **Notes:** `astro.config.mjs` has `site` set to `https://example.com` instead of the actual production URL. Affects canonical URLs, sitemap.xml, and RSS feed links.
+- **Notes:** `astro.config.mjs` falls back to `site: 'https://example.com'` when
+  `PUBLIC_SITE_URL` is unset. Affects canonical URLs, `sitemap.xml`, RSS feed links
+  and — since 2026-07-29 — the `Sitemap:` directive in the generated `robots.txt`.
+  **The fallback is now more consequential:** a production deploy missing
+  `PUBLIC_SITE_URL` publishes `Sitemap: https://example.com/sitemap-index.xml`,
+  pointing crawlers at someone else's domain rather than merely producing wrong
+  canonicals. Confirm `PUBLIC_SITE_URL` is set in the Netlify environment, and
+  consider failing the build instead of falling back.
 
 ### No linter or formatter
 - **Domain:** cross-cutting
@@ -71,11 +78,12 @@ by targeted cleanup tasks on a regular cadence — not accumulated for a
 - **Notes:** All five entries in `src/content/blog/` are unmodified Astro
   starter content — three are literal Lorem Ipsum, two are stock demo docs.
   **Mitigated 2026-07-29:** the blog link was removed from the header nav, so the
-  placeholder posts are no longer surfaced to visitors. They remain reachable by
-  direct URL and are still listed in `sitemap-index.xml` and `/rss.xml`, so search
-  engines can still index them — consider excluding them from the sitemap if this
-  persists. Resolved by publishing real posts and restoring the nav entry in
-  `src/lib/nav.ts`. Note `markdown-style-guide.md` doubles as the prose regression
+  placeholder posts are no longer surfaced to visitors. **Also 2026-07-29:** the
+  pages now carry a `noindex, nofollow` meta tag and are excluded from the sitemap,
+  and a generated `robots.txt` was added. They remain reachable by direct URL and
+  are still listed in `/rss.xml`. Resolved by publishing real posts, then dropping
+  the `noindex` from the two blog templates, removing the sitemap `filter`, and
+  restoring the nav entry in `src/lib/nav.ts`. Note `markdown-style-guide.md` doubles as the prose regression
   fixture (above).
 
 ## Resolved debt

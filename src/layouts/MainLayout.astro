@@ -8,15 +8,16 @@ export interface Props {
 	title: string;
 	description: string;
 	page?: NavPage;
+	noindex?: boolean;
 }
 
-const { title, description, page } = Astro.props;
+const { title, description, page, noindex } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={description} noindex={noindex} />
 		<script is:inline>
 			// Phosphor accent, applied before first paint to avoid a flash. Green is
 			// the :root default and needs no attribute, so an unknown stored value

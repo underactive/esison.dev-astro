@@ -67,7 +67,15 @@ normal viewport-sized screenshot instead — this is a capture artifact, not a b
 - [ ] Scanlines and vignette never intercept clicks — every link and button in the hero is clickable.
 - [ ] The skip link becomes visible on first Tab and jumps to `#main`.
 - [ ] Nav shows only `home` and `about` — blog is intentionally hidden while its posts are placeholders — and marks the current one with `aria-current="page"`.
-- [ ] `/blog/`, blog posts, `/rss.xml` and the sitemap all still work despite the nav link being absent.
+- [ ] `/blog/`, blog posts and `/rss.xml` all still work despite the nav link being absent.
+
+### Crawling and indexing
+
+- [ ] `/robots.txt` returns 200 as `text/plain` and its `Sitemap:` line uses the production origin, not `example.com`.
+- [ ] `robots.txt` contains no `Disallow: /blog/` — blocking crawling would stop crawlers seeing the `noindex` and make the pages harder to de-index.
+- [ ] Blog index and every blog post emit `<meta name="robots" content="noindex, nofollow">`.
+- [ ] Home and About emit no robots meta tag.
+- [ ] `sitemap-index.xml` → `sitemap-0.xml` lists only `/` and `/about/`.
 
 ### Content
 

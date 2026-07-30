@@ -11,7 +11,9 @@ const posts = (await getCollection('blog')).sort(
 );
 ---
 
-<MainLayout title={`Blog - ${SITE_TITLE}`} description={blog.subhead} page="blog">
+<!-- noindex while the posts are still Astro-starter placeholder text. See
+     src/pages/robots.txt.ts for why crawling is not blocked as well. -->
+<MainLayout title={`Blog - ${SITE_TITLE}`} description={blog.subhead} page="blog" noindex>
 	<section class="term-shell term-page-head">
 		<h1 class="term-h1">{blog.heading}</h1>
 		<p class="term-page-sub">{blog.subhead}</p>

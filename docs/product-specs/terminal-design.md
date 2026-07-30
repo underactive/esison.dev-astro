@@ -37,6 +37,14 @@ looking like a generic template with a color picker bolted on.
 | Very long blog post title | Wraps without overflowing the header |
 | Markdown containing a wide table or long code block | Scrolls horizontally within its container instead of breaking the page layout |
 
+## Crawling and indexing
+
+- [x] `/robots.txt` is served as `text/plain` with an absolute `Sitemap:` directive built from `PUBLIC_SITE_URL`
+- [x] Blog index and blog posts emit `<meta name="robots" content="noindex, nofollow">`
+- [x] Home and About do **not** emit a robots meta tag
+- [x] `sitemap-index.xml` lists only `/` and `/about/`
+- [x] `robots.txt` does not `Disallow: /blog/`, so crawlers can still fetch the pages and honour the `noindex`
+
 ## Not in scope
 
 - A light or "paper" variant of Terminal

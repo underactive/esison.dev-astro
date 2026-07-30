@@ -9,7 +9,9 @@ type Props = CollectionEntry<'blog'>['data'];
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
-<MainLayout title={title} description={description} page="blog">
+<!-- noindex while the posts are still Astro-starter placeholder text. See
+     src/pages/robots.txt.ts for why crawling is not blocked as well. -->
+<MainLayout title={title} description={description} page="blog" noindex>
 	<article>
 		{
 			heroImage && (

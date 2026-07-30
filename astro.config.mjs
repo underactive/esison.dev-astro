@@ -8,7 +8,14 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: process.env.PUBLIC_SITE_URL || 'https://example.com',
-	integrations: [mdx(), sitemap(), vue()],
+	integrations: [
+		mdx(),
+		// Blog pages carry a noindex meta tag while their posts are placeholder text,
+		// so keep them out of the sitemap too — advertising a URL you do not want
+		// indexed works against the tag. `filter` receives the full absolute URL.
+		sitemap({ filter: (page) => !page.includes('/blog') }),
+		vue(),
+	],
 	markdown: {
 		// Shiki writes its theme background and token colours as inline styles, so
 		// the theme choice — not CSS — decides how code blocks look. `vesper` is warm

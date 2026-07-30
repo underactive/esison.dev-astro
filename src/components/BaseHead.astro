@@ -10,11 +10,14 @@ interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata;
+	/** Keeps a page out of search results. Crawling is left allowed in robots.txt
+	 * on purpose, otherwise this tag would never be seen. */
+	noindex?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = FallbackImage, noindex = false } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -29,6 +32,7 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Font preloads -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
